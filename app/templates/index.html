@@ -1,0 +1,57 @@
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block title %}WSU Smart Home Database{% endblock %}
+<head>
+{% block styles %}
+        {{ super() }}
+        <link rel="stylesheet" href="/static/style.css">
+        <style>
+        body {
+                background-color:#fff;
+        }
+        </style>
+{% endblock %}
+{% block scripts %}
+<script src="http://cdn.jsdelivr.net/webshim/1.12.4/extras/modernizr-custom.js"></script>
+<!-- polyfiller file to detect and load polyfills -->
+<script src="http://cdn.jsdelivr.net/webshim/1.12.4/polyfiller.js"></script>
+{{ super() }}
+{% endblock %}
+</head>
+{% block body %}
+        {{ super() }}
+  <div class="container" style="padding-top: 40px">
+  <nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#topFixedNavbar1"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button>
+        <a class="navbar-brand" href="/">WSU AHA!</a></div>
+      <div class="collapse navbar-collapse" id="topFixedNavbar1">
+        <ul class="nav navbar-nav">
+          <li class="active"></li>
+        </ul>
+<ul class="nav navbar-nav navbar-right">
+        <li><a href="mailto:aha@wsu.edu">Contact Us</a></li>
+          <li><a href="/auth/logout"><font color="#881D1F"><strong>Logout</strong></font></a></li>
+        </ul>
+      </div>
+      <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container-fluid -->
+  </nav>
+<div class="jumbotron" style="background-color:#fff;">
+</div>
+<div class="row" style="background-color:#fff;">
+<div class="col-md-3"></div>
+<div class="col-md-7">
+      <p>Welcome {{current_user.name}}!</p>
+      <p>Apologizes! This page is under development! Please try again soon.</p>
+</div>
+<div class="col-md-2"></div>
+</div>
+<div class="row body">
+<div class="col-md-4 left-side" style="align-content: center">
+</div>
+<div class="col-md-4"></div>
+</div>
+  {% endblock %}

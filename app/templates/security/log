@@ -1,0 +1,60 @@
+{% macro render_field(field, placeholder=None) %}
+{% if field.errors %}
+<div>
+{% elif field.flags.error %}
+<div>
+{% else %}
+<div>
+{% endif %}
+    {% set css_class = 'form-control ' + kwargs.pop('class', '') %}
+    {{ field(class=css_class, placeholder=placeholder, **kwargs) }}
+</div>
+{% endmacro %}
+
+<!doctype html>
+<html lang="en-US">
+<head>
+        <meta charset="utf-8">
+
+        <title>Login</title>
+
+        <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Varela+Round">
+
+        <!--[if lt IE 9]>
+                <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+        <link rel="stylesheet" href="/static/style.css">
+
+</head>
+<body>
+
+        <div id='login'>
+
+                <h2><span class="fontawesome-lock"></span>Sign In</h2>
+                    <form class="form" action="{{ url_for_security('login') }}" method="POST" name="login_user_form">
+
+                        <fieldset>
+
+                        {{ login_user_form.csrf_token }} 
+                        <p><label for="name">Enter Email</label></p>
+                        <p>{{ render_field(login_user_form.email, placeholder="Email",                                autofocus="") }} </p>
+                        <p><label for="password">Password</label></p>
+                        <p>{{ render_field(login_user_form.password, placeholder="Password") }} </p>
+
+                                <p><input type="submit" value="Sign In"></p>
+        {% include "security/_menu.html" %}
+
+                        </fieldset>
+
+                </form>
+        </div> <!-- end login -->
+<script type="text/javascript">
+        $(document).ready(function() {
+                $('body').hide();
+                $(window).load(function() {
+                        $('body').show();
+                });
+        });
+</script>
+</body> 
+</html>
