@@ -1,0 +1,20 @@
+@(course: Form[CreateCourseForm])(implicit request: RequestHeader, messages: Messages)
+
+@import helper._
+
+@main("Course Service Dev") {
+	<script type='text/javascript' src='@routes.Assets.versioned("javascripts/index.js")'></script>
+
+	<ul id="courses"></ul>
+
+  @form(CSRF(routes.CourseController.addCourse())) {
+		@inputText(course("name"))
+		@inputText(course("title"))
+		@inputText(course("author"))
+
+
+		<div class="buttons">
+			<input type="submit" value="Add a course"/>
+		</div>
+	}
+}

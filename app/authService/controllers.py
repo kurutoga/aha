@@ -8,8 +8,8 @@ from app import db, app
 user_datastore = SQLAlchemyUserDatastore(db, User, Role)
 security = Security(app, user_datastore, register_form=AHARegisterForm)
 
-@app.before_first_request
-def create_user():
-    db.create_all()
-    user_datastore.create_user(email='bishudash@gmail.com', password='password')
-    db.session.commit()
+#@app.before_first_request
+#def create_user():
+#    db.create_all()
+#    user_datastore.create_user(email='bishudash@gmail.com', password='password')
+#    db.session.commit()
