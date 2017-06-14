@@ -18,7 +18,7 @@ class CourseController @Inject()(repo: CourseRepository, val messagesApi: Messag
                                 (implicit ec: ExecutionContext) extends Controller with I18nSupport{
 
   /**
-   * The mapping for the person form.
+   * The mapping for the course form.
    */
   val courseForm: Form[CreateCourseForm] = Form {
     mapping(
@@ -36,7 +36,7 @@ class CourseController @Inject()(repo: CourseRepository, val messagesApi: Messag
   }
 
   /**
-   * The add person action.
+   * The add course action.
    *
    * This is asynchronous, since we're invoking the asynchronous methods on PersonRepository.
    */
@@ -56,7 +56,7 @@ class CourseController @Inject()(repo: CourseRepository, val messagesApi: Messag
   }
 
   /**
-   * A REST endpoint that gets all the people as JSON.
+   * A REST endpoint that gets all the courses as JSON.
    */
   def getCourses = Action.async {
   	repo.list().map { course =>
@@ -66,7 +66,7 @@ class CourseController @Inject()(repo: CourseRepository, val messagesApi: Messag
 }
 
 /**
- * The create person form.
+ * The create course form.
  *
  * Generally for forms, you should define separate objects to your models, since forms very often need to present data
  * in a different way to your models.  In this case, it doesn't make sense to have an id parameter in the form, since
