@@ -7,7 +7,10 @@ from app.authService.controllers import user_datastore
 core = Blueprint('core', __name__, url_prefix='/')
 
 @core.route('/')
+def home():
+    return render_template('home.html')
+
 @core.route('dashboard')
 @login_required
-def home():
-    return render_template('index.html')
+def dash():
+    return render_template('dash.html')

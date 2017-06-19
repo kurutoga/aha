@@ -1,57 +1,137 @@
-{% extends "bootstrap/base.html" %}
-{% import "bootstrap/wtf.html" as wtf %}
-{% block title %}WSU Smart Home Database{% endblock %}
+<!DOCTYPE html>
+<!--[if lt IE 7]> <html class="no-svg lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]><html class="no-svg lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]><html class="no-svg lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--><html lang="en"><!--<![endif]-->
 <head>
-{% block styles %}
-        {{ super() }}
-        <link rel="stylesheet" href="/static/style.css">
-        <style>
-        body {
-                background-color:"#dfdbd6";
-        }
-        </style>
-{% endblock %}
-{% block scripts %}
-<script src="http://cdn.jsdelivr.net/webshim/1.12.4/extras/modernizr-custom.js"></script>
-<!-- polyfiller file to detect and load polyfills -->
-<script src="http://cdn.jsdelivr.net/webshim/1.12.4/polyfiller.js"></script>
-{{ super() }}
-{% endblock %}
+        <meta charset="utf-8">
+        <title>AHA | Washington State University</title>
+        <link rel="shortcut icon" href="https://repo.wsu.edu/spine/1/favicon.ico" />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,300italic" rel="stylesheet" type="text/css" >
+        <link href="https://repo.wsu.edu/spine/1/spine.min.css" rel="stylesheet" type="text/css" />
+    <link href="static/custom.min.css" rel="stylesheet" type="text/css" />
+        <meta http-equiv="X-UA-Compatible" content="IE=EDGE">
+        <meta name="viewport" content="width=device-width, user-scalable=yes">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+        <script src="https://repo.wsu.edu/spine/1/spine.min.js"></script>
+        <!-- COMPATIBILITY -->
+        <!--[if lt IE 9]><script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+        <noscript><style>#spine .spine-sitenav ul ul li { display: block !important; }</style></noscript>
 </head>
-{% block body %}
-        {{ super() }}
-  <div class="container" style="padding-top: 40px">
-  <nav class="navbar navbar-default navbar-fixed-top">
-    <div class="container-fluid">
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#topFixedNavbar1"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button>
-        <a class="navbar-brand" href="/">WSU AHA!</a></div>
-      <div class="collapse navbar-collapse" id="topFixedNavbar1">
-        <ul class="nav navbar-nav">
-          <li class="active"></li>
-        </ul>
-<ul class="nav navbar-nav navbar-right">
-        <li><a href="mailto:aha@wsu.edu">Contact Us</a></li>
-          <li><a href="/auth/logout"><font color="#881D1F"><strong>Logout</strong></font></a></li>
-        </ul>
-      </div>
-      <!-- /.navbar-collapse -->
+<body>
+<div id="jacket">
+<div id="binder" class="fluid">
+<main>
+<section class="row single gutter pad-top">
+    <div class="column"><h2 class="aha">Online Course Suite in Tools for Analysis of Sensor-Based Behavioral Health Data (AHA!)</h2></div>
+</section>
+<section class="row gutter pad-top">
+        <div class="column one ">
+            <p class="goals">Welcome {{ current_user.name }}! </p>
+            <p class="goals">This page is under development.</p>
+        </div>
+</section>
+<hr class="divider" />
+<section class="row single gutter">
+        <div class="column">
+                <article class="home-contact">
+               <p><a href="http://casas.wsu.edu/">CASAS</a>, PO Box 642752, Washington State University, Pullman WA 99164-2752 <br /> (509) 335-4985, <a href="mailto:cook@eecs.wsu.edu">cook@eecs.wsu.edu</a> </p>
+               <p>&copy; 2017 Washington State University | <a href="http://access.wsu.edu">Accessibility</a> | <a href="http://policies.wsu.edu/">Policies</a> | <a href="http://copyright.wsu.edu/">Copyright</a> </p>
+        </article>
     </div>
-    <!-- /.container-fluid -->
-  </nav>
-<div class="jumbotron" style="background-color:#fff;">
+</section>
+</main>
+
+<div id="spine" class="spine-column shelved darker bleed">
+<div id="glue" class="spine-glue">
+
+<header class="spine-header">
+        <a href="https://wsu.edu/" id="wsu-signature" class="spine-signature">Washington State University</a>
+</header>
+
+<!-- ACTIONS -->
+<section id="wsu-actions" class="spine-actions">
+
+        <!-- Tabs -->
+        <ul id="wsu-actions-tabs" class="spine-actions-tabs clearfix">
+                <li id="wsu-search-tab" class="spine-search-tab closed"><button>Search</button></li>
+                <li id="wsu-contact-tab" class="spine-contact-tab closed"><button>Contact</button></li>
+                <li id="wsu-share-tab" class="spine-share-tab closed"><button>Share</button></li>
+                <li id="wsu-print-tab" class="spine-print-tab closed"><button>Print</button></li>
+        </ul>
+
+        <!-- Actions generated by spine.js end up here -->
+</section><!--/#wsu-actions-->
+
+<section id="spine-navigation" class="spine-navigation">
+
+        <nav class="spine-sitenav">
+
+                <ul>
+                        <!--
+                        NAVIGATION: Your navigation list here
+                        • Active link should be denoted with an "active" or "current" link on the link's parent li element.
+                        • First link should be a home link (otherwise, in exceptional cases, add "homeless" class to #site nav)
+                        • Replace example navigation list below -->
+                        <li><a href="/">Site Home</a></li>
+                        <li><a href="/auth/register">Register</a></li>
+                        <li><a href="/auth/login">Login</a></li>
+                        <li><a href="">Classes</a>
+                                <ul>
+                                        <li><a href="/course/100001">Behavior data exploration and statistical inference</a></li>
+                                        <li><a href="/course/100002">Behavior analysis from ambient sensor data</a></li>
+                                        <li><a href="/course/100003">Ambient sensor data for health assessment and intervention</a></li>
+                                        <li><a href="/course/100004">Behavior analysis from mobile sensors</a></li>
+                                        <li><a href="/course/100005">Analysis at scale</a></li>
+                                        <li><a href="/course/100006">Advanced topic in clinical application of behavior sensor data analysis</a></li>
+                                </ul>
+                        </li>
+                        <li class="current"><a href="/course/datasets">Datasets</a></li>
+                        <li><a href="https://online.wsu.edu/">Continuing Education Credit</a></li>
+                </ul>
+
+        </nav>
+
+        <nav class="spine-offsitenav">
+        <ul>
+                <li><a href="http://casas.wsu.edu" class="external">CASAS</a></li>
+                <li><a href="https://www.nih.gov/" class="external">NIH</a></li>
+        </ul>
+</nav>
+
+</section><!-- #navigation -->
+
+<!-- Social and Global Links -->
+<footer class="spine-footer">
+        <nav id="wsu-social-channels" class="spine-social-channels">
+                <!--
+                SOCIAL CHANNELS: You can replace default social channels with your own. Available channels are:
+                • Facebook, Twitter, Youtube, Google+ (.googleplus-channel), Tumblr, Pinterest, Flickr,
+                • Example: <li class="pinterest-channel"><a href="http://pinterest.com/user">Pinterest</a></li>
+                • Maximum number of channels is five -->
+                <ul>
+                        <li class="facebook-channel"><a href="https://facebook.com/wsupullman">Facebook</a></li>
+                        <li class="twitter-channel"><a href="https://twitter.com/wsupullman">Twitter</a></li>
+                        <li class="youtube-channel"><a href="https://www.youtube.com/washingtonstateuniv">YouTube</a></li>
+                        <li class="directory-channel"><a href="http://social.wsu.edu">Directory</a></li>
+                </ul>
+        </nav>
+        <nav id="wsu-global-links" class="spine-global-links">
+                <ul>
+                        <li class="mywsu-link"><a href="https://my.wsu.edu/">myWSU</a></li>
+                        <li class="access-link"><a href="http://access.wsu.edu/">Access</a></li>
+                        <li class="policies-link"><a href="http://policies.wsu.edu/">Policies</a></li>
+                        <li class="copyright-link"><a href="http://copyright.wsu.edu">&copy;</a></li>
+                </ul>
+        </nav>
+</footer>
+
+</div><!--/glue-->
 </div>
-<div class="row">
-<div class="col-md-3"></div>
-<div class="col-md-7">
-      <p>Welcome {{name}}!</p>
-      <p>Apologizes! This page is under development! Please try again soon.</p>
 </div>
-<div class="col-md-2"></div>
 </div>
-<div class="row body">
-<div class="col-md-4 left-side" style="align-content: center">
-</div>
-<div class="col-md-4"></div>
-</div>
-  {% endblock %}
+</body>
+</html>
+
+

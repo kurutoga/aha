@@ -45,7 +45,7 @@ class CourseRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(impli
      *
      * It defines how the columns are converted to and from the Person object.
      *
-     * In this case, we are simply passing the id, name and page parameters to the Course case classes
+     * In this case, we are simply passing the id, name, title, and author parameters to the Course case classes
      * apply and unapply methods.
      */
     def * = (id, name, title, author) <> ((Course.apply _).tupled, Course.unapply)
@@ -61,7 +61,7 @@ class CourseRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(impli
    *
    */
   def create(name: String, title: String, author: String): Future[Course] = db.run {
-    // We create a projection of just the name and age columns, since we're not inserting a value for the id column
+    // We create a projection of just the name, author, title columns, since we're not inserting a value for the id column
     (course.map(c => (c.name, c.title, c.author))
       // Now define it to return the id, because we want to know what id was generated for the person
       returning course.map(_.id)
