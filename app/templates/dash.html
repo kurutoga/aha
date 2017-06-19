@@ -10,6 +10,11 @@
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,300italic" rel="stylesheet" type="text/css" >
         <link href="https://repo.wsu.edu/spine/1/spine.min.css" rel="stylesheet" type="text/css" />
     <link href="static/custom.min.css" rel="stylesheet" type="text/css" />
+        <style>
+            .ilog {
+                color: #EE1122 !important;
+            }
+        </style>
         <meta http-equiv="X-UA-Compatible" content="IE=EDGE">
         <meta name="viewport" content="width=device-width, user-scalable=yes">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
@@ -75,8 +80,7 @@
                         • First link should be a home link (otherwise, in exceptional cases, add "homeless" class to #site nav)
                         • Replace example navigation list below -->
                         <li><a href="/">Site Home</a></li>
-                        <li><a href="/auth/register">Register</a></li>
-                        <li><a href="/auth/login">Login</a></li>
+                        <li class="ilog"><b><a href="/auth/logout" class="ilog">Logout</a></b></li>
                         <li><a href="">Classes</a>
                                 <ul>
                                         <li><a href="/course/100001">Behavior data exploration and statistical inference</a></li>
