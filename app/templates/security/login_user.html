@@ -42,8 +42,15 @@
                 {{ render_field(login_user_form.email, placeholder="Email", id="loginname", class="PasswordTextBoxes", autocomplete="off") }}
                 <p>Password:</p>
                 {{ render_field(login_user_form.password, placeholder="Password", id="login", class_="PasswordTextBoxes", autocomplete="off") }}
-                <br>
-                <input type="submit" name="btn" value="Continue" id="btn" title="Click to Sign In" class="psloginbutton">
+                 {% for field in login_user_form.errors %}
+                 {% for error in login_user_form.errors[field] %}
+                    <div class="alert alert-error">
+                        <strong>Error!</strong> {{error}}
+                    </div>
+                 {% endfor %}
+                 {% endfor %}
+                 <br>
+               <input type="submit" name="btn" value="Continue" id="btn" title="Click to Sign In" class="psloginbutton">
             </form>
          </article>
         </div>

@@ -1,24 +1,151 @@
 {% from "security/_macros.html" import render_field_with_errors, render_field %}
 {% include "security/_messages.html" %}
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
-
-  <link rel='stylesheet prefetch' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css'>
-<link rel='stylesheet prefetch' href='http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css'>
-<link rel='stylesheet prefetch' href='https://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css'>
-        <link rel="stylesheet" href="/static/style_reg.css">
-
-<div name="signupForm" class="container">
-<h1>Register</h1>
-<form action="{{ url_for_security('register') }}" method="POST" name="register_user_form">
+<!DOCTYPE html>
+<!--[if lt IE 7]> <html class="no-svg lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]><html class="no-svg lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]><html class="no-svg lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--><html lang="en"><!--<![endif]-->
+<head>
+        <meta charset="utf-8">
+        <title>AHA | Washington State University</title>
+        <link rel="shortcut icon" href="https://repo.wsu.edu/spine/1/favicon.ico" />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,300italic" rel="stylesheet" type="text/css" >
+        <link href="https://repo.wsu.edu/spine/1/spine.min.css" rel="stylesheet" type="text/css" />
+    <link href="/static/custom.min.css" rel="stylesheet" type="text/css" />
+        <meta http-equiv="X-UA-Compatible" content="IE=EDGE">
+        <meta name="viewport" content="width=device-width, user-scalable=yes">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+        <script src="https://repo.wsu.edu/spine/1/spine.min.js"></script>
+        <!-- COMPATIBILITY -->
+        <!--[if lt IE 9]><script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+        <noscript><style>#spine .spine-sitenav ul ul li { display: block !important; }</style></noscript>
+</head>
+<body>
+<div id="jacket">
+<div id="binder" class="fluid">
+<main>
+<section class="row single gutter pad-top">
+    <div class="column"><h2 class="aha">Registration</h2></div>
+</section>
+<section class="row gutter pad-bottom pad-top pad-right">
+    <div class="column one">
+           <article class="signin">
+ <form action="{{ url_for_security('register') }}" method="POST" name="register_user_form">
   {{ register_user_form.hidden_tag() }}
-  {{ render_field_with_errors(register_user_form.name, class_="form-control input-lg") }}
-  {{ render_field_with_errors(register_user_form.email, class_="form-control input-lg") }}
-  {{ render_field_with_errors(register_user_form.password, class_="form-control input-lg") }}
+  <p>Full Name:</p>
+  {{ render_field(register_user_form.name, class_="form-control input-lg") }}
+  <p>Email:</p>
+  {{ render_field(register_user_form.email, class_="form-control input-lg") }}
+  <p>Password:</p>
+  {{ render_field(register_user_form.password, class_="form-control input-lg") }}
+  <p>Confirm Password:</p>
   {% if register_user_form.password_confirm %}
-    {{ render_field_with_errors(register_user_form.password_confirm, class_="form-control input-lg") }}
+    {{ render_field(register_user_form.password_confirm, class_="form-control input-lg") }}
   {% endif %}
-  {{ render_field(register_user_form.submit) }}
+  <p>Sex:<p>
+  {{ render_field(register_user_form.sex, class_="form-control") }}
+  <p>City:</p>
+  {{ render_field(register_user_form.city, class_="form-control input-lg") }}
+  <p>State:</p>
+  {{ render_field(register_user_form.state, class_="form-control input-lg") }}
+  <p>Country:</p>
+  {{ render_field(register_user_form.country, class_="form-control") }}
+  
+   {% for field in register_user_form.errors %}
+   {% for error in register_user_form.errors[field] %}
+      <div class="alert alert-error">
+          <strong>Error!</strong> {{error}}
+      </div>
+   {% endfor %}
+   {% endfor %}
+
+ <br>
+  <input type="submit" name="btn" value="Continue" id="btn" title="Click to Sign Up" class="psloginbutton pad-top">
 </form>
+           
+         </article>
+        </div>
+</section>
+</main>
+
+<div id="spine" class="spine-column shelved darker bleed">
+<div id="glue" class="spine-glue">
+
+<header class="spine-header">
+        <a href="https://wsu.edu/" id="wsu-signature" class="spine-signature">Washington State University</a>
+</header>
+
+<!-- ACTIONS -->
+<section id="wsu-actions" class="spine-actions">
+
+        <!-- Tabs -->
+        <ul id="wsu-actions-tabs" class="spine-actions-tabs clearfix">
+                <li id="wsu-search-tab" class="spine-search-tab closed"><button>Search</button></li>
+                <li id="wsu-contact-tab" class="spine-contact-tab closed"><button>Contact</button></li>
+                <li id="wsu-share-tab" class="spine-share-tab closed"><button>Share</button></li>
+                <li id="wsu-print-tab" class="spine-print-tab closed"><button>Print</button></li>
+        </ul>
+
+        <!-- Actions generated by spine.js end up here -->
+</section><!--/#wsu-actions-->
+
+<section id="spine-navigation" class="spine-navigation">
+
+        <nav class="spine-sitenav">
+
+                <ul>
+                        <!--
+                        NAVIGATION: Your navigation list here
+                        • Active link should be denoted with an "active" or "current" link on the link's parent li element.
+                        • First link should be a home link (otherwise, in exceptional cases, add "homeless" class to #site nav)
+                        • Replace example navigation list below -->
+                        <li><a href="/">Site Home</a></li>
+                        <li><a href="/auth/login">Login</a></li>
+                        <li><a href="/auth/reset">Forgot Password?</a></li>
+                </ul>
+
+        </nav>
+
+        <nav class="spine-offsitenav">
+        <ul>
+                <li><a href="http://casas.wsu.edu" class="external">CASAS</a></li>
+                <li><a href="https://www.nih.gov/" class="external">NIH</a></li>
+        </ul>
+</nav>
+
+</section><!-- #navigation -->
+
+<!-- Social and Global Links -->
+<footer class="spine-footer">
+        <nav id="wsu-social-channels" class="spine-social-channels">
+                <!--
+                SOCIAL CHANNELS: You can replace default social channels with your own. Available channels are:
+                • Facebook, Twitter, Youtube, Google+ (.googleplus-channel), Tumblr, Pinterest, Flickr,
+                • Example: <li class="pinterest-channel"><a href="http://pinterest.com/user">Pinterest</a></li>
+                • Maximum number of channels is five -->
+                <ul>
+                        <li class="facebook-channel"><a href="https://facebook.com/wsupullman">Facebook</a></li>
+                        <li class="twitter-channel"><a href="https://twitter.com/wsupullman">Twitter</a></li>
+                        <li class="youtube-channel"><a href="https://www.youtube.com/washingtonstateuniv">YouTube</a></li>
+                        <li class="directory-channel"><a href="http://social.wsu.edu">Directory</a></li>
+                </ul>
+        </nav>
+        <nav id="wsu-global-links" class="spine-global-links">
+                <ul>
+                        <li class="mywsu-link"><a href="https://my.wsu.edu/">myWSU</a></li>
+                        <li class="access-link"><a href="http://access.wsu.edu/">Access</a></li>
+                        <li class="policies-link"><a href="http://policies.wsu.edu/">Policies</a></li>
+                        <li class="copyright-link"><a href="http://copyright.wsu.edu">&copy;</a></li>
+                </ul>
+        </nav>
+</footer>
+
+</div><!--/glue-->
 </div>
+</div>
+</div>
+</body>
+</html>
 
 
