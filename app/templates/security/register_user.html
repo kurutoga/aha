@@ -19,6 +19,19 @@
         <script src="https://repo.wsu.edu/spine/1/spine.min.js"></script>
         <!-- COMPATIBILITY -->
         <!--[if lt IE 9]><script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+        <script type="text/javascript">
+
+  function checkForm(form)
+      {
+                      if(!form.terms.checked) {
+                                alert("Please indicate that you accept the Terms and Conditions");
+                                      form.terms.focus();
+                                            return false;
+                                                }
+                  return true;
+                    }
+
+        </script>
         <noscript><style>#spine .spine-sitenav ul ul li { display: block !important; }</style></noscript>
 </head>
 <body>
@@ -31,7 +44,7 @@
 <section class="row gutter pad-bottom pad-top pad-right">
     <div class="column one">
            <article class="signin">
- <form action="{{ url_for_security('register') }}" method="POST" name="register_user_form">
+ <form action="{{ url_for_security('register') }}" method="POST" name="register_user_form" onsubmit="return checkForm(this);">
   {{ register_user_form.hidden_tag() }}
   <p>Full Name:</p>
   {{ render_field(register_user_form.name, class_="form-control input-lg") }}
@@ -44,13 +57,15 @@
     {{ render_field(register_user_form.password_confirm, class_="form-control input-lg") }}
   {% endif %}
   <p>Sex:<p>
-  {{ render_field(register_user_form.sex, class_="form-control") }}
+  {{ render_field(register_user_form.sex, class_="form-control input-sm") }}
   <p>City:</p>
   {{ render_field(register_user_form.city, class_="form-control input-lg") }}
   <p>State:</p>
   {{ render_field(register_user_form.state, class_="form-control input-lg") }}
   <p>Country:</p>
-  {{ render_field(register_user_form.country, class_="form-control") }}
+  {{ render_field(register_user_form.country, class_="form-control input-lg") }}
+  <br>
+  <input type="checkbox" name="terms">I have reviewed the <a href="#">Privacy Policy</a> and I agree with all the <a href="#">Terms & Conditions</a></input>
   
    {% for field in register_user_form.errors %}
    {% for error in register_user_form.errors[field] %}

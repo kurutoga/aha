@@ -6,7 +6,6 @@ app = Flask(__name__)
 app.config.from_object('config.DevelopmentConfig')
 db = SQLAlchemy(app)
 
-
 from app.authService.controllers import security, user_datastore
 from app.coreService.controllers import core
 
