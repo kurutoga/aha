@@ -1,1 +1,222 @@
-html{background-color:#fff}body{font-family:'Open Sans',sans-serif}#glue:before{border-right:1px solid #dbdbdb}hr{border:0;height:1.5px;display:block;margin-top:2em;border-color:#5e6a71}h1{color:#c60c30;font-size:45px;font-weight:300;letter-spacing:2px;text-transform:uppercase}h2{color:#5e6a71;font-size:35px;font-weight:300;letter-spacing:3px;padding-bottom:20px;text-transform:uppercase}h3{color:#981e32;font-size:28px;font-weight:600;letter-spacing:2px;text-transform:uppercase}h4{color:#c60c30;font-size:20px;font-weight:300;padding-bottom:10px}h5{color:#2a2a2a;font-size:16px;font-weight:600;padding-bottom:10px}.ilog{color:#881110;}p{color:#5e6a71;font-size:15px;font-weight:300}.comingfrom p{font-weight:300;font-style:italic;word-wrap:break-word}hr.divider{margin:16px 26px 21px;height:1px;color:#b7b7b7}h2.aha{float:right!important;padding:10px 0 0;text-transform:none;font-size:18px;letter-spacing:normal;font-weight:400}.info{font-size:14px;font-weight:400}p.goals{font-size:14px;font-weight:450}.signin h3{padding-bottom:18px;text-transform:none;font-size:24px;letter-spacing:normal;font-weight:400;color:#2a2a2a}.signin{display:block;text-align:left;margin:0 auto}.signin p{font-size:14px;color:#2a2a2a;padding:0}.centerlogin{display:block;text-align:center}input.PasswordTextBoxes{-moz-border-bottom-colors:none;-moz-border-left-colors:none;-moz-border-right-colors:none;-moz-border-top-colors:none;background:none repeat scroll 0 0 #FFF;border-color:#aaa;border-image:none;border-style:solid;border-width:1px;color:#5E6A71;display:block;font-size:16px;line-height:32px;margin-bottom:14px;padding:6px 0 6px 5px;text-align:left;width:100%}input.psloginbutton,input.psloginbutton:focus{-moz-border-bottom-colors:none;-moz-border-left-colors:none;-moz-border-right-colors:none;-moz-border-top-colors:none;background:#961f34;border-radius:0;border:none;color:#FFF;float:right;font-size:18px;line-height:26px;margin:0 0 16px;padding:10px 26px;transition:background .5s ease 0;letter-spacing:normal;font-weight:300;font-family:'Open Sans',sans-serif}input.psloginbutton:hover{border:none;color:#fff;background:#c60c30}#spine .spine-sitenav:not(.homeless) > ul > li:first-child > a,#spine .spine-sitenav:not(.homeless) > ul > li:first-child > a:hover{padding-left:0;background-image:none}article.accessstatement p{font-size:13px;padding:10px 0}article.home-contact p{display:block;text-align:center;font-size:12px;font-weight:400}@media only screen and (max-width: 693px){section div.at-small-display-none{padding:0!important}}@media only screen and (max-width: 530px){h2.signhead{float:none!important}input.psloginbutton,input.psloginbutton:focus{width:100%}}
+html {
+    background-color: #fff
+}
+body {
+    font-family: 'Open Sans', sans-serif;
+}
+#glue:before {
+    border-right: 1px solid #dbdbdb;
+}
+hr {
+    border: 0;
+    height: 1.5px;
+    display: block;
+    margin-top: 2em;
+    border-color: #5e6a71
+}
+h1 {
+    color: #c60c30;
+    font-size: 45px;
+    font-weight: 300;
+    letter-spacing: 2px;
+    text-transform: uppercase
+}
+h2 {
+    color: #5e6a71;
+    font-size: 35px;
+    font-weight: 300;
+    letter-spacing: 3px;
+    padding-bottom: 20px;
+    text-transform: uppercase
+}
+h3 {
+    color: #981e32;
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase
+}
+h4 {
+    color: #c60c30;
+    font-size: 20px;
+    font-weight: 300;
+    padding-bottom: 10px
+}
+h5 {
+    color: #2a2a2a;
+    font-size: 16px;
+    font-weight: 600;
+    padding-bottom: 10px
+}
+p {
+    color: #5e6a71;
+    font-size: 15px;
+    font-weight: 300
+}
+.comingfrom p {
+    font-weight: 300;
+    font-style: italic;
+    word-wrap: break-word
+}
+hr.divider {
+    margin: 32px 26px 42px;
+    height: 1px;
+    color: #b7b7b7;
+}
+h2.aha {
+    float: right!important;
+    padding: 20px 0 0;
+    text-transform: none;
+    font-size: 18px;
+    letter-spacing: normal;
+    font-weight: 400
+}
+
+.info {
+    font-size: 14px;
+        font-weight: 400
+}
+
+p.goals {
+    font-size: 14px;
+        font-weight: 450
+}
+
+.signin h3 {
+    padding-bottom: 18px;
+    text-transform: none;
+    font-size: 24px;
+    letter-spacing: normal;
+    font-weight: 400;
+    color: #2a2a2a
+}
+.signin {
+    display: block;
+    text-align: left;
+    margin: 0 auto
+}
+.signin p {
+    font-size: 14px;
+    color: #2a2a2a;
+    padding: 0
+}
+.centerlogin {
+    display: block;
+    text-align: center
+}
+.pst {
+        -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background: none repeat scroll 0 0 #FFF;
+    border-color: #aaa;
+    border-image: none;
+    border-style: solid;
+    border-width: 1px;
+    color: #5E6A71;
+    display: block;
+    font-size: 16px;
+    line-height: 32px;
+    margin-bottom: 14px;
+    padding: 6px 0 6px 5px;
+    text-align: left;
+    width: 100%
+}
+input.PasswordTextBoxes {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background: none repeat scroll 0 0 #FFF;
+    border-color: #aaa;
+    border-image: none;
+    border-style: solid;
+    border-width: 1px;
+    color: #5E6A71;
+    display: block;
+    font-size: 16px;
+    line-height: 32px;
+    margin-bottom: 14px;
+    padding: 6px 0 6px 5px;
+    text-align: left;
+    width: 100%
+}
+input.psloginbutton,
+input.psloginbutton:focus {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background: #961f34;
+    border-radius: 0;
+    border: none;
+    color: #FFF;
+    float: right;
+    font-size: 18px;
+    line-height: 26px;
+    margin: 0 0 16px;
+    padding: 10px 26px;
+    transition: background .5s ease 0;
+    letter-spacing: normal;
+    font-weight: 300;
+    font-family: 'Open Sans', sans-serif
+}
+input.psloginbutton:hover {
+    border: none;
+    color: #fff;
+    background: #c60c30
+}
+.loginbutton,
+.loginbutton:focus {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-top-colors: none;
+    background: #961f34;
+    border-radius: 0;
+    border: none;
+    color: #FFF;
+    font-size: 18px;
+    padding: 10px 26px;
+    line-height: 26px;
+    transition: background .5s ease 0;
+    letter-spacing: normal;
+    font-weight: 300;
+    font-family: 'Open Sans', sans-serif
+}
+.loginbutton:hover {
+    border: none;
+    color: #fff;
+    background: #c60c30
+}
+#
+
+#spine .spine-sitenav:not(.homeless) > ul > li:first-child > a,
+#spine .spine-sitenav:not(.homeless) > ul > li:first-child > a:hover {
+    padding-left: 0;
+    background-image: none
+}
+article.accessstatement p {
+    font-size: 13px;
+    padding: 10px 0
+}
+article.home-contact p {
+    display: block;
+    text-align: center;
+    font-size: 12px;
+        font-weight: 400
+}
+@media only screen and (max-width: 693px) {
+    section div.at-small-display-none {
+        padding: 0!important
+    }
+}
+@media only screen and (max-width: 530px) {
+    h2.signhead {
+        float: none!important
+    }
+    input.psloginbutton,
+    input.psloginbutton:focus {
+        width: 100%
+    }
+}

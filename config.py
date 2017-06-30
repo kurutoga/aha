@@ -1,7 +1,7 @@
 class Config(object):
     DEBUG = False
     TESTING = False
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///aha.db'
+    SQLALCHEMY_DATABASE_URI = 'postgresql://aha:python@localhost:5432/aha'
     SECURITY_URL_PREFIX = '/auth'
     SECURITY_POST_LOGIN_VIEW = '/dashboard'
     SECURITY_POST_REGISTER_VIEW = '/dashboard'

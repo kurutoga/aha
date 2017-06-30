@@ -6,7 +6,7 @@
 
 <head>
         <meta charset="utf-8">
-        <title>AHA | Washington State University</title>
+        <title>{{course.name}}</title>
         <link rel="shortcut icon" href="https://repo.wsu.edu/spine/1/favicon.ico" />
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,300italic" rel="stylesheet" type="text/css" >
         <link href="https://repo.wsu.edu/spine/1/spine.min.css" rel="stylesheet" type="text/css" />
@@ -34,30 +34,12 @@
 <main>
 <header class="main-header">
         <div class="header-group hgroup guttered padded-bottom short">
-                <sup class="sup-header"><span class="sup-header-default"><a href="https://aha.wsu.edu/" rel="home">
-Online Course Suite in Tools for Analysis of Sensor-Based Behavioral Health Data (AHA!)</a></span></sup>
+                <sup class="sup-header"><span class="sup-header-default"></span></sup>
         </div>
 </header>
-<section class="row side-right gutter pad-top pad-bottom user-head">
-        <div class="column one">
-            <h4 class="welcome">Welcome {{ current_user.name }}! </h4>
-            <div class="settings">
-                <ul>
-                    <li><a href="/user/edit">Edit user profile</a></li>
-                    <li><a href="/user/scores">Scores &amp; Progress Report</a></li>
-                    <li><a href="/user/cec">Apply for Continuing Education Credit</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="column two ">
-            <div class="user-photo">
-                <img src="static/placeholder.png">
-            </div>
-        </div>
-</section>
 <section class="row single gutter course-ongoing">
     <div class="column">
-        <h4>Classes In-Progress</h4>
+        <h4>Python for Data Analytics</h4>
         <table style="width:100%">
             <tr>
                 <th style="width:70%;"></th>
