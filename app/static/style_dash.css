@@ -377,8 +377,8 @@ article.home-contact p {
     color: #000;
 }
 
-table tr:hover td .course {
-    background-color: crimson;
+table.table-course-available tr:hover td {
+    background-color: #fcd782;
 }
 
 /*# sourceMappingURL=style.css.map */

@@ -41,21 +41,21 @@ def before_first_request():
 
 
     #add courses
-    names = ['Behavior data exploration and statistical inference', 
-            'Behavior analysis from ambient sensor data',
-            'Ambient sensor data from health assessment and intervention',
-            'Behavior analysis from mobile sensors',
-            'Analysis at scale',
-            'Advanced topics in clinical application of behavior sensor data analysis']
-    authors = ['Gina Sprint, Dr. Larry Holder',
-            'Krista, Dr. Diane Cook',
-            'Dr. Maureen Schmitter-Edgecombe, Jessamyn Dahmen',
-            'Dr. Larry Holder, Dr. Daine Cook',
-            'Dr. Ananth Kalyanaraman',
-            'Various']
-    cr = [Module(name=names[i-1], author=authors[i-1], modules=i+10, type='class', parent=None, serial=i) for i in range(1,7)]
-    for c in cr:
-        db.session.add(c)
+    #names = ['Behavior data exploration and statistical inference', 
+    #        'Behavior analysis from ambient sensor data',
+    #        'Ambient sensor data from health assessment and intervention',
+    #        'Behavior analysis from mobile sensors',
+    #        'Analysis at scale',
+    #        'Advanced topics in clinical application of behavior sensor data analysis']
+    #authors = ['Gina Sprint, Dr. Larry Holder',
+    #        'Krista, Dr. Diane Cook',
+    #        'Dr. Maureen Schmitter-Edgecombe, Jessamyn Dahmen',
+    #        'Dr. Larry Holder, Dr. Daine Cook',
+    #        'Dr. Ananth Kalyanaraman',
+    #        'Various']
+    #cr = [Module(name=names[i-1], author=authors[i-1], modules=i+10, type='class', parent=None, serial=i) for i in range(1,7)]
+    #for c in cr:
+    #    db.session.add(c)
 
     # Commit any database changes; the User and Roles must exist before we can add a Role to the User
     db.session.commit()

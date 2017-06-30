@@ -76,14 +76,14 @@ Online Course Suite in Tools for Analysis of Sensor-Based Behavioral Health Data
 <section class="row single gutter course-available">
     <div class="column">
         <h4>Available Classes</h4>
-        <table style="width:100%">
+        <table style="width:100%" class="table-course-available">
             <tr>
                 <th></th>
                 <th>Author</th>
                 <th>Modules</th>
             </tr>
             {% for course in available %}
-                <tr class="row-available">
+                <tr>
                     <td>{{ course.name }}</td>
                     <td>{{ course.author }}</td>
                     <td>{{ course.modules }}</td>
