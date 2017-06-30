@@ -79,14 +79,12 @@ Online Course Suite in Tools for Analysis of Sensor-Based Behavioral Health Data
         <table style="width:100%" class="table-course-available">
             <tr>
                 <th></th>
-                <th>Author</th>
-                <th>Modules</th>
+                <th style="padding-left:2em;">Author</th>
             </tr>
             {% for course in available %}
                 <tr>
                     <td>{{ course.name }}</td>
-                    <td>{{ course.author }}</td>
-                    <td>{{ course.modules }}</td>
+                    <td style="padding-left:2em;">{{ course.author }}</td>
                 </tr>
             {% endfor %}
         </table>

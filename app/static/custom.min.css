@@ -160,8 +160,8 @@ input.psloginbutton:focus {
     transition: background .5s ease 0;
     letter-spacing: normal;
     font-weight: 300;
-    font-family: 'Open Sans', sans-serif
-}
+    font-family: 'Open Sans', sans-serif;
+    }
 input.psloginbutton:hover {
     border: none;
     color: #fff;
@@ -182,7 +182,9 @@ input.psloginbutton:hover {
     transition: background .5s ease 0;
     letter-spacing: normal;
     font-weight: 300;
-    font-family: 'Open Sans', sans-serif
+    font-family: 'Open Sans', sans-serif;
+    display: block;
+    margin: auto
 }
 .loginbutton:hover {
     border: none;
