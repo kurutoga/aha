@@ -1,27 +1,35 @@
-{% from "security/_macros.html" import render_field_with_errors, render_field %}
-{% include "security/_messages.html" %}
 <!DOCTYPE html>
 <!--[if lt IE 7]> <html class="no-svg lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
 <!--[if IE 7]><html class="no-svg lt-ie9 lt-ie8" lang="en"> <![endif]-->
 <!--[if IE 8]><html class="no-svg lt-ie9" lang="en"> <![endif]-->
 <!--[if gt IE 8]><!--><html lang="en"><!--<![endif]-->
+
 <head>
         <meta charset="utf-8">
         <title>AHA | Washington State University</title>
         <link rel="shortcut icon" href="https://repo.wsu.edu/spine/1/favicon.ico" />
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,300italic" rel="stylesheet" type="text/css" >
-        <link href="https://repo.wsu.edu/spine/1/spine.min.css" rel="stylesheet" type="text/css" />
-    <link href="/static/custom.min.css" rel="stylesheet" type="text/css" />
-        <meta http-equiv="X-UA-Compatible" content="IE=EDGE">
-        <meta name="viewport" content="width=device-width, user-scalable=yes">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-DEOJS -->
-        <link href="http://vjs.zencdn.net/6.1.0/video-js.css" rel="stylesheet">
+        <link href="http://vjs.zencdn.net/6.1.0/video-js.css" rel="stylesheet" />
 
         <!-- If you'd like to support IE8 -->
         <script src="http://vjs.zencdn.net/ie8/1.1.2/videojs-ie8.min.js"></script> 
-       <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+
+        <link href="https://repo.wsu.edu/spine/1/spine.min.css" rel="stylesheet" type="text/css" />
+        <link href="/static/style_dash.css" rel="stylesheet" type="text/css" />
+       <style>
+            .ilog {
+                color: #EE1122 !important;
+            }
+            .alog {
+                color: #fff !important;
+            }
+        </style>
+        <meta http-equiv="X-UA-Compatible" content="IE=EDGE">
+        <meta name="viewport" content="width=device-width, user-scalable=yes">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
         <script src="https://repo.wsu.edu/spine/1/spine.min.js"></script>
+        <script src="http://vjs.zencdn.net/6.1.0/video.js"></script>
 
         <!-- COMPATIBILITY -->
         <!--[if lt IE 9]><script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
@@ -31,23 +39,25 @@ DEOJS -->
 <div id="jacket">
 <div id="binder" class="fluid">
 <main>
-<section class="row single gutter pad-top">
-    <div class="column"><h2 class="aha">Python for Data Analytics</h2></div>
-</section>
-<section class="row triptych gutter pad-bottom pad-top">
-    <div class="column one at-small-display-none">&nbsp;</div>
-        <div class="column two">
+<section class="row single gutter course-ongoing pad-top">
+    <div class="column">
+        <h6>Behavior data exporation and statistical inference &rarr; Python for Data Analytics &rarr; Introduction to Python; Setup</h6>
+        <h4>Introduction to Python; Setup (Lecture 1)</h4>
         <video id="lda1"  class="video-js vjs-default-skin" controls
- preload="auto" width="852" height="480" data-setup="{}">
-                <source src="/static/PDA.v1.mp4" type='video/mp4'>
+ preload="auto" width="750px" height="480" data-setup="{}">
+                <source src="/static/videos/PDA.v1.mp4" type='video/mp4'>
                 <p class="vjs-no-js">
                         To view this video please enable JavaScript, and consider upgrading to a web browser that
                 <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
                 </p>
           </video>
-         </article>
-        </div>
-    <div class="column three at-small-display-none">&nbsp;</div>
+    </div>
+</section>
+<hr class="divider" />
+<section class="row gutter course-available">
+    <div class="column">
+        <a href="/dashboard">&larr;Previous</a>
+    </div>
 </section>
 <hr class="divider" />
 <section class="row single gutter">
@@ -93,7 +103,9 @@ DEOJS -->
                         • Replace example navigation list below -->
                         <li><a href="/">Site Home</a></li>
                         <li><a href="/auth/register">Register</a></li>
-                        <li><a href="/auth/reset">Forgot Password?</a></li>
+                        <li><a href="/auth/login">Login</a></li>
+                        <li class="current"><a href="/course/datasets">Datasets</a></li>
+                        <li><a href="https://online.wsu.edu/">Continuing Education Credit</a></li>
                 </ul>
 
         </nav>
@@ -136,7 +148,21 @@ DEOJS -->
 </div>
 </div>
 </div>
-<script src="http://vjs.zencdn.net/6.1.0/video.js"></script>
+<div id="contact-details" itemscope itemtype="http://schema.org/Organization">
+        <span itemprop="department"  content="Voiland College of Engineering and Architecture"></span>
+        <span itemprop="name" content="Washington State University"></span>
+        <div itemprop="address" itemscope itemtype="http://schema.org/PostalAddress">
+                <span itemprop="location" content="Washington State University"></span>
+                <span itemprop="streetAddress" content="PO Box 642714"></span>
+                <span itemprop="addressLocality" content="Pullman"></span>
+                <span itemprop="addressRegion" content="WA"></span>
+                <span itemprop="postalCode" content="99164-2714"></span>
+        </div>
+        <span itemprop="telephone" content="(509) 335-6613"></span>
+        <span itemprop="email" content="aha@wsu.edu"></span>
+        <span itemprop="contactPoint" content="https://vcea.wsu.edu/directory/"></span>
+        <span itemprop="url" content="http://vcea.wsu.edu"></span>
+</div>
 </body>
 </html>
 

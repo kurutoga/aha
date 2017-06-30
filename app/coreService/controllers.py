@@ -19,3 +19,7 @@ def home():
         return render_template('dash.html', courses=courses, available=courses[1:],ongoing=[progress])
     return render_template('home.html')
 
+@core.route('lecture/<id>')
+@login_required
+def vidlecture(id):
+    return render_template('video.html')
