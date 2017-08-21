@@ -186,13 +186,27 @@ h4 {
         padding: .7em 0;
 }
 h4.welcome{
-        color: #000;
+        color: #a31d36;
         font-size: 1.1em;
+}
+
+h4.course-enroll-info {
+        color: #000;
+        font-size: 1em;
+}
+
+h5.course-enroll-info {
+        color: #000;
 }
 
 .user-head {
         background-color: #f1f1f1;
 }
+
+.course-enroll-top {
+        background-color: #d1d1d1;
+}
+
 
 h5 {
         font-size: .9em;
@@ -360,14 +374,14 @@ article.home-contact p {
     display: block;
 }
 
-.course-ongoing .progress-back {
+.progress-back {
     border-radius: 8px;
     padding: 0.01em;
+    text-align: center;
     background-color: #f1f1f1;
 }
 
-
-.course-ongoing #progress1 .progress {
+.progress {
     background-color: #4CAF50;
     text-align: center;
     border-radius: 8px;
@@ -377,8 +391,80 @@ article.home-contact p {
     color: #000;
 }
 
+.enrollbutton,
+.enrollbutton.:focus {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background: #961f34;
+    border-radius: 0;
+    border: none;
+    color: #FFF;
+    float: right;
+    font-size: 18px;
+    line-height: 26px;
+    margin: 0 0 16px;
+    padding: 10px 26px;
+    transition: background .5s ease 0;
+    letter-spacing: normal;
+    font-weight: 300;
+    font-family: 'Open Sans', sans-serif;
+    text-align: center;
+}
+.enrollbutton:hover {
+    border: none;
+    color: #fff;
+    background: #c60c30
+}
+.cancelbutton,
+.cancelbutton.:focus {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-top-colors: none;
+    background: #961f34 !important;
+    border-radius: 0;
+    border: none;
+    color: #FFF;
+    float: right;
+    font-size: 18px;
+    line-height: 26px;
+    margin: 0 0 16px;
+    padding: 10px 26px;
+    transition: background .5s ease 0;
+    letter-spacing: normal;
+    font-weight: 300;
+    font-family: 'Open Sans', sans-serif;
+    text-align: center !important;
+}
+.cancelbutton:hover {
+    border: none;
+    color: #fff;
+    background: #c60c30
+}
+
 table.table-course-available tr:hover td {
     background-color: #fcd782;
 }
 
-/*# sourceMappingURL=style.css.map */
+.course-enroll-head {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.9em;
+    font-weight: 300;
+}
+
+section.course-status-section {
+    background: #eeeeee;
+    padding: 0;
+    margin: 0;
+}
+
+table.course-status td {
+    padding: 0;
+    margin: 0;
+    font-size: 0.8em;
+    font-family: 'Open Sans', sans-serif;
+    text-transform: uppercase;
+}
+
+

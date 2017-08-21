@@ -9,13 +9,8 @@
         <title>AHA | Washington State University</title>
         <link rel="shortcut icon" href="https://repo.wsu.edu/spine/1/favicon.ico" />
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,300italic" rel="stylesheet" type="text/css" >
-        <link href="http://vjs.zencdn.net/6.1.0/video-js.css" rel="stylesheet" />
-
-        <!-- If you'd like to support IE8 -->
-        <script src="http://vjs.zencdn.net/ie8/1.1.2/videojs-ie8.min.js"></script> 
-
         <link href="https://repo.wsu.edu/spine/1/spine.min.css" rel="stylesheet" type="text/css" />
-        <link href="/static/style_dash.css" rel="stylesheet" type="text/css" />
+     <link href="/static/style_dash.css" rel="stylesheet" type="text/css" />
        <style>
             .ilog {
                 color: #EE1122 !important;
@@ -29,8 +24,6 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
         <script src="https://repo.wsu.edu/spine/1/spine.min.js"></script>
-        <script src="http://vjs.zencdn.net/6.1.0/video.js"></script>
-
         <!-- COMPATIBILITY -->
         <!--[if lt IE 9]><script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
         <noscript><style>#spine .spine-sitenav ul ul li { display: block !important; }</style></noscript>
@@ -39,28 +32,37 @@
 <div id="jacket">
 <div id="binder" class="fluid">
 <main>
-<section class="row single gutter course-ongoing pad-top">
-    <div class="column">
-        <h6>Behavior data exporation and statistical inference &rarr; Python for Data Analytics &rarr; Introduction to Python; Setup</h6>
-        <h4>Introduction to Python; Setup (Lecture 1)</h4>
-        <video id="lda1"  class="video-js vjs-default-skin" controls
- preload="auto" width="750px" height="480" data-setup="{}">
-                <source src="/static/videos/PDA.v1.mp4" type='video/mp4'>
-                <p class="vjs-no-js">
-                        To view this video please enable JavaScript, and consider upgrading to a web browser that
-                <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
-                </p>
-          </video>
+<header class="main-header">
+        <div class="header-group hgroup guttered padded-bottom short">
+            <sup class="sup-header"><span class="sup-header-default"><a href="/course/{{segment.parent}}" rel="home">{{segment.name}}</a></span></sup>
+        </div>
+</header>
+<section class="row single gutter ">
+    <div class="column padded-left">
+        <h4>Video: {{video.name}}</h4>
+    </div>
+    <div class="column padded-top ">
+        <iframe src="/video/frame/{{video.location}}{% if status %}?duration={{status.duration}}{% endif %}" allowfullscreen="true" width="780px;" height="500px;" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>
     </div>
 </section>
 <hr class="divider" />
-<section class="row gutter course-available">
-    <div class="column">
-        <a href="/dashboard">&larr;Previous</a>
+<section class="row single pad-left">
+    <div class="column one">
+        <div class="row thirds gutter equalize pad-left wireframe"> 
+          <div class="column one" style="text-align:left;">
+            {% if video.serial>1 %}
+              <a href="/resource/{{video.id}}/prev">&larr;Previous Module</a>
+            {% endif %}
+          </div>
+          <div class="column two" style="text-align:center;"><a href="/course/{{segment.parent}}">Table of Content</a></div>
+          <div class="column three" style="text-align:right;">
+            <a href="/resource/{{video.id}}/next">Next Module&rarr;</a>
+          </div>
+      </div>
     </div>
 </section>
-<hr class="divider" />
-<section class="row single gutter">
+
+<section class="row single gutter pad-top">
         <div class="column">
                 <article class="home-contact">
                <p><a href="http://casas.wsu.edu/">CASAS</a>, PO Box 642752, Washington State University, Pullman WA 99164-2752 <br /> (509) 335-4985, <a href="mailto:cook@eecs.wsu.edu">cook@eecs.wsu.edu</a> </p>
@@ -102,8 +104,11 @@
                         • First link should be a home link (otherwise, in exceptional cases, add "homeless" class to #site nav)
                         • Replace example navigation list below -->
                         <li><a href="/">Site Home</a></li>
-                        <li><a href="/auth/register">Register</a></li>
-                        <li><a href="/auth/login">Login</a></li>
+                        {% if current_user.has_role('admin') %}
+                        <li class="alog"><b><a href="/admin">User Admin</a></b></li>
+                        {% endif %}
+                        <li class="ilog"><b><a href="/auth/logout" class="ilog">Logout</a></b></li>
+                        <li><a href="/">Classes</a></li>
                         <li class="current"><a href="/course/datasets">Datasets</a></li>
                         <li><a href="https://online.wsu.edu/">Continuing Education Credit</a></li>
                 </ul>
@@ -165,5 +170,4 @@
 </div>
 </body>
 </html>
-
 

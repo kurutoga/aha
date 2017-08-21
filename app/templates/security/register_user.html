@@ -52,8 +52,8 @@
   {{ render_field(register_user_form.email, class_="form-control input-lg") }}
   <p>Password:</p>
   {{ render_field(register_user_form.password, class_="form-control input-lg") }}
+  {% if register_user_form.password_confirm %} 
   <p>Confirm Password:</p>
-  {% if register_user_form.password_confirm %}
     {{ render_field(register_user_form.password_confirm, class_="form-control input-lg") }}
   {% endif %}
   <p>Sex:<p>

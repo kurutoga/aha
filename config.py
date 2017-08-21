@@ -10,8 +10,19 @@ class Config(object):
     SECRET_KEY = 'supersecret'
     SECURITY_REGISTERABLE = True
     SECURITY_RECOVERABLE = True
-    SECURITY_SEND_REGISTER_EMAIL = False
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    CELERY_RESULT_BACKEND = 'amqp://deploy:deploy@localhost:5672/aha'
+    CELERY_BROKER_URL = 'amqp://deploy:deploy@localhost:5672/aha'
+    SESSION_TYPE = 'sqlalchemy'
+    SECURITY_TRACKABLE = True
+    SECURITY_PASSWORD_SALT = "supersecret"
+    SECURITY_PASSWORD_HASH = "pbkdf2_sha512"
+    MAIL_SERVER = 'smtp.gmail.com'
+    MAIL_PORT = 465
+    MAIL_USE_SSL = True
+    MAIL_USERNAME = 'wsu.aha@gmail.com'
+    MAIL_PASSWORD = 'aha@wsu#17'
+    SECURITY_CHANGABLE = True
 
 class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI = 'postgresql://user:password@host:5432/aha'
@@ -21,3 +32,11 @@ class DevelopmentConfig(Config):
 
 class TestingConfig(Config):
     TESTING = True
+
+
+config = {
+  'development': DevelopmentConfig,
+  'production': ProductionConfig,
+  'testing': TestingConfig,
+  'default': DevelopmentConfig
+}

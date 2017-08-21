@@ -191,7 +191,56 @@ input.psloginbutton:hover {
     color: #fff;
     background: #c60c30
 }
-#
+
+.enrollbutton,
+.enrollbutton:focus {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-top-colors: none;
+    background: #224f34;
+    border-radius: 0;
+    border: none;
+    color: #FFF;
+    font-size: 18px;
+    padding: 10px 26px;
+    line-height: 26px;
+    transition: background .5s ease 0;
+    letter-spacing: normal;
+    font-weight: 300;
+    font-family: 'Open Sans', sans-serif;
+    display: block;
+    margin: auto
+}
+.enrollbutton:hover {
+    border: none;
+    color: #fff;
+    background: #226f34;
+}
+
+.cancelbutton,
+.cancelbutton:focus {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-top-colors: none;
+    background: #961f34;
+    border-radius: 0;
+    border: none;
+    color: #FFF;
+    font-size: 18px;
+    padding: 10px 26px;
+    line-height: 26px;
+    transition: background .5s ease 0;
+    letter-spacing: normal;
+    font-weight: 300;
+    font-family: 'Open Sans', sans-serif;
+    display: block;
+    margin: auto
+}
+.cancelbutton:hover {
+    border: none;
+    color: #fff;
+    background: #c60c30
+}
 
 #spine .spine-sitenav:not(.homeless) > ul > li:first-child > a,
 #spine .spine-sitenav:not(.homeless) > ul > li:first-child > a:hover {

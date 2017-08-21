@@ -1,45 +1,45 @@
 from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_bootstrap import Bootstrap
+from flask_mail import Mail
 from flask_security import utils
+from flask_admin import Admin
+from config import config, Config
+from celery import Celery
 
-app = Flask(__name__)
-app.config.from_object('config.DevelopmentConfig')
-db = SQLAlchemy(app)
+cel = Celery(__name__, backend=Config.CELERY_RESULT_BACKEND,
+                    broker=Config.CELERY_BROKER_URL)
+db = SQLAlchemy()
+bootstrap = Bootstrap()
+admin = Admin(template_mode='bootstrap3')
+mail = Mail()
 
-from app.authService.controllers import security, user_datastore
-from app.coreService.controllers import core
-from app.classService.controllers import course
+def create_app(config_name):
+    app = Flask(__name__)
+    app.config.from_object(config[config_name])
+ 
+    bootstrap.init_app(app)
+    db.init_app(app)
+    
+    mail.init_app(app)
 
-from app.classService.models import Module
+    from app.celery import make_celery
+    make_celery(cel, app)
 
-app.register_blueprint(core)
-app.register_blueprint(course)
-Bootstrap(app)
+    from app.authService import make_admin
+    make_admin(admin, app, db)
 
-@app.before_first_request
-def before_first_request():
+    from app.coreService import core
+    app.register_blueprint(core)
 
-    # Create any database tables that don't exist yet.
-    db.create_all()
+    from app.classService import course
+    app.register_blueprint(course)
 
-    # Create the Roles "admin" and "end-user" -- unless they already exist
-    user_datastore.find_or_create_role(name='admin', description='Administrator')
-    user_datastore.find_or_create_role(name='end-user', description='End user')
+    from app.studentService import progress
+    app.register_blueprint(progress)
 
-    # Create two Users for testing purposes -- unless they already exists.
-    # In each case, use Flask-Security utility function to encrypt the password.
-    encrypted_password = utils.encrypt_password('password')
-    en = 'user@wsu.edu'
-    ad = 'admin@wsu.edu'
-    if not user_datastore.get_user(en):
-        user_datastore.create_user(email=en, password=encrypted_password, name='Test User')
-        user_datastore.add_role_to_user(en, 'end-user')
-    if not user_datastore.get_user(ad):
-        user_datastore.create_user(email=ad, password=encrypted_password, name='Test Admin')
-        user_datastore.add_role_to_user(ad, 'admin')
+    from app.reportingService import stats
+    app.register_blueprint(stats)
 
-
-    # Commit any database changes; the User and Roles must exist before we can add a Role to the User
-    db.session.commit()
+    return app
 

@@ -55,27 +55,51 @@ Online Course Suite in Tools for Analysis of Sensor-Based Behavioral Health Data
             </div>
         </div>
 </section>
-<section class="row single gutter course-ongoing">
+{% if completed %}
+<section class="row single gutter course-completed">
     <div class="column">
-        <h4>Classes In-Progress</h4>
-        <table style="width:100%">
+        <h4 style="color:#227722;"><b>Completed Courses</b></h4>
+        <table style="width:100%" class="table-course-available">
             <tr>
-                <th style="width:70%;"></th>
-                <th class="progress_header" style="width=30%">Progress</th>
+                <th style="width:61%;"></th>
+                <th></th>
             </tr>
-            {% for course in ongoing %}
+            {% for course in completed %}
                 <tr>
-                    <td class="course"><a href="/lecture/2344">{{course.name}}</a></td>
-                    <td id="progress{{loop.index}}"><div class="progress-back"><div class="progress" style="height:100;width:{{course.progress|string}}%;">{{course.progress}}%</div></div></td>
+                    <td class="course"><a href="/course/{{course.id}}">{{ course.name }}</a></td>
+                    <td>{% if course.completed_at %}Completed On: {{course.completed_at}}{% endif %}
                 </tr>
             {% endfor %}
         </table>
     </div>
 </section>
 <hr class="divider" />
+{% endif %}
+{% if inprogress %}
+<section class="row single gutter course-ongoing">
+    <div class="column">
+        <h4><b>Courses In-Progress</b></h4>
+        <table style="width:100%">
+            <tr>
+                <th style="width:70%;"></th>
+                <th class="progress_header" style="width=30%">Progress</th>
+            </tr>
+            {% for course in inprogress %}
+                <tr>
+                    {% set progress = (course.progress['completed_segments']/course.children)*100.00 %}
+                    <td class="course"><a href="/course/{{course.id}}">{{course.name}}</a></td>
+                    <td id="progress{{loop.index}}"><div class="progress-back"><div class="progress" style="height:100;width:{{progress|string}}%;">{{progress}}%</div></div></td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+</section>
+<hr class="divider" />
+{% endif %}
+{% if available %}
 <section class="row single gutter course-available">
     <div class="column">
-        <h4>Available Classes</h4>
+        <h4 style="color:#222222;"><b>Available Courses</b></h4>
         <table style="width:100%" class="table-course-available">
             <tr>
                 <th></th>
@@ -83,14 +107,15 @@ Online Course Suite in Tools for Analysis of Sensor-Based Behavioral Health Data
             </tr>
             {% for course in available %}
                 <tr>
-                    <td>{{ course.name }}</td>
+                    <td><a href="/course/{{course.id}}">{{ course.name }}</a></td>
                     <td style="padding-left:2em;">{{ course.author }}</td>
                 </tr>
             {% endfor %}
         </table>
     </div>
 </section>
-<hr class="divider" />
+<hr class="divider">
+{% endif %}
 <section class="row single gutter pad-top">
         <div class="column">
                 <article class="home-contact">

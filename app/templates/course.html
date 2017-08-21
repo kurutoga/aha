@@ -6,11 +6,11 @@
 
 <head>
         <meta charset="utf-8">
-        <title>{{course.name}}</title>
+        <title>AHA | Washington State University</title>
         <link rel="shortcut icon" href="https://repo.wsu.edu/spine/1/favicon.ico" />
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,300italic" rel="stylesheet" type="text/css" >
         <link href="https://repo.wsu.edu/spine/1/spine.min.css" rel="stylesheet" type="text/css" />
-     <link href="static/style_dash.css" rel="stylesheet" type="text/css" />
+     <link href="/static/style_dash.css" rel="stylesheet" type="text/css" />
        <style>
             .ilog {
                 color: #EE1122 !important;
@@ -34,47 +34,73 @@
 <main>
 <header class="main-header">
         <div class="header-group hgroup guttered padded-bottom short">
-                <sup class="sup-header"><span class="sup-header-default"></span></sup>
+            <sup class="sup-header"><span class="sup-header-default"><a href="/course/{{course.id}}" rel="home">{{course.name}}</a></span></sup>
         </div>
 </header>
-<section class="row single gutter course-ongoing">
+<section class="row single course-status-section pad-top pad-bottom">
     <div class="column">
-        <h4>Python for Data Analytics</h4>
-        <table style="width:100%">
+    <table class="course-status">
+        <tr>
+            <th style="width:10%;"></th>
+            <th></th>
+            <th style="width:70%;"></th>
+        </tr>
+        <tr>
+            <td></td>
+            <td>Author(s):</td>
+            <td>{{course.author}}</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>Total Segments:</td>
+            <td>{{course.children}}</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>Points Attempted:</td>
+            <td>{{courseStatus.total_points}}</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>Points Scored:</td>
+            <td>{{courseStatus.scored_points}}</td>
+        </tr>
+    </table>
+    </div>
+</section>
+{% for segment in segments %}
+<section class="row single gutter course-completed">
+    <div class="column">
+        <h4><b>Segment {{loop.index}}: {{segment.name}}</b></h4>
+        <table style="width:100%" class="table-course-available">
             <tr>
-                <th style="width:70%;"></th>
-                <th class="progress_header" style="width=30%">Progress</th>
+                <th style="width:5%;"></th>
+                <th style="width:61%;"></th>
+                <th style="width:15%; font-size:0.9em; font-family:'Open Sans', sans-serif; text-transform: uppercase; text-align:center;">status</th>
+                <th style="font-size:0.9em; font-family:'Open Sans', sans-serif; text-transform: uppercase; text-align:center;">score</th>
             </tr>
-            {% for course in ongoing %}
+            {% for mod in segment['modules'] %}
                 <tr>
-                    <td class="course"><a href="/course/{{course.id}}">{{course.name}}</a></td>
-                    <td id="progress{{loop.index}}"><div class="progress-back"><div class="progress" style="height:100;width:{{course.progress|string}}%;">{{course.progress}}%</div></div></td>
+                    {% set progress = mod['progress'] %}
+                    {% set type = mod.type %}
+                    {% if type=='quiz' %}
+                        <td>{% if progress %}<img src="/static/tick.png" width=20 height=20>{% endif %}</td>
+                        <td>{% if progress %}{{ mod.name }}{% else %}<a href='/quiz/{{mod.id}}'>{{mod.name}}</a>{% endif %}</td>
+                        <td style="font-size:0.9em; font-family:'Open Sans', sans-serif; text-transform: uppercase; text-align:center;">{% if progress %}COMPLETED{% endif %}</td>
+                        <td style="font-size:0.9em; font-family:'Open Sans', sans-serif; text-transform: uppercase;">{% if progress %}<div class="progress_back"><div class="progress" style="height:100;width:{{progress.awarded_percent|string}}%;">{{progress.awarded_percent }} %</div></div>{% endif %}</td>
+                    {% else %}
+                        <td>{% if mod.type=='lecture' %}<img src="/static/download.png" width=20 height=20>{% endif %}</td>
+                        <td><a href="/{{type}}/{{mod.id}}" {% if type=='lecture' %}onclick='lecture_download("{{mod.id}}");'{% endif %}>{{mod.name}}</a></td>
+                        <td style="font-size:0.9em; font-family:'Open Sans', sans-serif; text-transform:uppercase; text-align:center;">{% if progress %}VIEWED{% endif %}</td>
+                        <td></td>
+                    {% endif %}
                 </tr>
             {% endfor %}
         </table>
     </div>
 </section>
 <hr class="divider" />
-<section class="row single gutter course-available">
-    <div class="column">
-        <h4>Available Classes</h4>
-        <table style="width:100%">
-            <tr>
-                <th></th>
-                <th>Author</th>
-                <th>Modules</th>
-            </tr>
-            {% for course in available %}
-                <tr class="row-available">
-                    <td>{{ course.name }}</td>
-                    <td>{{ course.author }}</td>
-                    <td>{{ course.modules }}</td>
-                </tr>
-            {% endfor %}
-        </table>
-    </div>
-</section>
-<hr class="divider" />
+{% endfor %}
 <section class="row single gutter pad-top">
         <div class="column">
                 <article class="home-contact">
@@ -187,6 +213,21 @@
         <span itemprop="contactPoint" content="https://vcea.wsu.edu/directory/"></span>
         <span itemprop="url" content="http://vcea.wsu.edu"></span>
 </div>
+<script>
+    function lecture_download(id) {
+        console.log("attempting download");
+        $.ajax({
+            url:"/stats/lecture/update",
+            type: 'post'
+        });
+        $.ajax({
+                url:"/progress/lecture/update",
+                type: 'post'
+        });
+
+        return true;
+    }
+</script>
 </body>
 </html>
 
