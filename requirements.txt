@@ -28,6 +28,7 @@ python-editor==1.0.3
 pytz==2017.2
 six==1.10.0
 SQLAlchemy==1.1.10
+uuid==1.30
 uWSGI==2.0.15
 vine==1.1.4
 visitor==0.1.3
