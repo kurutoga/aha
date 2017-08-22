@@ -183,8 +183,6 @@ input.psloginbutton:hover {
     letter-spacing: normal;
     font-weight: 300;
     font-family: 'Open Sans', sans-serif;
-    display: block;
-    margin: auto
 }
 .loginbutton:hover {
     border: none;

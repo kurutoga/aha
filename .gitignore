@@ -85,6 +85,9 @@ env/
 venv/
 ENV/
 
+#mp4 assets
+*.mp4
+
 # Spyder project settings
 .spyderproject
 .spyproject
