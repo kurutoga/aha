@@ -49,20 +49,14 @@
 <hr class="divider" />
         <div class="column one info">
                 <div>
+                    {% if courses %}
                         <b>Available Classes</b>
                         <ul>
-                                <li>Behavior data exploration and statistical inference</li>
-                                <li>Behavior analysis from ambient sensor data</li>
-                                <li>Ambient sensor data for health assessment and intervention</li>
-                                <li>Behavior analysis from mobile sensors</li>
-                                <li>Analysis at scale</li>
-                                <li>Advanced topics in clinical application of behavior sensor data analysis</li>
+                            {% for course in courses %}
+                                <li>{{course.name}}</li>
+                            {% endfor %}
                         </ul>
-                    <b>Resource Requirements</b>
-                        <ul>
-                                <li> Python version 3 </li>
-                                <li> Browser with HTML5 and Flash </li>
-                        </ul>
+                    {% endif %}
         </div>
     </div>
     <div class="column two">
@@ -72,6 +66,11 @@
                         <li> <a href="https://www.tutorialspoint.com/python/">Online Python tutorial</a> </li>
                         <li> <a href="https://ori.hhs.gov/education/products/montana_round1/">Online training in responsible conduct of research</a> </li>
                         <li> <a href="http://tech4aging.wsu.edu/">Information videos on assistive technology for aging</a> </li>
+                </ul> 
+                <b>Resource Requirements</b>
+                <ul>
+                        <li> Python version 3 </li>
+                        <li> Browser with HTML5 and Flash </li>
                 </ul>
         <br>
         </article>

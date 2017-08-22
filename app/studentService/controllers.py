@@ -17,7 +17,9 @@ from .models import (
 from app.classService.controllers import get_module, get_total_children, get_expiry_by_id
 from app.reportingService.controllers import (
         _update_segment_enroll, _update_course_enroll,
-        _update_segment_student_finish, _update_course_student_finish
+        _update_segment_student_finish, _update_course_student_finish,
+        _update_quiz_stats_add_attempt, get_quiz_max_score,
+        _update_quiz_max_score
 )
 from app.utils import add_years, _get_now
 from app       import db
@@ -147,6 +149,10 @@ def create_quiz_progress(quizId, segmentId, courseId, userId, ppoints, apoints, 
     currentDT = _get_now()
     if sp.expires_at < currentDT:
         return
+    max_score = get_quiz_max_score(quizId)
+    if not max_score:
+        _update_quiz_max_score(quizId, tpoints)
+        max_score = tpoints
     quiz_progress = QuizProgress(
             module_id=quizId, user_id=userId, completed_at=currentDT,
             passing_points = ppoints, awarded_points = apoints,
@@ -154,10 +160,9 @@ def create_quiz_progress(quizId, segmentId, courseId, userId, ppoints, apoints, 
             total_points=tpoints, duration = duration, is_complete=True
     )
     db.session.add(quiz_progress)
-    tpoints = 0
-    if ppoints:
-        tpoints = (ppoints*100)/ppercent
-    _update_segment_progress(segmentId, courseId, userId, 1, tpoints, apoints)
+    awarded = (max_score*apercent)/100.00
+    _update_quiz_stats_add_attempt(quizId, awarded, duration)
+    _update_segment_progress(segmentId, courseId, userId, 1, max_score, awarded)
     commit()
 
 def create_update_video_progress(videoId, userId, time, newView=False):

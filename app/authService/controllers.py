@@ -83,10 +83,12 @@ def make_admin(admin, app, db):
         'Dr. Larry Holder, Dr. Daine Cook',
         'Dr. Ananth Kalyanaraman',
         'Various']
-        #from app.reportingService.models import SegmentStats, VideoStats, LectureStats, QuizStats
-        #segment = Module(name="Python for Data Analytics", type='segment', parent=uuid.UUID("15909556-081d-42a6-89f1-59ea3aa1116b"), serial=1)
+        #from app.reportingService.models import SegmentStats, VideoStats, LectureStats, QuizStats, CourseStats
+        #segment = Module(name="Python for Data Analytics", type='segment', parent=uuid.UUID("da612d8f-4869-41e7-8701-749913dfaad1"), children=2, serial=1)
         #db.session.add(segment)
         #db.session.commit()
+        #coursestats = CourseStats(module_id=uuid.UUID("da612d8f-4869-41e7-8701-749913dfaad1"))
+        #db.session.add(coursestats)
         #segstats = SegmentStats(module_id=segment.id)
         #db.session.add(segstats)
         #video = Module(name="Introduction to Python/Setup", type='video', parent=segment.id, serial=1)
@@ -94,14 +96,18 @@ def make_admin(admin, app, db):
         #db.session.commit()
         #vidstats = VideoStats(module_id=video.id)
         #db.session.add(vidstats)
-        #quiz = Module(name="Quiz 1", type='quiz', parent=segment.id, serial=2)
+        #quiz = Module(name="Quiz 1", type='quiz', parent=segment.id, serial=1, location="dummy")
+        #quiz2 = Module(name="Quiz 2", type='quiz', parent=segment.id, serial=2, location="dummy2")
         #db.session.add(quiz)
+        #db.session.add(quiz2)
         #db.session.commit()
-        #quizstats = QuizStats(module_id=quiz.id, max_score=50.00)
+        #quizstats = QuizStats(module_id=quiz.id, max_score=25.00)
+        #quizstats2 = QuizStats(module_id=quiz2.id)
         #db.session.add(quizstats)
+        #db.session.add(quizstats2)
         #cr = [Module(name=names[i-1], author=authors[i-1], type='course', parent=None, serial=i, is_ready=True) for i in range(1,7)]
         #cr[-1].is_ready=False
-        #cr[0].children = 2
+        #cr[0].children = 1
         #s1 = Module(name='Python for Data Analytics', type='segment', parent=uuid.UUID("e4cbfd4f-ec91-4b7b-8b9f-073d8f5432f0"), serial=1, data={ 'totalModules': 2 })
         #db.session.add(s1)
         #db.session.commit()

@@ -47,6 +47,10 @@ def get_lecture_stats(lectureId):
     ls = LectureStats.query.get(lectureId)
     return ls
 
+def get_quiz_max_score(quizId):
+    score = QuizStats.query.with_entities(QuizStats.max_score).filter(QuizStats.module_id==quizId).scalar()
+    return score
+
 def create_course_stats(courseId):
     cs = CourseStats(module_id=courseId)
     create_commit(cs)
@@ -68,17 +72,21 @@ def create_video_stats(videoId):
     return vs.id
 
 def create_quiz_stats(quizId, segmentId, courseId, maxScore):
-    qs = QuizStats(module_id=quizId)
-    qs.max_score = maxScore
+    qs = QuizStats(module_id=quizId, max_score=maxScore)
     db.session.add(qs)
     commit()
     return qs.id
 
-def update_quiz_stats_add_attempt(quizId, segmentId, courseId, awardedPercent, duration):
+def _update_quiz_max_score(quizId, score):
     qs = get_quiz_stats(quizId)
-    qs.avg_score = awardedPercent * qs.max_score
+    qs.max_score=score
+
+def _update_quiz_stats_add_attempt(quizId, awardedPoints, duration):
+    qs = get_quiz_stats(quizId)
+    score = qs.attempts*qs.avg_score
+    qs.avg_score = (score + awardedPoints)/(qs.attempts+1)
+    qs.attempts += 1
     qs.duration += duration
-    commit()
 
 def update_lecture_stats(lectureId):
     ls = get_lecture_stats(lectureId)

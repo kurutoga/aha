@@ -13,7 +13,8 @@ from ..utils import convert_to_uuid, redirect_url, nocache, _get_now
 @core.route('dashboard')
 def home():
     if not current_user.is_authenticated:
-        return render_template('home.html')
+        courses = _get_courses()
+        return render_template('home.html', courses=courses)
     if current_user.has_role('admin'):
         return render_template('admin.html')
     available, inprogress, completed = _get_courses_and_status(current_user.id)
@@ -107,7 +108,7 @@ def lecture(id):
     segment = _get_module(lecture.parent)
     session['lectureId']=lecture.id
     session['userId']=userId
-    return send_from_directory('lectures/'+str(id), lecture.location, as_attachment=True)
+    return send_from_directory('resources/lectures', lecture.location, as_attachment=True)
 
 
 @core.route('quiz/<id>')
@@ -131,20 +132,21 @@ def quiz(id):
     session['segmentId']=segment.id
     session['courseId']=segment.parent
     session['userId']=userId
+    session['quizLocation']=quiz.location
     return render_template('quiz.html', quiz=quiz, segment=segment)
 
-@core.route('quizzes/<int:userid>/<base>/')
+@core.route('quizzes/')
 @login_required
 @nocache
-def quizLoad(userid, base):
-    if current_user.id != userid:
-        flash("Invalid User")
+def quizLoad():
+    if 'userId' not in session or current_user.id!=session['userId'] or 'quizLocation' not in session:
+        flash("You session may have expired")
         return redirect(redirect_url())
-    return send_from_directory('quizzes/'+base, 'index.html')
+    return send_from_directory('resources/quizzes/'+session['quizLocation'], 'index.html')
 
-@core.route('quizzes/<userid>/<base>/data/<file>')
+@core.route('quizzes/data/<file>')
 @login_required
 @nocache
-def quizAssest(userid, base, file):
-    return send_from_directory('quizzes/'+base+'/data/', file)
+def quizAssest(file):
+    return send_from_directory('resources/quizzes/'+session['quizLocation']+'/data/', file)
 

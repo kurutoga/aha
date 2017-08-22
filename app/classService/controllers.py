@@ -125,7 +125,8 @@ course methods (Create,Edit,Update)
 '''
 def get_courses():
     courses = _get_modules_by_parent(None)
-    return courses.all()
+    m = courses.all()
+    return m
 
 def get_course_count():
     count = _get_module_count_by_parent(None)

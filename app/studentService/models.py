@@ -21,8 +21,8 @@ class ModuleProgressMixin(db.Model):
 
 class CourseProgress(ModuleProgressMixin):
     completed_segments = db.Column(db.Integer())
-    total_points       = db.Column(db.Integer(), default=0)
-    scored_points      = db.Column(db.Integer(), default=0)
+    total_points       = db.Column(db.Float, default=0.0)
+    scored_points      = db.Column(db.Float, default=0.0)
     __table_args__     = (
             PrimaryKeyConstraint('module_id', 'user_id', name='module_user_course_pk'),
             {}
@@ -30,19 +30,19 @@ class CourseProgress(ModuleProgressMixin):
 
 class SegmentProgress(ModuleProgressMixin):
     completed_modules = db.Column(db.Integer())
-    total_points      = db.Column(db.Integer(), default=0)
-    scored_points     = db.Column(db.Integer(), default=0)
+    total_points      = db.Column(db.Float, default=0.0)
+    scored_points     = db.Column(db.Float, default=0.0)
     __table_args__    = (
             PrimaryKeyConstraint('module_id', 'user_id', name='module_user_segment_pk'),
             {}
     )
     
 class QuizProgress(ModuleProgressMixin):
-    passing_points  = db.Column(db.Integer)
-    awarded_points  = db.Column(db.Integer)
+    passing_points  = db.Column(db.Float)
+    awarded_points  = db.Column(db.Float)
     passing_percent = db.Column(db.Float)
     awarded_percent = db.Column(db.Float)
-    total_points    = db.Column(db.Integer)
+    total_points    = db.Column(db.Float)
     duration        = db.Column(db.Integer)
     __table_args__  = (
             PrimaryKeyConstraint('module_id', 'user_id', name='module_user_quiz_pk'),
