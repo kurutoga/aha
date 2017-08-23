@@ -443,8 +443,9 @@ article.home-contact p {
     background: #c60c30
 }
 
-table.table-course-available tr:hover td {
+table.table-course-available tr:hover td{
     background-color: #fcd782;
+    opacity: 0.8;
 }
 
 .course-enroll-head {

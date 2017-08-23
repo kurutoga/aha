@@ -86,12 +86,15 @@
                     {% if type=='quiz' %}
                         <td>{% if progress %}<img src="/static/tick.png" width=20 height=20>{% endif %}</td>
                         <td>{% if progress %}{{ mod.name }}{% else %}<a href='/quiz/{{mod.id}}'>{{mod.name}}</a>{% endif %}</td>
-                        <td style="font-size:0.9em; font-family:'Open Sans', sans-serif; text-transform: uppercase; text-align:center;">{% if progress %}COMPLETED{% endif %}</td>
+                        <td style="font-size:0.9em; font-family:'Open Sans', sans-serif; text-transform: uppercase; text-align:center;">{% if progress %}COMPLETED{% else %}&#2609;{% endif %}</td>
                         <td style="font-size:0.9em; font-family:'Open Sans', sans-serif; text-transform: uppercase;">{% if progress %}<div class="progress_back"><div class="progress" style="height:100;width:{{progress.awarded_percent|string}}%;">{{progress.awarded_percent }} %</div></div>{% endif %}</td>
                     {% else %}
-                        <td>{% if mod.type=='lecture' %}<img src="/static/download.png" width=20 height=20>{% endif %}</td>
+                        <td>{% if mod.type=='lecture' %}<img src="/static/download2.png" width=20 height=20>
+			    {% elif mod.type=='video' and progress %}<img src="/static/viewed.png" width=20 height=20>
+			    {% endif %}                            
+			</td>
                         <td><a href="/{{type}}/{{mod.id}}" {% if type=='lecture' %}onclick='lecture_download("{{mod.id}}");'{% endif %}>{{mod.name}}</a></td>
-                        <td style="font-size:0.9em; font-family:'Open Sans', sans-serif; text-transform:uppercase; text-align:center;">{% if progress %}VIEWED{% endif %}</td>
+                        <td style="font-size:0.9em; font-family:'Open Sans', sans-serif; text-transform:uppercase; text-align:center;">{% if progress %}VIEWED{% else %}&#2690;{% endif %}</td>
                         <td></td>
                     {% endif %}
                 </tr>
