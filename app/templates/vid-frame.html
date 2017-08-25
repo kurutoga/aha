@@ -10,8 +10,8 @@
   <script src="http://vjs.zencdn.net/6.1.0/video.js"></script>
 <body>
   <div align="center">
-    <video id="{{location}}"  class="video-js" width="750px" height="480px" controls
- preload="auto" data-setup="{}">
+    <video id="vid"  class="video-js vjs-default-skin vjs-16-9" controls preload="auto" width="480" height="720"
+  data-setup='{"fluid": true}'>
                 <source src="/static/videos/{{location}}.mp4" type='video/mp4'>
                 <p class="vjs-no-js">
                         To view this video please enable JavaScript, and consider upgrading to a web browser that
@@ -26,7 +26,7 @@
     var statsId = 0;
     var dut = {{duration}};
     var diff = 0;
-    var player = videojs('{{location}}');
+    var player = videojs("vid");
 
     function _update_progress(dt) {
         if (dt>dut) {

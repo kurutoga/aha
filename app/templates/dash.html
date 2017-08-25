@@ -43,9 +43,9 @@ Online Course Suite in Tools for Analysis of Sensor-Based Behavioral Health Data
             <h4 class="welcome">Welcome {{ current_user.name }}! </h4>
             <div class="settings">
                 <ul>
-                    <li><a href="/user/edit">Edit user profile</a></li>
-                    <li><a href="/user/scores">Scores &amp; Progress Report</a></li>
-                    <li><a href="/user/cec">Apply for Continuing Education Credit</a></li>
+                    <li><a href="/user/edit">Edit user profile*</a></li>
+                    <li><a href="/user/scores">Scores &amp; Progress Report*</a></li>
+                    <li><a href="/user/cec">Apply for Continuing Education Credit*</a></li>
                 </ul>
             </div>
         </div>
@@ -88,7 +88,7 @@ Online Course Suite in Tools for Analysis of Sensor-Based Behavioral Health Data
                 <tr>
                     {% set progress = (course.progress['completed_segments']/course.children)*100.00 %}
                     <td class="course"><a href="/course/{{course.id}}">{{course.name}}</a></td>
-                    <td id="progress{{loop.index}}"><div class="progress-back"><div class="progress" style="height:100;width:{{progress|string}}%;">{{progress}}%</div></div></td>
+                    <td id="progress{{loop.index}}"><div class="progress-back"><div class="progress" style="height:100;width:{{progress|string}}%; text-align:center;">{{course.progress['completed_segments']}}/{{course.children}}</div></div></td>
                 </tr>
             {% endfor %}
         </table>
@@ -164,13 +164,13 @@ Online Course Suite in Tools for Analysis of Sensor-Based Behavioral Health Data
                         <li class="ilog"><b><a href="/auth/logout" class="ilog">Logout</a></b></li>
                         <li><a href="">Classes</a>
                                 <ul>
-                                    {% for course in courses %}
+                                    {% for course in available+inprogress+completed %}
                                     <li><a href="/course/{{course.id}}">{{course.name}}</a></li>
                                     {% endfor %}
                                 </ul>
                         </li>
-                        <li class="current"><a href="/course/datasets">Datasets</a></li>
-                        <li><a href="https://online.wsu.edu/">Continuing Education Credit</a></li>
+                        <li class="current"><a href="/course/datasets">Datasets*</a></li>
+                        <li><a href="https://online.wsu.edu/">Continuing Education Credit*</a></li>
                 </ul>
 
         </nav>

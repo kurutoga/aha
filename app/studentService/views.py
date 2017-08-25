@@ -40,13 +40,12 @@ def update_video_progress():
     create_update_video_progress(videoId, userId, duration, newView)
     return('', 204)
 
-@progress.route('/lecture/update', methods=['POST'])
-def update_lecture_progress():
-    if 'lectureId' not in session or 'userId' not in session:
+@progress.route('/lecture/update/<id>', methods=['POST'])
+def update_lecture_progress(id):
+    if 'userId' not in session:
         return ('', 400)
-    lectureId = session['lectureId']
     userId = session['userId']
-    create_update_lecture_progress(lectureId, userId)
+    create_update_lecture_progress(id, userId)
     return ('', 204)
 
 @progress.route('/quiz/new', methods=['POST'])

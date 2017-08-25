@@ -11,6 +11,7 @@ from ..utils import convert_to_uuid, redirect_url, nocache, _get_now
 
 @core.route('/')
 @core.route('dashboard')
+@nocache
 def home():
     if not current_user.is_authenticated:
         courses = _get_courses()
@@ -53,9 +54,11 @@ def segment(id):
 
 @core.route('course/<id>')
 @login_required
+@nocache
 def course(id):
     course = _get_module(id)
     userId = current_user.id
+    session['userId']=userId
     if not course or course.type!='course':
         flash("Invalid Course ID")
         redirect(redirect_url())
@@ -63,7 +66,6 @@ def course(id):
     if not status:
         courseData = _get_course_data(course.id)
         session['courseId']=id
-        session['userId']=userId
         return render_template("course_enroll.html", course=course, courseData=courseData)
     segments = _get_segment_and_module_status(course.id, userId)
     return render_template("course.html", segments=segments, course=course, courseStatus=status)

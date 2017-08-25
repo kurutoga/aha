@@ -19,14 +19,9 @@ def video_stats_update():
     update_video_stats(videoId, duration, newView)
     return('', 204)
 
-@stats.route('/lecture/update', methods=['POST'])
-def lecture_stats_update():
-    if 'lectureId' not in session:
-        response = jsonify({})
-        response.status_code = 400
-        return response
-    lectureId = session['lectureId']
-    update_lecture_stats(lectureId)
+@stats.route('/lecture/update/<id>', methods=['POST'])
+def lecture_stats_update(id):
+    update_lecture_stats(id)
     return('', 204)
 
 

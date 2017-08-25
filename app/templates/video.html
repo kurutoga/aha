@@ -10,7 +10,8 @@
         <link rel="shortcut icon" href="https://repo.wsu.edu/spine/1/favicon.ico" />
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,300italic" rel="stylesheet" type="text/css" >
         <link href="https://repo.wsu.edu/spine/1/spine.min.css" rel="stylesheet" type="text/css" />
-     <link href="/static/style_dash.css" rel="stylesheet" type="text/css" />
+     <link href="/static/style_dash.css" rel="stylesheet" type="text/css" /> 
+
        <style>
             .ilog {
                 color: #EE1122 !important;
@@ -42,6 +43,7 @@
         <h4>Video: {{video.name}}</h4>
     </div>
     <div class="column padded-top ">
+	
         <iframe src="/video/frame/{{video.location}}{% if status %}?duration={{status.duration}}{% endif %}" allowfullscreen="true" width="780px;" height="500px;" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>
     </div>
 </section>
