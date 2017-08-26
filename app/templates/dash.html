@@ -59,15 +59,17 @@ Online Course Suite in Tools for Analysis of Sensor-Based Behavioral Health Data
 <section class="row single gutter course-completed">
     <div class="column">
         <h4 style="color:#227722;"><b>Completed Courses</b></h4>
-        <table style="width:100%" class="table-course-available">
+        <table style="width:100%; font-family:'Open Sans', sans-serif; font-size:0.9em;" class="table-course-available">
             <tr>
                 <th style="width:61%;"></th>
-                <th></th>
+                <th>COMPLETED ON</th>
+                <th>CERTIFICATE</th>
             </tr>
             {% for course in completed %}
                 <tr>
                     <td class="course"><a href="/course/{{course.id}}">{{ course.name }}</a></td>
-                    <td>{% if course.completed_at %}Completed On: {{course.completed_at}}{% endif %}
+                    <td>{% if course.completed_at %}Completed On: {{course.completed_at}}{% endif %}</td>
+                    <td><a href="/cert/user/{{current_user.id}}/course/{{course.id}}">VIEW CERTIFICATE</a></td>
                 </tr>
             {% endfor %}
         </table>

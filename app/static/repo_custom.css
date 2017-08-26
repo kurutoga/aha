@@ -1,0 +1,25 @@
+body {
+  padding-top: 50px;
+}
+.starter-template {
+  padding: 40px 15px;
+  text-align: center;
+}
+
+.bottomspace {
+  padding-bottom: 20px;
+}
+
+.course {
+  font-size: 1.2em;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 400px;
+}
+
+.leftish {
+  text-align: left;
+}
+
+.centerish {
+    text-align: center;
+}
