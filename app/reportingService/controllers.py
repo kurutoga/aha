@@ -54,28 +54,23 @@ def get_quiz_max_score(quizId):
 def create_course_stats(courseId):
     cs = CourseStats(module_id=courseId)
     create_commit(cs)
-    return cs.id
 
 def create_segment_stats(segmentId):
-    ss = SegmentStas(module_id=segmentId)
+    ss = SegmentStats(module_id=segmentId)
     create_commit(ss)
-    return ss.id
 
 def create_lecture_stats(lectureId):
     ls = LectureStats(module_id=lectureId)
     create_commit(ls)
-    return ls.id
 
 def create_video_stats(videoId):
     vs = VideoStats(module_id=videoId)
     create_commit(vs)
-    return vs.id
 
-def create_quiz_stats(quizId, segmentId, courseId, maxScore):
+def create_quiz_stats(quizId, maxScore):
     qs = QuizStats(module_id=quizId, max_score=maxScore)
     db.session.add(qs)
     commit()
-    return qs.id
 
 def _update_quiz_max_score(quizId, score):
     qs = get_quiz_stats(quizId)
@@ -117,3 +112,4 @@ def _update_course_student_finish(courseId):
 def _update_course_enroll(courseId):
     cs = get_course_stats(courseId)
     cs.current_students += 1
+

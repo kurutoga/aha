@@ -13,4 +13,8 @@ class Certificate(db.Model):
     generated_at    = db.Column(db.DateTime(), default=_get_now)
     status          = db.Column(db.String(10))
     location        = db.Column(db.String(100))
-    PrimaryKeyConstraint('course_id', 'user_id', name='class_user_cert_pk')
+    __table_args__     = (
+            PrimaryKeyConstraint('course_id', 'user_id', name='class_user_cert_pk'),
+            {}
+    )
+

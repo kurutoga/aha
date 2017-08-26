@@ -32,14 +32,18 @@ def create_app(config_name):
     from app.coreService import core
     app.register_blueprint(core)
 
-    from app.classService import course
-    app.register_blueprint(course)
+    from app.classService import repo, configure_up
+    app.register_blueprint(repo)
+    configure_up(app)
 
     from app.studentService import progress
     app.register_blueprint(progress)
 
     from app.reportingService import stats
     app.register_blueprint(stats)
+
+    from app.certService import cert
+    app.register_blueprint(cert)
 
     return app
 

@@ -2,6 +2,7 @@ import os
 from app import create_app
 from app import cel
 import app.studentService.tasks 
+import app.classService.tasks
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 

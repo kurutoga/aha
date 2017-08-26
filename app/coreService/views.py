@@ -94,6 +94,11 @@ def video_frame(loc):
     duration = request.args.get('duration', 0, type=int)
     return render_template('vid-frame.html', location=loc, duration=duration)
 
+@core.route('video/get/<loc>')
+@login_required
+def get_video(loc):
+    return send_from_directory('resources/videos', loc)
+
 @core.route('lecture/<id>')
 @login_required
 def lecture(id):

@@ -33,8 +33,8 @@ def _get_module_count_by_parent(parentId):
     count = Module.query.filter_by(parent=parentId).count()
     return count
 
-def create_module(type, name, serial, parent, author=None, children=0, location=None):
-    module = Module(type=type, serial=serial, parent=parent, author=author, children=children, location=location)
+def create_module(type, name, serial, parent, author=None, children=0, location=None, expires_in=None, is_ready=False):
+    module = Module(type=type, name=name, serial=serial, parent=parent, author=author, children=children, location=location, is_ready=is_ready)
     db.session.add(module)
     commit()
     return module.id
@@ -51,7 +51,7 @@ def _update_module_change_location(id, location):
     module = _get_module(id)
     module.location = location
 
-def _update_module(id, name, author, location):
+def _update_module(id, name, author, location, expires=None, is_ready=False):
     module = _get_module(id)
     if not module:
         #TODO: log
@@ -62,6 +62,10 @@ def _update_module(id, name, author, location):
         module.author=author
     if module.location!=location:
         module.location=location
+    if module.expires_in!=expires:
+        module.expires_in=expires
+    if module.is_ready!=is_ready:
+        module.is_ready=is_ready
     return module.id
 
 def _update_module_order(parentId, modules):
@@ -132,14 +136,14 @@ def get_course_count():
     count = _get_module_count_by_parent(None)
     return count
 
-def create_course(name, author, serial=None):
+def create_course(name, author, expires=None, serial=None, is_ready=False):
     if not serial:
         serial = get_course_count()+1
-    courseid = create_module('course', name, serial, None, author)
+    courseid = create_module('course', name, serial, None, author, 0, None, expires, is_ready)
     return courseid
 
-def update_course(id, name, author):
-    courseId = _update_module(id, name, author, None)
+def update_course(id, name, author, expires=None, is_ready=False):
+    courseId = _update_module(id, name, author, None, expires, is_ready)
     commit()
     return courseId
 
@@ -157,15 +161,16 @@ def update_course_data(id, desc, duration):
         return True
     return False
 
-def create_course_data(id, desc, duration):
-    cd = CourseData(id=id, description=desc, duration=duration)
+def create_course_data(id, desc, duration, pass_percent):
+    cd = CourseData(id=id, description=desc, duration_weeks=duration, pass_percent=pass_percent)
     db.session.add(cd)
     commit()
 '''
 segment get, create, update
 '''
 
-def create_segment(name, serial, courseId, author=None):
+def create_segment(name, courseId, author=None):
+    serial = _get_module_count_by_parent(courseId)+1
     _update_module_add_children(courseId)
     segmentid = create_module('segment', name, serial, courseId, author)
     return segmentid
@@ -182,32 +187,42 @@ def update_segment_order(courseId, newOrderListById):
 quiz/lecture/video methods (CRUD)
 '''
 
-def create_quiz(name, segmentId, serial, location, author=None):
-    if not serial:
-        serial = get_module_count_by_parent(segmentId)+1
-    _update_module_add_chilren(segmentId)
+def create_quiz(name, segmentId, location, author=None):
+    serial = _get_module_count_by_parent(segmentId)+1
+    _update_module_add_children(segmentId)
     quizId = create_module('quiz', name, serial, segmentId, author, 0, location)
     return quizId
 
-def create_video(name, segmentId, serial, location, author=None):
+def create_video(name, segmentId, location, author=None):
+    serial = _get_module_count_by_parent(segmentId)+1
     videoId = create_module('video', name, serial, segmentId, author, 0, location)
     return videoId
 
-def create_lecture(name, segmentId, serial, location, author=None):
+def create_lecture(name, segmentId, location, author=None):
+    serial = _get_module_count_by_parent(segmentId)+1
     lectureId = create_module('lecture', name, serial, segmentId, author, 0, location)
-    return videoId
+    return lectureId
 
 def update_lecture(id, name, location, author=None):
+    lecture = _get_module(id)
+    if not location:
+        location = lecture.location
     _update_module(id, name, author, location)
     commit()
     return
 
 def update_video(id, name, location, author=None):
+    video = _get_module(id)
+    if not location:
+        location = video.location
     _update_module(id, name, author, location)
     commit()
     return
 
 def update_quiz(id, name, location, author=None):
+    quiz = _get_module(id)
+    if not location:
+        location = quiz.location
     _update_module(id, name, author, location)
     commit()
     return
@@ -254,4 +269,9 @@ def delete_course(courseId):
     _delete_module(mod)
     commit()
     return
+
+def delete_course_data(courseId):
+    cd = get_course_data(couseId)
+    db.session.remove(cd)
+    commit()
 

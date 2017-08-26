@@ -21,6 +21,7 @@ from app.reportingService.controllers import (
         _update_quiz_stats_add_attempt, get_quiz_max_score,
         _update_quiz_max_score
 )
+from app.certService.controllers import create_certificate_pending
 from app.utils import add_years, _get_now
 from app       import db
 
@@ -94,7 +95,8 @@ def _update_course_progress(courseId, userId, segmentDelta, totalDelta, scoreDel
     totalSegments = get_total_children(courseId)
     if totalSegments <= courseProgress.completed_segments:
         print("###################### WOOOT! GENERATED CERT ################################")
-        #if_eligible_generate_cert_task
+        rt = create_certificate_pending(courseId, userId, courseProgress.scored_points, courseProgress.total_points)
+        print(rt)
         courseProgress.completed_at = _get_now()
         courseProgress.is_complete  = True
         _update_course_student_finish(courseId)
