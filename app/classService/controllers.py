@@ -152,11 +152,12 @@ def update_course_order(newOrderListById):
     commit()
     return
 
-def update_course_data(id, desc, duration):
+def update_course_data(id, desc, duration, ppercent):
     cd = get_course_data(id)
     if cd:
         cd.description=desc
-        cd.duration=duration
+        cd.duration_weeks=duration
+        cd.pass_percent=ppercent
         commit()
         return True
     return False

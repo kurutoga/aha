@@ -31,8 +31,9 @@ from flask_security import current_user, login_required
 from flask import redirect, url_for, render_template, request
 from wtforms import ValidationError
 from . import quiz_archive, video_file, lecture_file, root
+from config import Config
 
-BASE_PATH = '/home/bishu/Projects/aha/app/'
+BASE_PATH = Config.BASE_PATH
 
 def isAdmin():
     if current_user.has_role('admin'):
@@ -79,8 +80,8 @@ def edit_course(course_id):
         return('', 401)
     form = CourseForm()
     if form.validate_on_submit():
-        update_course(form.id.data, form.name.data, form.author.data, form.duration.data, form.is_ready.data)
-        update_course_data(form.id.data, form.description.data, form.duration.data, form.ppercent.data)
+        update_course(course_id, form.name.data, form.author.data, form.expires.data, form.ready.data)
+        update_course_data(course_id, form.description.data, form.expires.data, form.ppercent.data)
         return redirect(url_for('repo.show_courses'))
     course      = get_module(course_id)
     course_data = get_course_data(course_id)

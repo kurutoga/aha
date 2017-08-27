@@ -22,7 +22,7 @@ from app.reportingService.controllers import (
         _update_quiz_max_score
 )
 from app.certService.controllers import create_certificate_pending
-from app.utils import add_years, _get_now
+from app.utils import add_years, _get_now, add_days
 from app       import db
 
 
