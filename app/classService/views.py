@@ -95,6 +95,14 @@ def edit_course(course_id):
     form.ppercent.data = course_data.pass_percent
     return render_template('aioform.html', form=form, title='Course Repository')
 
+@repo.route('/course/<course_id>/delete')
+@login_required
+def del_course(course_id):
+    if not isAdmin():
+        return('', 401)
+    delete_course(course_id)
+    return redirect(url_for('repo.show_courses'))
+
 @repo.route('/course/<course_id>/segments')
 @login_required
 @nocache
@@ -121,7 +129,6 @@ def add_segment(course_id):
     del form.id
     return render_template('aioform.html', form=form, course_id=course_id, title=course.name)
 
-
 @repo.route('/course/<course_id>/segment/<segment_id>/edit', methods=['GET', 'POST'])
 @login_required
 @nocache
@@ -130,7 +137,7 @@ def edit_segment(course_id, segment_id):
         return('', 401)
     form = SegmentForm()
     if form.validate_on_submit():
-        update_segment(form.id.data, form.name.data, form.author.data)
+        update_segment(segment_id, form.name.data, form.author.data)
         return redirect(url_for('repo.show_segments', course_id=course_id))
     course      = get_module(course_id)
     segment     = get_module(segment_id)
@@ -138,8 +145,15 @@ def edit_segment(course_id, segment_id):
     form.id.render_kw = {'disabled': 'disabled'}
     form.name.data=segment.name
     form.author.data=segment.author
-    form.required.data = segment.is_ready
     return render_template('aioform.html', form=form, course_id=course_id, title=course.name)
+
+@repo.route('/course/<course_id>/segment/<segment_id>/delete')
+@login_required
+def del_segment(course_id, segment_id):
+    if not isAdmin():
+        return('', 401)
+    delete_segment(segment_id)
+    return redirect(url_for('repo.show_segments', course_id=course_id))
 
 @repo.route('/course/<course_id>/segment/<segment_id>/modules')
 @login_required
@@ -160,14 +174,20 @@ def add_quiz(course_id, segment_id):
     form = QuizForm()
     if form.validate_on_submit():
         qa = form.quiz.data
-        print(qa)
         if not qa:
-            raise ValidationError("Must Upload Quiz Archive")
+            del form.id
+            form.quiz.errors.append('You must select a quiz file')
+            segment = get_module(segment_id)
+            return render_template('aioform.html', form=form, segment_id=segment_id, course_id=course_id, title=segment.name)
         filename = str(uuid.uuid4())
         location = quiz_archive.save(qa, folder=BASE_PATH+'resources/quizzes/', name=filename+'.')
         extract_quiz_task.apply_async(args=[location])
         quiz_id = create_quiz(form.name.data, segment_id, filename)
-        create_quiz_stats(quiz_id, form.maxscore.data)
+        print(form.maxscore.data)
+        if form.maxscore.data:
+            create_quiz_stats(quiz_id, form.maxscore.data)
+        else:
+            create_quiz_stats(quiz_id, None)
         return redirect(url_for('repo.show_modules', course_id=course_id, segment_id=segment_id))
     del form.id
     segment = get_module(segment_id)
@@ -175,7 +195,7 @@ def add_quiz(course_id, segment_id):
 
 
 
-@repo.route('/course/<course_id>/segment/<segment_id>/quiz/<quiz_id>/edit')
+@repo.route('/course/<course_id>/segment/<segment_id>/quiz/<quiz_id>/edit', methods=['POST', 'GET'])
 @login_required
 @nocache
 def edit_quiz(course_id, segment_id, quiz_id):
@@ -185,21 +205,29 @@ def edit_quiz(course_id, segment_id, quiz_id):
     if form.validate_on_submit():
         qa = form.quiz.data
         if not qa:
-            location = None
+            filename = None
         else:
             filename = str(uuid.uuid4())
             location = quiz_archive.save(qa, folder=BASE_PATH+'resources/quizzes/', name=filename+'.')
             extract_quiz_task.apply_async(args=[location])
-        _update_quiz_max_score(form.id.data, form.maxscore.data)
-        update_quiz(form.id.data, form.name.data, location)
+        _update_quiz_max_score(quiz_id, form.maxscore.data)
+        update_quiz(quiz_id, form.name.data, filename)
         return redirect(url_for('repo.show_modules', course_id=course_id, segment_id=segment_id))
     quiz = get_module(quiz_id)
     segment = get_module(segment_id)
     form.id.data = quiz_id
     form.id.render_kw = {'disabled':'disabled'}
     form.name.data = quiz.name
-    form.required.data = quiz.is_ready
+    form.maxscore.data = get_quiz_max_score(quiz_id)
     return render_template('aioform.html', form=form, course_id=course_id, segment_id=segment_id, title=segment.name)
+
+@repo.route('/course/<course_id>/segment/<segment_id>/quiz/<quiz_id>/delete')
+@login_required
+def del_quiz(course_id, segment_id, quiz_id):
+    if not isAdmin():
+        return('', 401)
+    delete_quiz(quiz_id)
+    return redirect(url_for('repo.show_modules', course_id=course_id, segment_id=segment_id))
 
 @repo.route('/course/<course_id>/segment/<segment_id>/video/new', methods=['GET', 'POST'])
 @login_required
@@ -211,7 +239,10 @@ def add_video(course_id, segment_id):
     if form.validate_on_submit():
         vf = form.video.data
         if not vf:
-            raise ValidationError("Must Upload A Video File")
+            del form.id
+            form.video.errors.append('You must select a video file')
+            segment = get_module(segment_id)
+            return render_template('aioform.html', form=form, segment_id=segment_id, segment=segment, course_id=course_id, title=segment.name)
         filename = str(uuid.uuid4())
         location = video_file.save(vf, folder=BASE_PATH+'static/videos/', name=filename+'.')
         video_id = create_video(form.name.data, segment_id, filename+'.'+vf.filename.split('.')[-1])
@@ -221,7 +252,7 @@ def add_video(course_id, segment_id):
     segment = get_module(segment_id)
     return render_template('aioform.html', form=form, segment_id=segment_id, segment=segment, course_id=course_id, title=segment.name)
 
-@repo.route('/course/<course_id>/segment/<segment_id>/video/<video_id>/edit')
+@repo.route('/course/<course_id>/segment/<segment_id>/video/<video_id>/edit', methods=['GET', 'POST'])
 @login_required
 @nocache
 def edit_video(course_id, segment_id, video_id):
@@ -236,15 +267,22 @@ def edit_video(course_id, segment_id, video_id):
             filename = str(uuid.uuid4())
             location = video_file.save(vf, folder=BASE_PATH+'static/videos/', name=filename+'.')
             location = location.split('/')[-1]
-        update_video(form.id.data, form.name.data, location)
+        update_video(video_id, form.name.data, location)
         return redirect(url_for('repo.show_modules', course_id=course_id, segment_id=segment_id))
     video = get_module(video_id)
     segment = get_module(segment_id)
     form.id.data = video_id
     form.id.render_kw = {'disabled':'disabled'}
     form.name.data = video.name
-    form.required.data = video.is_ready
     return render_template('aioform.html', form=form, course_id=course_id, segment_id=segment_id, title=segment.name)
+
+@repo.route('/course/<course_id>/segment/<segment_id>/video/<video_id>/delete')
+@login_required
+def del_video(course_id, segment_id, video_id):
+    if not isAdmin():
+        return('', 401)
+    delete_video(video_id)
+    return redirect(url_for('repo.show_modules', course_id=course_id, segment_id=segment_id))
 
 @repo.route('/course/<course_id>/segment/<segment_id>/lecture/new', methods=['GET', 'POST'])
 @login_required
@@ -256,7 +294,10 @@ def add_lecture(course_id, segment_id):
     if form.validate_on_submit():
         lf = form.lecture.data
         if not lf:
-            raise ValidationError("Must Upload A Lecture File")
+            del form.id
+            form.lecture.errors.append('You must upload you lectures')
+            segment = get_module(segment_id)
+            return render_template('aioform.html', form=form, course_id=course_id, segment_id=segment_id, title=segment.name)
         filename = str(uuid.uuid4())
         location = lecture_file.save(lf, folder=BASE_PATH+'resources/lectures/', name=filename+'.')
         lecture_id = create_lecture(form.name.data, segment_id, filename+'.'+lf.filename.split('.')[-1])
@@ -266,13 +307,13 @@ def add_lecture(course_id, segment_id):
     segment = get_module(segment_id)
     return render_template('aioform.html', form=form, segment_id=segment_id, course_id=course_id, title=segment.name)
 
-@repo.route('/course/<course_id>/segment/<segment_id>/lecture/<lecture_id>/edit')
+@repo.route('/course/<course_id>/segment/<segment_id>/lecture/<lecture_id>/edit', methods=['GET', 'POST'])
 @login_required
 @nocache
 def edit_lecture(course_id, segment_id, lecture_id):
     if not isAdmin():
         return('', 401)
-    form = VideoForm()
+    form = LectureForm()
     if form.validate_on_submit():
         lf = form.lecture.data
         if not lf:
@@ -281,14 +322,20 @@ def edit_lecture(course_id, segment_id, lecture_id):
             filename = str(uuid.uuid4())
             location = lecture_file.save(lf, folder=BASE_PATH+'resources/lectures/', name=filename+'.')
             location = location.split('/')[-1]
-        update_lecture(form.id.data, form.name.data, location)
+        update_lecture(lecture_id, form.name.data, location)
         return redirect(url_for('repo.show_modules', course_id=course_id, segment_id=segment_id))
     lecture = get_module(lecture_id)
     segment = get_module(segment_id)
     form.id.data = lecture_id
     form.id.render_kw = {'disabled':'disabled'}
     form.name.data = lecture.name
-    form.required.data = lecture.is_ready
     return render_template('aioform.html', form=form, course_id=course_id, segment_id=segment_id, title=segment.name)
 
+@repo.route('/course/<course_id>/segment/<segment_id>/lecture/<lecture_id>/delete')
+@login_required
+def del_lecture(course_id, segment_id, lecture_id):
+    if not isAdmin():
+        return('', 401)
+    delete_lecture(lecture_id)
+    return redirect(url_for('repo.show_modules', course_id=course_id, segment_id=segment_id))
 

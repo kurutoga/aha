@@ -46,9 +46,9 @@
                     {% for module in modules %}
                         <div class="row course">
                         <div class="col-md-1"></div>
-                        <div class="col-md-6 leftish"><a href="/repo/course/{{course_id}}/segment/{{segment_id}}/{{module.type}}/{{module.id}}/edit" class="text-success">{{module.name}}</a></div>
-                        <div class="col-md-2"></div>
-                        <div class="col-md-2"><a href="/repo/course/{{course_id}}/segment/{{segment_id}}/delete" class="text-danger">DELETE</a></div>
+                        <div class="col-md-6 leftish"><a href="/repo/course/{{course_id}}/segment/{{segment_id}}/{{module.type}}/{{module.id}}/edit" class="text-success">({{module.type}}) {{module.name}}</a></div>
+                        <div class="col-md-2"><a href="/repo/course/{{course_id}}/segment/{{segment_id}}/{{module.type}}/{{module.id}}/edit" class="text-warning">EDIT</a></div>
+                        <div class="col-md-2"><a href="/repo/course/{{course_id}}/segment/{{segment_id}}/{{module.type}}/{{module.id}}/delete" class="text-danger">DELETE</a></div>
                         <div class="col-md-1"></div>
                         </div>
                     {% endfor %}

@@ -81,15 +81,19 @@ def _update_module_order(parentId, modules):
 
 def _delete_module(mod):
     parentId = mod.parent
-    nextSiblings = _get_modules_by_parent(parentId).filter_by(Module.serial>mod.serial).all()
-    db.session.delete(mod)
+    serial = mod.serial
+    mod.parent = mod.id
+    mod.serial = 0
+    commit()
+    nextSiblings = _get_modules_by_parent(parentId).filter(Module.serial>serial).all()
     for siblings in nextSiblings:
         siblings.serial-=1
     return
 
 def _delete_modules_by_parent(parentId):
-    modules = _get_modules_by_parent(parentId)
-    modules.delete()
+    modules = _get_modules_by_parent(parentId).all()
+    for mod in modules:
+        db.session.delete(mod)
 
 '''
 entry methods to get, create, update [course, segment, quiz, video, lecture]
@@ -254,7 +258,6 @@ def delete_quiz(id):
 
 def delete_segment(id):
     segment = _get_module(id)
-    _delete_modules_by_parent(id)
     courseId = segment.parent
     _delete_module(segment)
     _update_module_drop_children(courseId)
@@ -263,16 +266,12 @@ def delete_segment(id):
 
 def delete_course(courseId):
     mod = _get_module(courseId)
-    segments = _get_modules_by_parent(courseId).all()
-    for segment in segments:
-        _delete_modules_by_parent(segment.id)
-        _delete_module(segment)
     _delete_module(mod)
     commit()
     return
 
 def delete_course_data(courseId):
-    cd = get_course_data(couseId)
-    db.session.remove(cd)
+    cd = get_course_data(courseId)
+    db.session.delete(cd)
     commit()
 

@@ -153,6 +153,7 @@ def create_quiz_progress(quizId, segmentId, courseId, userId, ppoints, apoints, 
         return
     max_score = get_quiz_max_score(quizId)
     if not max_score:
+        print('we good')
         _update_quiz_max_score(quizId, tpoints)
         max_score = tpoints
     quiz_progress = QuizProgress(

@@ -21,5 +21,5 @@ class Module(db.Model):
 class CourseData(db.Model):
     id = db.Column(UUID(as_uuid=True), db.ForeignKey('module.id'), primary_key=True)
     description = db.Column(db.Text)
-    duration_weeks = db.Column(db.Integer, default=12)
+    duration_weeks = db.Column(db.Integer)
     pass_percent = db.Column(db.Float, default=70.0)
