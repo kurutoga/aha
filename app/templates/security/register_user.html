@@ -21,15 +21,14 @@
         <!--[if lt IE 9]><script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
         <script type="text/javascript">
 
-  function checkForm(form)
-      {
-                      if(!form.terms.checked) {
-                                alert("Please indicate that you accept the Terms and Conditions");
-                                      form.terms.focus();
-                                            return false;
-                                                }
-                  return true;
-                    }
+        function checkForm(form)  {
+                if(!form.terms.checked) {
+                    alert("Please indicate that you accept the Terms and Conditions");
+                    form.terms.focus();
+                    return false;
+                }
+                return true;
+        }
 
         </script>
         <noscript><style>#spine .spine-sitenav ul ul li { display: block !important; }</style></noscript>
@@ -46,24 +45,28 @@
            <article class="signin">
  <form action="{{ url_for_security('register') }}" method="POST" name="register_user_form" onsubmit="return checkForm(this);">
   {{ register_user_form.hidden_tag() }}
-  <p>Full Name:</p>
-  {{ render_field(register_user_form.name, class_="form-control input-lg") }}
-  <p>Email:</p>
-  {{ render_field(register_user_form.email, class_="form-control input-lg") }}
-  <p>Password:</p>
-  {{ render_field(register_user_form.password, class_="form-control input-lg") }}
+  <label>Full Name:</label>
+  {{ render_field(register_user_form.name, class_="form-control pst") }}
+  <label>Email:</label>
+  {{ render_field(register_user_form.email, class_="form-control pst") }}
+  <label>Password:</label>
+  {{ render_field(register_user_form.password, class_="form-control pst") }}
   {% if register_user_form.password_confirm %} 
-  <p>Confirm Password:</p>
-    {{ render_field(register_user_form.password_confirm, class_="form-control input-lg") }}
+  <label>Confirm Password:</label>
+    {{ render_field(register_user_form.password_confirm, class_="form-control pst") }}
   {% endif %}
-  <p>Sex:<p>
-  {{ render_field(register_user_form.sex, class_="form-control input-lg") }}
-  <p>City:</p>
-  {{ render_field(register_user_form.city, class_="form-control input-lg") }}
-  <p>State:</p>
-  {{ render_field(register_user_form.state, class_="form-control input-lg") }}
-  <p>Country:</p>
-  {{ render_field(register_user_form.country, class_="form-control input-lg") }}
+  <label>Sex:</label>
+  {{ render_field(register_user_form.sex, class_="form-control pst") }}
+  <label>City:</label>
+  {{ render_field(register_user_form.city, class_="form-control pst") }}
+  <label>State:</label>
+  {{ render_field(register_user_form.state, class_="form-control pst") }}
+  <label>Country:</label>
+  {{ render_field(register_user_form.country, class_="form-control pst") }}
+  <label>Nationality:</label>
+  {{ render_field(register_user_form.nationality, class_="form-control pst") }}
+  <label>Occupation:</label>
+  {{ render_field(register_user_form.occupation, class_="form-control pst") }}
   <br>
   <input type="checkbox" name="terms">I have reviewed the <a href="#">Privacy Policy</a> and I agree with all the <a href="#">Terms & Conditions</a></input>
   

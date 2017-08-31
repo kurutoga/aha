@@ -184,8 +184,9 @@ input.PasswordTextBoxes {
     text-align: left;
     width: 100%
 }
-input.psloginbutton,
-input.psloginbutton:focus {
+
+input.changebutton,
+input.changebutton:focus {
     -moz-border-bottom-colors: none;
     -moz-border-left-colors: none;
     -moz-border-right-colors: none;
@@ -194,16 +195,42 @@ input.psloginbutton:focus {
     border-radius: 0;
     border: none;
     color: #FFF;
-    float: right;
+    float: left;
     font-size: 18px;
     line-height: 26px;
     margin: 0 0 16px;
     padding: 10px 26px;
     transition: background .5s ease 0;
     letter-spacing: normal;
-    font-weight: 300;
+    font-weight: 400;
     font-family: 'Open Sans', sans-serif;
     }
+input.changebutton:hover {
+    border: none;
+    color: #fff;
+    background: #c60c30
+}
+input.changebutton,
+input.changebutton:focus {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background: #961f34;
+    border-radius: 0;
+    border: none;
+    float: left;
+    color: #FFF;
+    font-size: 18px;
+    line-height: 26px;
+    margin: 0 0 16px;
+    padding: 10px 26px;
+    transition: background .5s ease 0;
+    letter-spacing: normal;
+    font-weight: 400;
+    font-family: 'Open Sans', sans-serif;
+}
+
 input.psloginbutton:hover {
     border: none;
     color: #fff;
@@ -297,6 +324,14 @@ article.home-contact p {
     font-size: 12px;
         font-weight: 400
 }
+
+.half {
+    width:50%;
+}
+
+.onside {
+    display:inline-block;
+}
 @media only screen and (max-width: 693px) {
     section div.at-small-display-none {
         padding: 0!important
@@ -311,3 +346,4 @@ article.home-contact p {
         width: 100%
     }
 }
+

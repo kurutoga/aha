@@ -8,7 +8,7 @@ class CourseForm(FlaskForm):
     id          = StringField(u'Course Id', validators=[])
     name        = StringField(u'Course Name', validators=[DataRequired(message="You must provide a course name.")])
     author      = StringField(u'Authors', validators=[DataRequired("You must provide the author(s) name.")], default="Various")
-    expires     = IntegerField(u'Expiry in weeks', [optional()], description='Set number of weeks before course expires once started. Leave blank for 1 year')
+    expires     = IntegerField(u'Expiry (in weeks)', [optional()], description='Set number of weeks before course expires once started. Leave blank for 1 year')
     ppercent    = FloatField(u'Percent Score Required for Certification', default=70.00)
     description = TextAreaField(u'Course Description', default='Write a few words to describe this course.')
     ready       = BooleanField(u'Course Available?')
@@ -24,7 +24,7 @@ class QuizForm(FlaskForm):
     id          = StringField(u'Quiz Id', validators=[])
     name        = StringField(u'Name of Quiz', validators=[DataRequired("You must provide a quiz name")])
     maxscore    = FloatField(u'Total Points', [optional()], description='Maximum Points this Quiz is worth. Leave blank for QuizMaker Points')
-    quiz        = FileField(u'Upload Quiz Archive', validators=[FileAllowed(quiz_archive, 'Quiz Archives Online!')])
+    quiz        = FileField(u'Upload Quiz Archive', validators=[FileAllowed(quiz_archive, 'Quiz Archives Only!')])
     submit      = SubmitField(u'Add/Modify Quiz')
 
 class VideoForm(FlaskForm):
@@ -39,3 +39,9 @@ class LectureForm(FlaskForm):
     lecture     = FileField(u'Upload Lecture File', validators=[FileAllowed(lecture_file, 'Allowed format: ppt, pdf, pptx')])
     submit      = SubmitField(u'Add/Modify Lecture')
 
+class DownloadableForm(FlaskForm):
+    id          = StringField(u'ID', validators=[])
+    name        = StringField(u'Name of Material:', validators=[DataRequired("You must provide a name")])
+    location    = StringField(u'File name:', validators=[DataRequired("You must provide a filename")], description='Enter a filename. Only alphanumericals and underscores allowed')
+    asset       = FileField(u'Upload Downloadable Material', validators=[FileAllowed(quiz_archive, 'Archives Only')])
+    submit      = SubmitField(u'Add/Modify Material')

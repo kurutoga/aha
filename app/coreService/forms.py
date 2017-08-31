@@ -1,4 +1,4 @@
-from flask_security.forms import RegisterForm, ConfirmRegisterForm
+from flask_wtf import FlaskForm
 from wtforms import TextField, SelectField
 from wtforms.validators import Required
 import pycountry
@@ -14,8 +14,9 @@ occupations = [ "Homemaker", "Retired", "Student", "Unemployed", "Agriculture, F
                 "Publishing", "Real Estate, Rental, or Leasing","Religious","Retail","Scientific or Technical Services","Software","Telecommunications",\
                 "Transportation and Warehousing","Utilities","Wholesale","Other"]
 
-class AHARegisterForm(RegisterForm):
+class UserEditForm(FlaskForm):
     name = TextField('Full Name', [Required()])
+    nickname = TextField('Nick Name')
     sex = SelectField(u'Sex', choices=[("", "---"), ("M", "Male"), ("F", "Female")])
     city = TextField('City')
     state = TextField('State')
@@ -23,12 +24,4 @@ class AHARegisterForm(RegisterForm):
     nationality = SelectField(u'Nationality', choices=[(i+1, n) for i,n in enumerate(nationalities)], coerce=int)
     occupation = SelectField(u'Occupation', choices=[(i+1, n) for i,n in enumerate(occupations)], coerce=int)
 
-class AHAConfirmForm(ConfirmRegisterForm):
-    name = TextField('Full Name', [Required()])
-    sex = SelectField(u'Sex', choices=[("", "---"), ("M", "Male"), ("F", "Female")])
-    city = TextField('City')
-    state = TextField('State')
-    country = SelectField(u'Country', choices=[(country.alpha_2, country.name) for country in pycountry.countries])
-    nationality = SelectField(u'Nationality', choices=[(i+1, n) for i,n in enumerate(nationalities)], coerce=int)
-    occupation = SelectField(u'Occupation', choices=[(i+1, n) for i,n in enumerate(occupations)], coerce=int)
 

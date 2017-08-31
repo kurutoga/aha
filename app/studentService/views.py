@@ -72,3 +72,4 @@ def update_quiz_progress():
     del session['segmentId']
     del session['userId']
     return ('', 200)
+

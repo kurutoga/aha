@@ -1,3 +1,5 @@
+{% from "security/_macros.html" import render_field_with_errors, render_field %}
+{% include "security/_messages.html" %}
 <!DOCTYPE html>
 <!--[if lt IE 7]> <html class="no-svg lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
 <!--[if IE 7]><html class="no-svg lt-ie9 lt-ie8" lang="en"> <![endif]-->
@@ -9,7 +11,7 @@
         <link rel="shortcut icon" href="https://repo.wsu.edu/spine/1/favicon.ico" />
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,300italic" rel="stylesheet" type="text/css" >
         <link href="https://repo.wsu.edu/spine/1/spine.min.css" rel="stylesheet" type="text/css" />
-    <link href="static/custom.min.css" rel="stylesheet" type="text/css" />
+    <link href="/static/custom.min.css" rel="stylesheet" type="text/css" />
         <meta http-equiv="X-UA-Compatible" content="IE=EDGE">
         <meta name="viewport" content="width=device-width, user-scalable=yes">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
@@ -23,70 +25,45 @@
 <div id="jacket">
 <div id="binder" class="fluid">
 <main>
-<header class="main-header">
-        <div class="header-group hgroup guttered padded-bottom short">
-                <sup class="sup-header"><span class="sup-header-default"><a href="https://aha.wsu.edu/" rel="home">
-Online Course Suite in Tools for Analysis of Sensor-Based Behavioral Health Data (AHA!)</a></span></sup>
-        </div>
-</header>
-
-<section class="row gutter pad-left pad-top">
-        <div class="column one ">
-                <p class="goals">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The goal of this program is to offer online courses that train researchers, educators, students, and practitioners in sensor-based behavioral health. We offer courses that can be taken individually or as a whole. Students learn about sensor data collection, analysis, and use in health applications. Course materials include video lectures, slides, sample datasets, and computational tools. Students will earn a certificate of completion at the end of each course. These certificates can be used to earn continuing education credit or to show teachers and employers as evidence of the training. Completion of the courses involves a combination of viewing lectures, taking quizzes, and writing programs.</p>
-        </div>
+<section class="row single gutter pad-top">
+    <div class="column"><h2 class="aha">Edit your Profile</h2></div>
 </section>
-<section class="row quarters gutter pad-top">
-    <div class="column one"></div>
-    <div class="column two">
-        <a class="button loginbutton pad-left pad-right" href="/auth/login">Login</a>
-    </div>
-    <div class="column three">
-        <a class="button loginbutton pad-left pad-right" href="/auth/register">Register</a>
-    </div>
-    <div class="column four">
-    </div>
-</section>
+<section class="row gutter pad-bottom pad-top pad-right">
+    <div class="column one">
+           <article class="signin">
+ <form action="{{ url_for('core.edit_profile') }}" method="POST" name="edit_user_profile_form">
+  {{ form.hidden_tag() }}
+   <label>Full Name:</label>
+  {{ render_field(form.name, class_="form-control pst") }}
+   <label>What should we call you?</label>
+  {{ render_field(form.nickname, class_="form-control pst") }}
+  <label>Sex:</label>
+  {{ render_field(form.sex, class_="form-control pst") }}
+  <label>City:</label>
+  {{ render_field(form.city, class_="form-control pst") }}
+  <label>State:</label>
+  {{ render_field(form.state, class_="form-control pst") }}
+  <label>Country:</label>
+  {{ render_field(form.country, class_="form-control pst") }}
+  <label>Nationality:</label>
+  {{ render_field(form.nationality, class_="form-control pst") }}
+  <label>Occupation:</label>
+  {{ render_field(form.occupation, class_="form-control pst") }}
+  <br>
+   {% for field in form.errors %}
+   {% for error in form.errors[field] %}
+      <div class="alert alert-error">
+          <strong>Error!</strong> {{error}}
+      </div>
+   {% endfor %}
+   {% endfor %}
 
-<section class="row halves gutter info">
-
-<hr class="divider" />
-        <div class="column one info">
-                <div>
-                    {% if courses %}
-                        <b>Available Classes</b>
-                        <ul>
-                            {% for course in courses %}
-                                <li>{{course.name}}</li>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
+ <br>
+  <input type="submit" name="btn" value="Sign Up!" id="btn" title="Update Profile" class="changebutton pad-top">
+</form>
+           
+         </article>
         </div>
-    </div>
-    <div class="column two">
-                <article>
-                <b>Supplemental Courses (as needed)</b>
-                <ul>
-                        <li> <a href="https://www.tutorialspoint.com/python/">Online Python tutorial</a> </li>
-                        <li> <a href="https://ori.hhs.gov/education/products/montana_round1/">Online training in responsible conduct of research</a> </li>
-                        <li> <a href="http://tech4aging.wsu.edu/">Information videos on assistive technology for aging</a> </li>
-                </ul> 
-                <b>Resource Requirements</b>
-                <ul>
-                        <li> Python version 3 </li>
-                        <li> Browser with HTML5 and Flash </li>
-                </ul>
-        <br>
-        </article>
-        </div>
-</section>
-<hr class="divider" />
-<section class="row single gutter">
-        <div class="column">
-                <article class="home-contact">
-               <p><a href="http://casas.wsu.edu/">CASAS</a>, PO Box 642752, Washington State University, Pullman WA 99164-2752 <br /> (509) 335-4985, <a href="mailto:cook@eecs.wsu.edu">cook@eecs.wsu.edu</a> </p>
-               <p>&copy; 2017 Washington State University | <a href="http://access.wsu.edu">Accessibility</a> | <a href="http://policies.wsu.edu/">Policies</a> | <a href="http://copyright.wsu.edu/">Copyright</a> </p>
-        </article>
-    </div>
 </section>
 </main>
 
@@ -122,9 +99,9 @@ Online Course Suite in Tools for Analysis of Sensor-Based Behavioral Health Data
                         • First link should be a home link (otherwise, in exceptional cases, add "homeless" class to #site nav)
                         • Replace example navigation list below -->
                         <li><a href="/">Site Home</a></li>
-                        <li><a href="/auth/register">Register</a></li>
-                        <li><a href="/auth/login">Login</a></li>
-                        <li><a href="https://online.wsu.edu/">Continuing Education Credit*</a></li>
+                        <li><a href="/dashboard">Dashboard</a></li>
+                        <li><a href="/auth/logout">Log out</a></li>
+                        <li><a href="/auth/change">Change my password</a></li>
                 </ul>
 
         </nav>
@@ -166,21 +143,6 @@ Online Course Suite in Tools for Analysis of Sensor-Based Behavioral Health Data
 </div><!--/glue-->
 </div>
 </div>
-</div>
-<div id="contact-details" itemscope itemtype="http://schema.org/Organization">
-        <span itemprop="department"  content="Voiland College of Engineering and Architecture"></span>
-        <span itemprop="name" content="Washington State University"></span>
-        <div itemprop="address" itemscope itemtype="http://schema.org/PostalAddress">
-                <span itemprop="location" content="Washington State University"></span>
-                <span itemprop="streetAddress" content="PO Box 642714"></span>
-                <span itemprop="addressLocality" content="Pullman"></span>
-                <span itemprop="addressRegion" content="WA"></span>
-                <span itemprop="postalCode" content="99164-2714"></span>
-        </div>
-        <span itemprop="telephone" content="(509) 335-6613"></span>
-        <span itemprop="email" content="aha@wsu.edu"></span>
-        <span itemprop="contactPoint" content="https://vcea.wsu.edu/directory/"></span>
-        <span itemprop="url" content="http://vcea.wsu.edu"></span>
 </div>
 </body>
 </html>

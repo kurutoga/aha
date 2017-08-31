@@ -11,6 +11,14 @@ roles_users = db.Table('roles_users',
         db.Column('user_id', db.Integer(), db.ForeignKey('user.id')),
         db.Column('role_id', db.Integer(), db.ForeignKey('role.id')))
 
+class Nationality(db.Model):
+    id      = db.Column(db.Integer(), primary_key=True)
+    label   = db.Column(db.String(40))
+
+class Occupation(db.Model):
+    id      = db.Column(db.Integer(), primary_key=True)
+    label   = db.Column(db.String(100))
+
 class Role(db.Model, RoleMixin):
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(80), unique=True)
@@ -26,22 +34,25 @@ class Role(db.Model, RoleMixin):
         return hash(self.name)
 
 class User(db.Model, UserMixin):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(255))
-    email = db.Column(db.String(255), unique=True)
-    password = db.Column(db.String(255))
-    sex = db.Column(db.String(1))
-    city = db.Column(db.String(40))
-    state = db.Column(db.String(40))
-    country = db.Column(db.String(40))
-    active = db.Column(db.Boolean())
-    confirmed_at = db.Column(db.DateTime())
-    last_login_at = db.Column(db.DateTime())
-    current_login_at = db.Column(db.DateTime())
-    last_login_ip = db.Column(db.String(45))
-    current_login_ip = db.Column(db.String(45))
-    login_count = db.Column(db.Integer)
-    roles = db.relationship('Role', secondary=roles_users,
+    id                  = db.Column(db.Integer, primary_key=True)
+    name                = db.Column(db.String(255))
+    nickname            = db.Column(db.String(255))
+    email               = db.Column(db.String(75), unique=True)
+    password            = db.Column(db.String(50))
+    sex                 = db.Column(db.String(1))
+    city                = db.Column(db.String(40))
+    state               = db.Column(db.String(40))
+    country             = db.Column(db.String(40))
+    nationality         = db.Column(db.Integer(), db.ForeignKey('nationality.id'))
+    occupation          = db.Column(db.Integer(), db.ForeignKey('occupation.id'))
+    active              = db.Column(db.Boolean())
+    confirmed_at        = db.Column(db.DateTime())
+    last_login_at       = db.Column(db.DateTime())
+    current_login_at    = db.Column(db.DateTime())
+    last_login_ip       = db.Column(db.String(45))
+    current_login_ip    = db.Column(db.String(45))
+    login_count         = db.Column(db.Integer)
+    roles               = db.relationship('Role', secondary=roles_users,
                             backref=db.backref('users', lazy='dynamic'))
 
 # Customized User model for SQL-Admin

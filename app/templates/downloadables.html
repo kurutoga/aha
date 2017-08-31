@@ -34,85 +34,23 @@
 <main>
 <header class="main-header">
         <div class="header-group hgroup guttered padded-bottom short">
-            <sup class="sup-header"><span class="sup-header-default"><a href="/course/{{course.id}}" rel="home">{{course.name}}</a></span></sup>
+            <sup class="sup-header"><span class="sup-header-default"><a href="/dw" rel="home">Downloadable Materials</a></span></sup>
         </div>
 </header>
-<section class="row single course-status-section pad-bottom pad-top">
-    <div class="column one">
-    <table class="course-status">
-        <tr>
-            <th style="width:10%;"></th>
-            <th></th>
-            <th style="width:70%;"></th>
-        </tr>
-        <tr>
-            <td></td>
-            <td>Author(s):</td>
-            <td>{{course.author}}</td>
-        </tr>
-        <tr>
-            <td></td>
-            <td>Total Segments:</td>
-            <td>{{course.children}}</td>
-        </tr>
-        <tr>
-            <td></td>
-            <td>Points Attempted:</td>
-            <td>{{courseStatus.total_points}}</td>
-        </tr>
-        <tr>
-            <td></td>
-            <td>Points Scored:</td>
-            <td>{{courseStatus.scored_points}}</td>
-        </tr>
-	<tr>
-	    <td></td>
-	    <td>Course Started On:</td>
-            <td>{{courseStatus.created_at}}</td>
-	</tr>
-    </table>
-    </div>
-</section>
-{% for segment in segments %}
+{% if downloadables %}
+{% for dwd in downloadables %}
 <section class="row single gutter course-completed">
     <div class="column">
-        <h4><b>Segment {{loop.index}}: {{segment.name}}</b></h4>
-        <table style="width:100%" class="table-course-available">
-            <tr>
-                <th style="width:5%;"></th>
-                <th style="width:61%;"></th>
-                <th style="width:15%; font-size:0.9em; font-family:'Open Sans', sans-serif; text-transform: uppercase; text-align:center;">status</th>
-                <th style="font-size:0.9em; font-family:'Open Sans', sans-serif; text-transform: uppercase; text-align:left;">&nbsp;&nbsp;score</th>
-            </tr>
-            {% for mod in segment['modules'] %}
-                <tr>
-                    {% set progress = mod['progress'] %}
-                    {% set type = mod.type %}
-                    {% if type=='quiz' %}
-                        <td><img src="/static/quiz.png" height="20" width="20" style="vertical-align:middle; margin-left:8px;"></td>
-                        <td>{% if progress %}{{ mod.name }}{% else %}<a href='/quiz/{{mod.id}}'>{{mod.name}}</a>{% endif %}</td>
-                        <td style="font-size:0.9em; font-family:'Open Sans', sans-serif; text-transform: uppercase; text-align:center;">{% if progress %}<img src="/static/tick.png" height="20" width="20" style="vertical-align:middle;">{% else %}
-			<img src="/static/scored.png" height="20" width="20" style="vertical-align:middle;">
-			{% endif %}</td>
-                        <td style="font-size:0.9em; font-family:'Open Sans', sans-serif; text-transform: uppercase;">{% if progress %}<div class="progress_back"><div class="progress" style="height:100%;width:{{progress.awarded_percent|string}}%; text-align:left;">&nbsp;&nbsp;{{progress.awarded_percent}}&#37;</div></div>{% endif %}</td>
-                    {% else %}
-                        <td>{% if mod.type=='lecture' %}<img src="/static/download2.png" height="20" width="20" style="margin-left:8px; vertical-align:middle;">
-			    {% elif mod.type=='video' %}<img src="/static/video.png" height="20" width="20" style="margin-left:8px; vertical-align:middle;">
-			    {% endif %}                            
-			</td>
-                        <td><a href="/{{type}}/{{mod.id}}" {% if type=='lecture' %}onclick='lecture_download("{{mod.id}}");'{% endif %}>{{mod.name}}</a></td>
-                        <td style="font-size:0.8em; font-family:'Open Sans', sans-serif; text-transform:uppercase; text-align:center;">{% if progress %}
-			<img src="/static/eyes.png" width="22" height="20" style="vertical-align:middle;">
-			{% endif %}</td>
-                        <td></td>
-                    {% endif %}
-                </tr>
-            {% endfor %}
-        </table>
+        <h4><b><a href="/dw/{{dwd.id}}">{{loop.index}}. {{dwd.name}}</a></b></h4>
     </div>
 </section>
 <hr class="divider" />
 {% endfor %}
+{% else %}
+<section class="row single gutter"><div class="column one">
+        <h5><b>There are no downloadble materials yet.</b></h5></div>
+</section>
+{% endif %}
 <section class="row single gutter pad-top">
         <div class="column">
                 <article class="home-contact">
@@ -159,13 +97,6 @@
                         <li class="alog"><b><a href="/admin">User Admin</a></b></li>
                         {% endif %}
                         <li class="ilog"><b><a href="/auth/logout" class="ilog">Logout</a></b></li>
-                        <li><a href="">Classes</a>
-                                <ul>
-                                    {% for course in courses %}
-                                    <li><a href="/course/{{course.id}}">{{course.name}}</a></li>
-                                    {% endfor %}
-                                </ul>
-                        </li>
                         <li class="current"><a href="/dw">Downloadable Materials</a></li>
                         <li><a href="https://online.wsu.edu/">Continuing Education Credit</a></li>
                 </ul>

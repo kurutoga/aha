@@ -39,33 +39,33 @@
       <div class="row">
         <div class="col-md-12 starter-template">
                 <div class="row bottomspace"><div class="col-md-12">
-                <h1>Course Repository</h1>
+                <h1>Downloadable Materials</h1>
                 </div></div>
                 <div class="row bottomspace">
-                {% if courses %}
-                    {% for course in courses %}
-                        <div class="row course">
+                {% if downloadables %}
+                    {% for dwd in downloadables %}
+                        <div class="row course equalize">
                         <div class="col-md-1"></div>
-                        <div class="col-md-6 leftish"><a href="/repo/course/{{course.id}}/segments" class="text-success">{{course.name}}</a></div>
-                        <div class="col-md-2"><a href="/repo/course/{{course.id}}/edit">EDIT</a></div>
-                        <div class="col-md-2"><a href="/repo/course/{{course.id}}/delete" class="text-danger">DELETE</a></div>
+                        <div class="col-md-6 leftish"><a href="/repo/downloadables/{{dwd.id}}/edit" class="text-success">{{dwd.name}}</a>&nbsp;&nbsp;(aha.casas.wsu.edu/dw/{{dwd.location}})</div>
+                        <div class="col-md-2"><a href="/repo/downloadables/{{dwd.id}}/edit" class="text-success">EDIT</a></div>
+                        <div class="col-md-2"><a href="/repo/downloadables/{{dwd.id}}/delete" class="text-danger">DELETE</a></div>
                         <div class="col-md-1"></div>
                         </div>
                     {% endfor %}
                 {% else %}
-                <h2>No Course Available</h2>
+                <h2>No Downloadable Material Has Been Uploaded</h2>
                 {% endif %}
                 </div>
                 </div>
                 <div class="row centerish">
-                        <div class="col-md-4">
-                                <a class="btn btn-lg btn-success" href="/repo/courses/new">ADD A NEW COURSE</a>
+                        <div class="col-md-1"></div>
+                        <div class="col-md-5">
+                                <a class="btn btn-lg btn-success" href="/repo/downloadables/new">ADD DOWNLOADABLE MATERIAL</a>
                         </div>
-                        <div class="col-md-4">
-                                <a class="btn btn-lg btn-warning" href="/repo/downloadables">DOWNLOADABLE MATERIALS</a>
+                        <div class="col-md-5">
+                                <a class="btn btn-lg btn-warning" href="/repo/courses">COURSE REPOSITORY</a>
                         </div>
-                        <div class="col-md-4"><a class="btn btn-lg btn-danger" href="/">GO BACK</a>
-</div>
+                        <div class="col-md-1"></div>
                 </div>
         </div>
       </div>

@@ -14,7 +14,7 @@ from .models import (
         VideoProgress, 
         LectureProgress
 )
-from app.classService.controllers import get_module, get_total_children, get_expiry_by_id
+from app.classService.controllers import get_module, get_total_children, get_expiry_by_id, get_courses
 from app.reportingService.controllers import (
         _update_segment_enroll, _update_course_enroll,
         _update_segment_student_finish, _update_course_student_finish,
@@ -82,6 +82,7 @@ def get_children_progress(siblings, userId):
         else:
             d.append(None)
     return d
+
 
 # update class by changing completed_segments by segmentDelta parameter.
 

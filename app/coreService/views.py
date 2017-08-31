@@ -1,11 +1,14 @@
 from flask import render_template, jsonify, url_for, request, redirect, flash, send_from_directory, session
 from flask_security import login_required, current_user
+from .forms import UserEditForm
 
 from . import core
 from .controllers import (
         _get_module, _get_status, _get_segment_and_module_status,
         _get_courses_and_status, _get_courses,
-        _get_next_mod, _get_prev_mod, _get_type, _get_course_data
+        _get_next_mod, _get_prev_mod, _get_type, _get_course_data,
+        update_user_profile, _get_progress, _get_downloadable,
+        _get_downloadables
 )
 from ..utils import convert_to_uuid, redirect_url, nocache, _get_now
 
@@ -157,3 +160,40 @@ def quizLoad():
 def quizAssest(file):
     return send_from_directory('resources/quizzes/'+session['quizLocation']+'/data/', file)
 
+@core.route('dw')
+@login_required
+def downloadables():
+    downloadables = _get_downloadables()
+    return render_template('downloadables.html', downloadables=downloadables)
+
+@core.route('dw/<dwd_id>')
+@login_required
+def download_material(dwd_id):
+    dwd = _get_downloadable(dwd_id)
+    return send_from_directory('resources/data', dwd.location, as_attachment=True, attachment_filename=dwd.location)
+
+@core.route('user/edit', methods=['POST', 'GET'])
+@login_required
+def edit_profile():
+    userId = current_user.id
+    form = UserEditForm()
+    if form.validate_on_submit():
+        update_user_profile(userId, form.name.data, form.nickname.data, form.sex.data, form.city.data, \
+                             form.state.data, form.country.data, form.nationality.data, form.occupation.data)
+        return redirect(url_for('core.home'))
+    form.name.data = current_user.name
+    form.nickname.data = current_user.nickname
+    form.sex.data = current_user.sex
+    form.city.data = current_user.city
+    form.state.data = current_user.state
+    form.country.data = current_user.country
+    form.nationality.data = current_user.nationality
+    form.occupation.data = current_user.occupation
+    return render_template('edit_user.html', form=form)
+
+@core.route('user/scores')
+@login_required
+def show_user_progress():
+    userId = current_user.id
+    progress = _get_progress(userId)
+    return render_template('show_progress.html', progress=progress)

@@ -23,3 +23,8 @@ class CourseData(db.Model):
     description = db.Column(db.Text)
     duration_weeks = db.Column(db.Integer)
     pass_percent = db.Column(db.Float, default=70.0)
+
+class  Downloadable(db.Model):
+    id = db.Column(db.Integer(), primary_key=True)
+    name = db.Column(db.String(255))
+    location = db.Column(db.String(255))

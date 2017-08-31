@@ -1,6 +1,6 @@
 import sys
 
-from .models import Module, CourseData
+from .models import Module, CourseData, Downloadable
 from app import db
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -136,6 +136,32 @@ def get_courses():
     m = courses.all()
     return m
 
+def get_downloadable(id):
+    dwd = Downloadable.query.get(id)
+    return dwd
+
+def get_downloadables():
+    downloadables = Downloadable.query.all()
+    return downloadables
+
+def create_downloadable(name, location):
+    dwd = Downloadable(name=name, location=location)
+    db.session.add(dwd)
+    commit()
+
+def update_downloadable(id, name, location):
+    dwd = Downloadable.query.get(id)
+    if not location:
+        location = dwd.location
+    dwd.name=name
+    dwd.location=location
+    commit()
+
+def delete_downloadable(id):
+    dwd = Downloadable.query.get(id)
+    db.session.delete(dwd)
+    commit()
+
 def get_course_count():
     count = _get_module_count_by_parent(None)
     return count
@@ -170,6 +196,8 @@ def create_course_data(id, desc, duration, pass_percent):
     cd = CourseData(id=id, description=desc, duration_weeks=duration, pass_percent=pass_percent)
     db.session.add(cd)
     commit()
+
+
 '''
 segment get, create, update
 '''

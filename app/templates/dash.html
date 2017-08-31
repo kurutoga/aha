@@ -38,14 +38,19 @@
 Online Course Suite in Tools for Analysis of Sensor-Based Behavioral Health Data (AHA!)</a></span></sup>
         </div>
 </header>
-<section class="row side-right gutter pad-top pad-bottom user-head">
+<section class="row single side-right gutter pad-top pad-bottom user-head">
         <div class="column one">
-            <h4 class="welcome">Welcome {{ current_user.name }}! </h4>
+            {% if current_user.nickname %}
+             {% set name=current_user.nickname %}
+            {% else %}
+             {% set name=current_user.name %}
+            {% endif %}
+            <h4 class="welcome">Welcome {{ name }}! </h4>
             <div class="settings">
                 <ul>
-                    <li><a href="/user/edit">Edit user profile*</a></li>
-                    <li><a href="/user/scores">Scores &amp; Progress Report*</a></li>
-                    <li><a href="/user/cec">Apply for Continuing Education Credit*</a></li>
+                    <li><a href="/user/edit">Edit user profile</a></li>
+                    <li><a href="/auth/change">Change my password</a></li>
+                    <li><a href="/user/scores">Scores &amp; Progress Report</a></li>
                 </ul>
             </div>
         </div>
@@ -68,7 +73,7 @@ Online Course Suite in Tools for Analysis of Sensor-Based Behavioral Health Data
             {% for course in completed %}
                 <tr>
                     <td class="course"><a href="/course/{{course.id}}">{{ course.name }}</a></td>
-                    <td>{% if course.completed_at %}Completed On: {{course.completed_at}}{% endif %}</td>
+                    <td>{% if course.completed_at %}Completed At: {{course.progress['completed_at']}}{% endif %}</td>
                     <td><a href="/cert/user/{{current_user.id}}/course/{{course.id}}">VIEW CERTIFICATE</a></td>
                 </tr>
             {% endfor %}
@@ -171,7 +176,7 @@ Online Course Suite in Tools for Analysis of Sensor-Based Behavioral Health Data
                                     {% endfor %}
                                 </ul>
                         </li>
-                        <li class="current"><a href="/course/datasets">Datasets*</a></li>
+                        <li class="current"><a href="/dw">Downloadable Materials</a></li>
                         <li><a href="https://online.wsu.edu/">Continuing Education Credit*</a></li>
                 </ul>
 

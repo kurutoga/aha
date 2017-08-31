@@ -7,7 +7,10 @@ from .controllers import (
         update_quiz, update_video, update_lecture,
         delete_quiz, delete_video, delete_lecture,
         create_course_data, update_course_data,
-        delete_course_data, get_course_data
+        delete_course_data, get_course_data,
+        get_downloadables, create_downloadable,
+        update_downloadable, get_downloadable,
+        delete_downloadable
 )
 
 from app.reportingService.controllers import (
@@ -24,7 +27,7 @@ from .tasks import (
 from .forms import (
         CourseForm, SegmentForm,
         VideoForm, QuizForm,
-        LectureForm
+        LectureForm, DownloadableForm
 )
 from . import repo
 from flask_security import current_user, login_required
@@ -338,4 +341,67 @@ def del_lecture(course_id, segment_id, lecture_id):
         return('', 401)
     delete_lecture(lecture_id)
     return redirect(url_for('repo.show_modules', course_id=course_id, segment_id=segment_id))
+
+@repo.route('/downloadables')
+@login_required
+@nocache
+def show_downloadables():
+    if not isAdmin():
+        return ('', 401)
+    downloadables = get_downloadables()
+    return render_template('dwd_repo.html', downloadables=downloadables)
+
+
+@repo.route('/downloadables/new', methods=['GET', 'POST'])
+@login_required
+@nocache
+def add_downloadable():
+    if not isAdmin():
+        return('', 401)
+    form = DownloadableForm()
+    if form.validate_on_submit():
+        data = form.asset.data
+        if not data:
+            del form.id
+            form.asset.errors.append('You must upload an archive.')
+            return render_template('dwdform.html', form=form)
+        filename = form.location.data
+        location = quiz_archive.save(data, folder=BASE_PATH+'resources/data/', name=filename+'.')
+        location = location.split('/')[-1]
+        create_downloadable(form.name.data, location)
+        return redirect(url_for('repo.show_downloadables'))
+    del form.id
+    return render_template('dwdform.html', form=form)
+
+@repo.route('/downloadables/<dwd_id>/edit', methods=['GET', 'POST'])
+@login_required
+@nocache
+def edit_downloadable(dwd_id):
+    if not isAdmin():
+        return('', 401)
+    form = DownloadableForm()
+    if form.validate_on_submit():
+        data = form.asset.data
+        if not data:
+            location = None
+        else:
+            filename = form.location.data
+            location = quiz_archive.save(data, folder=BASE_PATH+'resources/data/', name=filename+'.')
+            location = location.split('/')[-1]
+        update_downloadable(dwd_id, form.name.data, location)
+        return redirect(url_for('repo.show_downloadables'))
+    downloadable = get_downloadable(dwd_id)
+    form.id.data = dwd_id
+    form.id.render_kw = {'disabled':'disabled'}
+    form.name.data = downloadable.name
+    form.location.data = downloadable.location
+    return render_template('dwdform.html', form=form)
+
+@repo.route('/downloadables/<dwd_id>/delete')
+@login_required
+def del_downloadable(dwd_id):
+    if not isAdmin():
+        return('', 401)
+    delete_downloadable(dwd_id)
+    return redirect(url_for('repo.show_downloadables'))
 
