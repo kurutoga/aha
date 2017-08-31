@@ -183,7 +183,7 @@ def add_quiz(course_id, segment_id):
             segment = get_module(segment_id)
             return render_template('aioform.html', form=form, segment_id=segment_id, course_id=course_id, title=segment.name)
         filename = str(uuid.uuid4())
-        location = quiz_archive.save(qa, folder=BASE_PATH+'resources/quizzes/', name=filename+'.')
+        location = quiz_archive.save(qa, folder=BASE_PATH+'quizzes/', name=filename+'.')
         extract_quiz_task.apply_async(args=[location])
         quiz_id = create_quiz(form.name.data, segment_id, filename)
         print(form.maxscore.data)
@@ -211,7 +211,7 @@ def edit_quiz(course_id, segment_id, quiz_id):
             filename = None
         else:
             filename = str(uuid.uuid4())
-            location = quiz_archive.save(qa, folder=BASE_PATH+'resources/quizzes/', name=filename+'.')
+            location = quiz_archive.save(qa, folder=BASE_PATH+'quizzes/', name=filename+'.')
             extract_quiz_task.apply_async(args=[location])
         _update_quiz_max_score(quiz_id, form.maxscore.data)
         update_quiz(quiz_id, form.name.data, filename)
@@ -247,7 +247,7 @@ def add_video(course_id, segment_id):
             segment = get_module(segment_id)
             return render_template('aioform.html', form=form, segment_id=segment_id, segment=segment, course_id=course_id, title=segment.name)
         filename = str(uuid.uuid4())
-        location = video_file.save(vf, folder=BASE_PATH+'static/videos/', name=filename+'.')
+        location = video_file.save(vf, folder=BASE_PATH+'videos/', name=filename+'.')
         video_id = create_video(form.name.data, segment_id, filename+'.'+vf.filename.split('.')[-1])
         create_video_stats(video_id)
         return redirect(url_for('repo.show_modules', course_id=course_id, segment_id=segment_id))
@@ -268,7 +268,7 @@ def edit_video(course_id, segment_id, video_id):
             location = None
         else:
             filename = str(uuid.uuid4())
-            location = video_file.save(vf, folder=BASE_PATH+'static/videos/', name=filename+'.')
+            location = video_file.save(vf, folder=BASE_PATH+'videos/', name=filename+'.')
             location = location.split('/')[-1]
         update_video(video_id, form.name.data, location)
         return redirect(url_for('repo.show_modules', course_id=course_id, segment_id=segment_id))
@@ -302,7 +302,7 @@ def add_lecture(course_id, segment_id):
             segment = get_module(segment_id)
             return render_template('aioform.html', form=form, course_id=course_id, segment_id=segment_id, title=segment.name)
         filename = str(uuid.uuid4())
-        location = lecture_file.save(lf, folder=BASE_PATH+'resources/lectures/', name=filename+'.')
+        location = lecture_file.save(lf, folder=BASE_PATH+'lectures/', name=filename+'.')
         lecture_id = create_lecture(form.name.data, segment_id, filename+'.'+lf.filename.split('.')[-1])
         create_lecture_stats(lecture_id)
         return redirect(url_for('repo.show_modules', course_id=course_id, segment_id=segment_id))
@@ -323,7 +323,7 @@ def edit_lecture(course_id, segment_id, lecture_id):
             location = None
         else:
             filename = str(uuid.uuid4())
-            location = lecture_file.save(lf, folder=BASE_PATH+'resources/lectures/', name=filename+'.')
+            location = lecture_file.save(lf, folder=BASE_PATH+'lectures/', name=filename+'.')
             location = location.split('/')[-1]
         update_lecture(lecture_id, form.name.data, location)
         return redirect(url_for('repo.show_modules', course_id=course_id, segment_id=segment_id))

@@ -11,6 +11,9 @@ from .controllers import (
         _get_downloadables
 )
 from ..utils import convert_to_uuid, redirect_url, nocache, _get_now
+from config import Config
+
+BASE_PATH = Config.BASE_PATH
 
 @core.route('/')
 @core.route('dashboard')
@@ -100,7 +103,7 @@ def video_frame(loc):
 @core.route('video/get/<loc>')
 @login_required
 def get_video(loc):
-    return send_from_directory('resources/videos', loc)
+    return send_from_directory(BASE_PATH+'videos', loc)
 
 @core.route('lecture/<id>')
 @login_required
@@ -118,7 +121,7 @@ def lecture(id):
     segment = _get_module(lecture.parent)
     session['lectureId']=lecture.id
     session['userId']=userId
-    return send_from_directory('resources/lectures', lecture.location, as_attachment=True)
+    return send_from_directory(BASE_PATH+'lectures', lecture.location, as_attachment=True)
 
 
 @core.route('quiz/<id>')
@@ -152,13 +155,13 @@ def quizLoad():
     if 'userId' not in session or current_user.id!=session['userId'] or 'quizLocation' not in session:
         flash("You session may have expired")
         return redirect(redirect_url())
-    return send_from_directory('resources/quizzes/'+session['quizLocation'], 'index.html')
+    return send_from_directory(BASE_PATH+'quizzes/'+session['quizLocation'], 'index.html')
 
 @core.route('quizzes/data/<file>')
 @login_required
 @nocache
 def quizAssest(file):
-    return send_from_directory('resources/quizzes/'+session['quizLocation']+'/data/', file)
+    return send_from_directory(BASE_PATH+'quizzes/'+session['quizLocation']+'/data/', file)
 
 @core.route('dw')
 @login_required
