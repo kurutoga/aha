@@ -50,7 +50,6 @@ Online Course Suite in Tools for Analysis of Sensor-Based Behavioral Health Data
                 <ul>
                     <li><a href="/user/edit">Edit user profile</a></li>
                     <li><a href="/auth/change">Change my password</a></li>
-                    <li><a href="/user/scores">Scores &amp; Progress Report*</a></li>
                 </ul>
             </div>
         </div>
@@ -73,7 +72,7 @@ Online Course Suite in Tools for Analysis of Sensor-Based Behavioral Health Data
         <tr>
             <td class="course">{{course.name}}</td>
             <td>{{course.progress['scored_points']}}&#47;{{course.progress['total_points']}}</td>
-            <td>{{ (course.progress['scored_points']/course.progress['total_points'])*100.00 }}%</td>
+            <td>{% if course.progress['total_points'] %}{{((course.progress['scored_points']/course.progress['total_points'])*100.00)|round(2) }}{% else %}0{% endif %}%</td>
         </tr>
         </table>
         <div class="row single gutter pad-left">
@@ -89,7 +88,7 @@ Online Course Suite in Tools for Analysis of Sensor-Based Behavioral Health Data
                     <tr>
                         <td>{{segment.name}}</td>
                         <td>{{segment.progress['scored_points']}}&#47;{{segment.progress['total_points']}}</td>
-                        <td>{{ (segment.progress['scored_points']/segment.progress['total_points'])*100.00 }}%</td>
+                        <td> {% if segment.progress['total_points'] %} {{((segment.progress['scored_points']/segment.progress['total_points'])*100.00)|float|round(2) }}{% else %}0{% endif %}%</td>
                     </tr>
                 </table>
                 <div class="row single gutter pad-left">

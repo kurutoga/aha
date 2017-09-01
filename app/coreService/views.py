@@ -173,7 +173,7 @@ def downloadables():
 @login_required
 def download_material(dwd_id):
     dwd = _get_downloadable(dwd_id)
-    return send_from_directory('resources/data', dwd.location, as_attachment=True, attachment_filename=dwd.location)
+    return send_from_directory(BASE_PATH+'data', dwd.location, as_attachment=True, attachment_filename=dwd.location)
 
 @core.route('user/edit', methods=['POST', 'GET'])
 @login_required

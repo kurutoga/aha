@@ -366,7 +366,8 @@ def add_downloadable():
             form.asset.errors.append('You must upload an archive.')
             return render_template('dwdform.html', form=form)
         filename = form.location.data
-        location = quiz_archive.save(data, folder=BASE_PATH+'resources/data/', name=filename+'.')
+        filename = filename.split('.')[0]
+        location = quiz_archive.save(data, folder=BASE_PATH+'data/', name=filename+'.')
         location = location.split('/')[-1]
         create_downloadable(form.name.data, location)
         return redirect(url_for('repo.show_downloadables'))
@@ -386,7 +387,8 @@ def edit_downloadable(dwd_id):
             location = None
         else:
             filename = form.location.data
-            location = quiz_archive.save(data, folder=BASE_PATH+'resources/data/', name=filename+'.')
+            filename = filename.split('.')[0]
+            location = quiz_archive.save(data, folder=BASE_PATH+'data/', name=filename+'.')
             location = location.split('/')[-1]
         update_downloadable(dwd_id, form.name.data, location)
         return redirect(url_for('repo.show_downloadables'))
