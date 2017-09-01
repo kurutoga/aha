@@ -88,6 +88,7 @@ def _delete_module(mod):
     nextSiblings = _get_modules_by_parent(parentId).filter(Module.serial>serial).all()
     for siblings in nextSiblings:
         siblings.serial-=1
+        commit()
     return
 
 def _delete_modules_by_parent(parentId):
