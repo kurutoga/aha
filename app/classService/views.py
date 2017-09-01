@@ -73,7 +73,7 @@ def add_course():
         create_course_stats(courseId)
         return render_template('segment_repo.html', title=name, course_id=courseId)
     del form.id
-    return render_template('aioform.html', form=form, title='Course Repository')
+    return render_template('aioform.html', form=form, title='Add a course')
 
 @repo.route('/course/<course_id>/edit', methods=['GET', 'POST'])
 @login_required
@@ -181,7 +181,7 @@ def add_quiz(course_id, segment_id):
             del form.id
             form.quiz.errors.append('You must select a quiz file')
             segment = get_module(segment_id)
-            return render_template('aioform.html', form=form, segment_id=segment_id, course_id=course_id, title=segment.name)
+            return render_template('aioform.html', form=form, segment_id=segment_id, course_id=course_id, title=segment.name, upload_type='quiz')
         filename = str(uuid.uuid4())
         location = quiz_archive.save(qa, folder=BASE_PATH+'quizzes/', name=filename+'.')
         extract_quiz_task.apply_async(args=[location])
@@ -194,7 +194,7 @@ def add_quiz(course_id, segment_id):
         return redirect(url_for('repo.show_modules', course_id=course_id, segment_id=segment_id))
     del form.id
     segment = get_module(segment_id)
-    return render_template('aioform.html', form=form, segment_id=segment_id, course_id=course_id, title=segment.name)
+    return render_template('aioform.html', form=form, segment_id=segment_id, course_id=course_id, title=segment.name, upload_type='quiz')
 
 
 
@@ -222,7 +222,7 @@ def edit_quiz(course_id, segment_id, quiz_id):
     form.id.render_kw = {'disabled':'disabled'}
     form.name.data = quiz.name
     form.maxscore.data = get_quiz_max_score(quiz_id)
-    return render_template('aioform.html', form=form, course_id=course_id, segment_id=segment_id, title=segment.name)
+    return render_template('aioform.html', form=form, course_id=course_id, segment_id=segment_id, title=segment.name, upload_type='quiz')
 
 @repo.route('/course/<course_id>/segment/<segment_id>/quiz/<quiz_id>/delete')
 @login_required
@@ -242,18 +242,15 @@ def add_video(course_id, segment_id):
     if form.validate_on_submit():
         vf = form.video.data
         if not vf:
-            del form.id
-            form.video.errors.append('You must select a video file')
-            segment = get_module(segment_id)
-            return render_template('aioform.html', form=form, segment_id=segment_id, segment=segment, course_id=course_id, title=segment.name)
+            return('You must select a video file', 400)
         filename = str(uuid.uuid4())
         location = video_file.save(vf, folder=BASE_PATH+'videos/', name=filename+'.')
         video_id = create_video(form.name.data, segment_id, filename+'.'+vf.filename.split('.')[-1])
         create_video_stats(video_id)
-        return redirect(url_for('repo.show_modules', course_id=course_id, segment_id=segment_id))
+        return('Success', 200)
     del form.id
     segment = get_module(segment_id)
-    return render_template('aioform.html', form=form, segment_id=segment_id, segment=segment, course_id=course_id, title=segment.name)
+    return render_template('aioform.html', form=form, segment_id=segment_id, segment=segment, course_id=course_id, title=segment.name, upload_type='video')
 
 @repo.route('/course/<course_id>/segment/<segment_id>/video/<video_id>/edit', methods=['GET', 'POST'])
 @login_required
@@ -271,13 +268,13 @@ def edit_video(course_id, segment_id, video_id):
             location = video_file.save(vf, folder=BASE_PATH+'videos/', name=filename+'.')
             location = location.split('/')[-1]
         update_video(video_id, form.name.data, location)
-        return redirect(url_for('repo.show_modules', course_id=course_id, segment_id=segment_id))
+        return ('Success', 200)
     video = get_module(video_id)
     segment = get_module(segment_id)
     form.id.data = video_id
     form.id.render_kw = {'disabled':'disabled'}
     form.name.data = video.name
-    return render_template('aioform.html', form=form, course_id=course_id, segment_id=segment_id, title=segment.name)
+    return render_template('aioform.html', form=form, course_id=course_id, segment_id=segment_id, title=segment.name, upload_type='video')
 
 @repo.route('/course/<course_id>/segment/<segment_id>/video/<video_id>/delete')
 @login_required
@@ -300,7 +297,7 @@ def add_lecture(course_id, segment_id):
             del form.id
             form.lecture.errors.append('You must upload you lectures')
             segment = get_module(segment_id)
-            return render_template('aioform.html', form=form, course_id=course_id, segment_id=segment_id, title=segment.name)
+            return render_template('aioform.html', form=form, course_id=course_id, segment_id=segment_id, title=segment.name, upload_type='lecture')
         filename = str(uuid.uuid4())
         location = lecture_file.save(lf, folder=BASE_PATH+'lectures/', name=filename+'.')
         lecture_id = create_lecture(form.name.data, segment_id, filename+'.'+lf.filename.split('.')[-1])
@@ -308,7 +305,7 @@ def add_lecture(course_id, segment_id):
         return redirect(url_for('repo.show_modules', course_id=course_id, segment_id=segment_id))
     del form.id
     segment = get_module(segment_id)
-    return render_template('aioform.html', form=form, segment_id=segment_id, course_id=course_id, title=segment.name)
+    return render_template('aioform.html', form=form, segment_id=segment_id, course_id=course_id, title=segment.name, upload_type='lecture')
 
 @repo.route('/course/<course_id>/segment/<segment_id>/lecture/<lecture_id>/edit', methods=['GET', 'POST'])
 @login_required
@@ -332,7 +329,7 @@ def edit_lecture(course_id, segment_id, lecture_id):
     form.id.data = lecture_id
     form.id.render_kw = {'disabled':'disabled'}
     form.name.data = lecture.name
-    return render_template('aioform.html', form=form, course_id=course_id, segment_id=segment_id, title=segment.name)
+    return render_template('aioform.html', form=form, course_id=course_id, segment_id=segment_id, title=segment.name, upload_type='lecture')
 
 @repo.route('/course/<course_id>/segment/<segment_id>/lecture/<lecture_id>/delete')
 @login_required

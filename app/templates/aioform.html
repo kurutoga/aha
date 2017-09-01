@@ -27,40 +27,165 @@
     </nav>
 
     <div class="container">
-
       <div class="row">
         <div class="col-md-12 starter-template">
                 <div class="row bottomspace"><div class="col-md-12">
                   <h1>{{title}}</h1>
                 </div></div>
-                <div class="row bottomspace">
-                    {{ wtf.quick_form(form, form_type='horizontal', button_map={'submit': 'primary'}) }}
+                <div class="row">
+                        {% if upload_type=='video' %}
+                        <p id="support-notice">Your browser does not support Ajax uploads :-(<br/>The form will be submitted as normal.</p>
+                        {% endif %}
+                    {{ wtf.quick_form(form, form_type='horizontal', button_map={'submit': 'primary'}, id="modform") }}
                 </div>
                 </div>
-                <div class="row bottomspace centerish">
+{% if upload_type=='video' %} 
+<div class="col-md-2"></div>
+<div class="col-md-10">
+   <div class="progress" style="height:40px; ">
+    <div class="progress-bar" id="progbar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%; height:100%;">
+        <span style="font-family:'Open Sans', sans-serif;"> <h4 id="progtext">{% if location %} Current File: {{location}} {% else %} Waiting for Upload... {% endif %} </h4></span>
+   </div>
+</div>
+</div>
+{% endif %}
+                <div class="navbar navbar-default navbar-fixed-bottom">
+                        <div class="container centerish bottomspace">
                     <div class="col-md-4">
                         {% if course_id %}
-                        <a href="/repo/course/{{course_id}}/segments" class="text-warning">Go back to course</a>
+                        <a href="/repo/course/{{course_id}}/segments" class="btn btn-lg btn-warning" >Go back to course</a>
                         {% endif %}
                     </div>
                     <div class="col-md-4">
                         {% if segment_id %}
-                        <a href="/repo/course/{{course_id}}/segment/{{segment_id}}/modules" class="text-warning">Go back to segment</a>
+                        <a href="/repo/course/{{course_id}}/segment/{{segment_id}}/modules" class="btn btn-lg btn-info">Go back to segment</a>
                         {% endif %}                        
                     </div>
                     <div class="col-md-4">
-                        <a href="/repo/courses" class="text-success">Course Repository</a>
+                        <a href="/repo/courses" class="btn btn-lg btn-success">Course Repository</a>
                     </div>
                 </div>
+              </div>
         </div>
       </div>
 
     </div><!-- /.container -->
+{% if upload_type=='video' %}
+<script>
+   // Function that will allow us to know if Ajax uploads are supported
+function supportAjaxUploadWithProgress() {
+  return supportFileAPI() && supportAjaxUploadProgressEvents() && supportFormData();
+  // Is the File API supported?
+  function supportFileAPI() {
+    var fi = document.createElement('INPUT');
+    fi.type = 'file';
+    return 'files' in fi;
+  };
+  // Are progress events supported?
+  function supportAjaxUploadProgressEvents() {
+    var xhr = new XMLHttpRequest();
+    return !! (xhr && ('upload' in xhr) && ('onprogress' in xhr.upload));
+  };
+  // Is FormData supported?
+  function supportFormData() {
+    return !! window.FormData;
+  }
+}
+// Actually confirm support
+if (supportAjaxUploadWithProgress()) {
+  // Ajax uploads are supported!
+  // Change the support message and enable the upload button
+  var notice = document.getElementById('support-notice');
+  var uploadBtn = document.getElementById('video');
+  notice.innerHTML = "";
+  uploadBtn.removeAttribute('disabled');
+  // Init the Ajax form submission
+  initFullFormAjaxUpload();
+}
+function initFullFormAjaxUpload() {
+  var form = document.getElementById('modform');
+  form.onsubmit = function() {
+    // FormData receives the whole form
+    var formData = new FormData(form);
+    // We send the data where the form wanted
+    var action = form.getAttribute('action');
+    // Code common to both variants
+    sendXHRequest(formData, action);
+    // Avoid normal form submission
+    return false;
+  }
+}
+// Once the FormData instance is ready and we know
+// where to send the data, the code is the same
+// for both variants of this technique
+function sendXHRequest(formData, uri) {
+  // Get an XMLHttpRequest instance
+  var xhr = new XMLHttpRequest();
+  // Set up events
+  xhr.upload.addEventListener('loadstart', onloadstartHandler, false);
+  xhr.upload.addEventListener('progress', onprogressHandler, false);
+  xhr.upload.addEventListener('load', onloadHandler, false);
+  xhr.addEventListener('readystatechange', onreadystatechangeHandler, false);
+  // Set up request
+  xhr.open('POST', uri, true);
+  // Fire!
+  xhr.send(formData);
+}
+// Handle the start of the transmission
+function onloadstartHandler(evt) {
+  $('#progbar').removeClass("progress-bar-danger progress-bar-info").addClass("progress-bar-success");
+  $('#progtext').text("Upload started.");
+}
+// Handle the end of the transmission
+function onloadHandler(evt) { 
+  $('#progtext').text("Upload Complete. Waiting for filename");
+  $('#progbar').removeClass("progress-bar-success progress-bar-danger").addClass("progress-bar-info");
+}
+// Handle the progress
+function onprogressHandler(evt) {
+  var percent = evt.loaded/evt.total*100;
+  $('#progbar').css('width', percent+'%').attr('aria-valuenow', percent);
+  $('#progtext').text(percent + "%");
+}
+// Handle the response from the server
+function onreadystatechangeHandler(evt) {
+  var status, text, readyState;
+  try {
+    readyState = evt.target.readyState;
+    text = evt.target.responseText;
+    status = evt.target.status;
+  }
+  catch(e) {
+    return;
+  }
+  if (readyState == 4 && status == '200' && evt.target.responseText) {
+    var status = document.getElementById('upload-status');
+    $('#progtext').text("Success: Download Complete!");
+    window.location.href="../modules";
+  } else if (readyState==4) {
+      $('#progtext').text("Error Downloading. "+text);
+      $('#progbar').removeClass("progress-bar-success progress-bar-info").addClass("progress-bar-danger");
+  }
+} 
+</script>
+{% endif %}
 {% endblock %}
 {% block styles %}
 {{super()}}
 <link rel="stylesheet"
       href="/static/repo_custom.css">
+<style>
+.progress {
+    position: relative;
+}
+
+.progress span {
+    position: absolute;
+    display: block;
+    width: 100%;
+    color: black;
+}
+</style>
 {% endblock %}
 {% block head %}
 {{super()}}
