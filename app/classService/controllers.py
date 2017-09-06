@@ -1,6 +1,6 @@
 import sys
 
-from .models import Module, CourseData, Downloadable
+from .models import Module, CourseData, Downloadable, Prerequisites
 from app import db
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -28,6 +28,19 @@ def _get_parent_id(id):
 def _get_modules_by_parent(parentId):
     children = Module.query.filter_by(parent=parentId).order_by(Module.serial)
     return children
+
+def _is_prereq(moduleId, prereqId):
+    is_prereq = Prerequisites.query.get([moduleId, prereqId])
+    if is_prereq:
+        return True
+    return False
+
+def _get_all_dependents(prereqId):
+    prereqs = Prerequisites.query.filter_by(prereq_id=prereqId)
+    return prereqs
+
+def _get_prerequisite(modId, prereqId):
+    return Prerequisites.query.get([modId, prereqId])
 
 def _get_module_count_by_parent(parentId):
     count = Module.query.filter_by(parent=parentId).count()
@@ -96,6 +109,20 @@ def _delete_modules_by_parent(parentId):
     for mod in modules:
         db.session.delete(mod)
 
+def _delete_all_prereqs(moduleId):
+    prereqs = Prerequisites.query.filter_by(module_id=moduleId).all()
+    for prereq in prereqs:
+        db.session.delete(prereq)
+
+def _delete_all_dependents(prereqId):
+    prereqs = _get_all_dependents(prereqId).all()
+    for prereq in prereqs:
+        db.session.delete(prereq)
+
+def _delete_prereq(modId, prereqId):
+    pr = _get_prerequisite(modId, prereqId)
+    db.session.delete(pr)
+
 '''
 entry methods to get, create, update [course, segment, quiz, video, lecture]
 '''
@@ -112,6 +139,21 @@ def get_parent_id(id):
 def get_children(parentId):
     mods = _get_modules_by_parent(parentId)
     return mods.all()
+
+def get_prerequisites(moduleId):
+    prereqs = Prerequisites.query.filter_by(module_id=moduleId).all()
+    result = []
+    for pr in prereqs:
+        m = _get_module(pr.prereq_id)
+        result.append(m)
+    return result
+
+def get_elders(moduleId):
+    mod = _get_module(moduleId)
+    parentId = mod.parent
+    children = _get_modules_by_parent(parentId)
+    elders = children.filter((Module.serial>0) & (Module.serial<mod.serial)).all()
+    return elders
 
 def get_child_by_serial(parentId, serial):
     if not parentId or serial<1:
@@ -132,6 +174,25 @@ def get_expiry_by_id(id):
 '''
 course methods (Create,Edit,Update)
 '''
+
+def add_prerequisite(modId, prereqId):
+    pr = Prerequisites(module_id=modId, prereq_id=prereqId)
+    db.session.add(pr)
+    commit()
+
+def add_prerequisites(modId, prereqs):
+    prereqIds = [prereq.id for prereq in prereqs]
+    currentPrereqs = get_prerequisites(modId)
+    for current in currentPrereqs:
+        id = current.id
+        if id in prereqIds:
+            prereqIds.remove(id)
+        else:
+            _delete_prereq(modId, id)
+    for prereqId in prereqIds:
+        add_prerequisite(modId, prereqId)
+    commit()
+
 def get_courses():
     courses = _get_modules_by_parent(None)
     m = courses.all()
@@ -238,25 +299,16 @@ def create_lecture(name, segmentId, location, author=None):
     return lectureId
 
 def update_lecture(id, name, location, author=None):
-    lecture = _get_module(id)
-    if not location:
-        location = lecture.location
     _update_module(id, name, author, location)
     commit()
     return
 
 def update_video(id, name, location, author=None):
-    video = _get_module(id)
-    if not location:
-        location = video.location
     _update_module(id, name, author, location)
     commit()
     return
 
 def update_quiz(id, name, location, author=None):
-    quiz = _get_module(id)
-    if not location:
-        location = quiz.location
     _update_module(id, name, author, location)
     commit()
     return
@@ -304,3 +356,19 @@ def delete_course_data(courseId):
     db.session.delete(cd)
     commit()
 
+def delete_prerequisites(modId):
+    _delete_all_prereqs(modId)
+    commit()
+
+def delete_prerequisite(modId, prereqId):
+    _delete_prereq(modId, prereqId)
+    commit()
+
+def delete_dependents(pId):
+    _delete_all_dependents(pId)
+    commit()
+
+def delete_prereq_requirements(mId):
+    _delete_all_prereqs(mId)
+    _delete_all_dependents(mId)
+    commit()

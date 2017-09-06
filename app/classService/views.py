@@ -10,7 +10,8 @@ from .controllers import (
         delete_course_data, get_course_data,
         get_downloadables, create_downloadable,
         update_downloadable, get_downloadable,
-        delete_downloadable
+        delete_downloadable, add_prerequisites,
+        delete_prereq_requirements
 )
 
 from app.reportingService.controllers import (
@@ -22,12 +23,12 @@ from app.reportingService.controllers import (
 from ..utils import convert_to_uuid, redirect_url, nocache, _get_now
 import uuid
 from .tasks import (
-        extract_quiz_task
+        extract_quiz_task, delete_resource, delete_quiz_resource
 )
 from .forms import (
-        CourseForm, SegmentForm,
-        VideoForm, QuizForm,
-        LectureForm, DownloadableForm
+        _get_course_form, _get_segment_form,
+        _get_quiz_form, _get_video_form,
+        _get_lecture_form, DownloadableForm
 )
 from . import repo
 from flask_security import current_user, login_required
@@ -58,6 +59,7 @@ def show_courses():
 def add_course():
     if not isAdmin():
         return ('', 401)
+    CourseForm = _get_course_form()
     form = CourseForm()
     if form.validate_on_submit():
         name = form.name.data
@@ -71,6 +73,7 @@ def add_course():
             raise ValidationError("Could not create Course " + name)
         create_course_data(courseId, desc, duration, passpercent)
         create_course_stats(courseId)
+        add_prerequisites(courseId, form.prereq.data)
         return render_template('segment_repo.html', title=name, course_id=courseId)
     del form.id
     return render_template('aioform.html', form=form, title='Add a course')
@@ -81,10 +84,12 @@ def add_course():
 def edit_course(course_id):
     if not isAdmin():
         return('', 401)
+    CourseForm = _get_course_form(course_id)
     form = CourseForm()
     if form.validate_on_submit():
         update_course(course_id, form.name.data, form.author.data, form.expires.data, form.ready.data)
         update_course_data(course_id, form.description.data, form.expires.data, form.ppercent.data)
+        add_prerequisites(course_id, form.prereq.data)
         return redirect(url_for('repo.show_courses'))
     course      = get_module(course_id)
     course_data = get_course_data(course_id)
@@ -103,6 +108,7 @@ def edit_course(course_id):
 def del_course(course_id):
     if not isAdmin():
         return('', 401)
+    delete_prereq_requirements(course_id)
     delete_course(course_id)
     return redirect(url_for('repo.show_courses'))
 
@@ -122,12 +128,14 @@ def add_segment(course_id):
     if not isAdmin():
         return('', 401)
     course = get_module(course_id)
+    SegmentForm = _get_segment_form(course_id)
     form = SegmentForm()
     if form.validate_on_submit():
         name = form.name.data
         author = form.author.data
         segmentId = create_segment(name, course_id, author)
         create_segment_stats(segmentId)
+        add_prerequisites(segmentId, form.prereq.data)
         return redirect(url_for('repo.show_modules', course_id=course_id, segment_id=segmentId))
     del form.id
     return render_template('aioform.html', form=form, course_id=course_id, title=course.name)
@@ -138,9 +146,11 @@ def add_segment(course_id):
 def edit_segment(course_id, segment_id):
     if not isAdmin():
         return('', 401)
+    SegmentForm = _get_segment_form(course_id, segment_id)
     form = SegmentForm()
     if form.validate_on_submit():
         update_segment(segment_id, form.name.data, form.author.data)
+        add_prerequisites(segment_id, form.prereq.data)
         return redirect(url_for('repo.show_segments', course_id=course_id))
     course      = get_module(course_id)
     segment     = get_module(segment_id)
@@ -155,6 +165,7 @@ def edit_segment(course_id, segment_id):
 def del_segment(course_id, segment_id):
     if not isAdmin():
         return('', 401)
+    delete_prereq_requirements(segment_id)
     delete_segment(segment_id)
     return redirect(url_for('repo.show_segments', course_id=course_id))
 
@@ -174,6 +185,7 @@ def show_modules(course_id, segment_id):
 def add_quiz(course_id, segment_id):
     if not isAdmin():
         return('', 401)
+    QuizForm = _get_quiz_form(segment_id)
     form = QuizForm()
     if form.validate_on_submit():
         qa = form.quiz.data
@@ -186,11 +198,11 @@ def add_quiz(course_id, segment_id):
         location = quiz_archive.save(qa, folder=BASE_PATH+'quizzes/', name=filename+'.')
         extract_quiz_task.apply_async(args=[location])
         quiz_id = create_quiz(form.name.data, segment_id, filename)
-        print(form.maxscore.data)
         if form.maxscore.data:
             create_quiz_stats(quiz_id, form.maxscore.data)
         else:
             create_quiz_stats(quiz_id, None)
+        add_prerequisites(quiz_id, form.prereq.data)
         return redirect(url_for('repo.show_modules', course_id=course_id, segment_id=segment_id))
     del form.id
     segment = get_module(segment_id)
@@ -204,19 +216,22 @@ def add_quiz(course_id, segment_id):
 def edit_quiz(course_id, segment_id, quiz_id):
     if not isAdmin():
         return('', 401)
+    QuizForm = _get_quiz_form(segment_id, quiz_id)
     form = QuizForm()
+    quiz = get_module(quiz_id)
     if form.validate_on_submit():
         qa = form.quiz.data
         if not qa:
-            filename = None
+            filename = quiz.location
         else:
             filename = str(uuid.uuid4())
             location = quiz_archive.save(qa, folder=BASE_PATH+'quizzes/', name=filename+'.')
             extract_quiz_task.apply_async(args=[location])
+            delete_quiz_resource.apply_async(args=[(BASE_PATH+'quizzes/'+quiz.location)])
         _update_quiz_max_score(quiz_id, form.maxscore.data)
         update_quiz(quiz_id, form.name.data, filename)
+        add_prerequisites(quiz_id, form.prereq.data)
         return redirect(url_for('repo.show_modules', course_id=course_id, segment_id=segment_id))
-    quiz = get_module(quiz_id)
     segment = get_module(segment_id)
     form.id.data = quiz_id
     form.id.render_kw = {'disabled':'disabled'}
@@ -229,6 +244,9 @@ def edit_quiz(course_id, segment_id, quiz_id):
 def del_quiz(course_id, segment_id, quiz_id):
     if not isAdmin():
         return('', 401)
+    quiz = get_module(quiz_id)
+    delete_prereq_requirements(quiz_id)
+    delete_quiz_resource.apply_async(args=[BASE_PATH+'quizzes/'+quiz.location])
     delete_quiz(quiz_id)
     return redirect(url_for('repo.show_modules', course_id=course_id, segment_id=segment_id))
 
@@ -238,6 +256,7 @@ def del_quiz(course_id, segment_id, quiz_id):
 def add_video(course_id, segment_id):
     if not isAdmin():
         return('', 401)
+    VideoForm = _get_video_form(segment_id)
     form = VideoForm()
     if form.validate_on_submit():
         vf = form.video.data
@@ -247,6 +266,7 @@ def add_video(course_id, segment_id):
         location = video_file.save(vf, folder=BASE_PATH+'videos/', name=filename+'.')
         video_id = create_video(form.name.data, segment_id, filename+'.'+vf.filename.split('.')[-1])
         create_video_stats(video_id)
+        add_prerequisites(video_id, form.prereq.data)
         return('Success', 200)
     del form.id
     segment = get_module(segment_id)
@@ -258,18 +278,21 @@ def add_video(course_id, segment_id):
 def edit_video(course_id, segment_id, video_id):
     if not isAdmin():
         return('', 401)
+    VideoForm = _get_video_form(segment_id, video_id)
     form = VideoForm()
+    video = get_module(video_id)
     if form.validate_on_submit():
         vf = form.video.data
         if not vf:
-            location = None
+            filename = video.location
         else:
             filename = str(uuid.uuid4())
             location = video_file.save(vf, folder=BASE_PATH+'videos/', name=filename+'.')
-            location = location.split('/')[-1]
-        update_video(video_id, form.name.data, location)
+            filename = filename+'.'+location.split('.')[-1]
+            delete_resource.apply_async(args=[BASE_PATH+'videos/'+video.location])
+        update_video(video_id, form.name.data, filename)
+        add_prerequisites(video_id, form.prereq.data)
         return ('Success', 200)
-    video = get_module(video_id)
     segment = get_module(segment_id)
     form.id.data = video_id
     form.id.render_kw = {'disabled':'disabled'}
@@ -281,7 +304,11 @@ def edit_video(course_id, segment_id, video_id):
 def del_video(course_id, segment_id, video_id):
     if not isAdmin():
         return('', 401)
+    delete_prereq_requirements(video_id)
+    video = get_module(video_id)
+    location = video.location
     delete_video(video_id)
+    delete_resource.apply_async(args=[BASE_PATH+'videos/'+location])
     return redirect(url_for('repo.show_modules', course_id=course_id, segment_id=segment_id))
 
 @repo.route('/course/<course_id>/segment/<segment_id>/lecture/new', methods=['GET', 'POST'])
@@ -290,6 +317,7 @@ def del_video(course_id, segment_id, video_id):
 def add_lecture(course_id, segment_id):
     if not isAdmin():
         return('', 401)
+    LectureForm = _get_lecture_form(segment_id)
     form = LectureForm()
     if form.validate_on_submit():
         lf = form.lecture.data
@@ -302,6 +330,7 @@ def add_lecture(course_id, segment_id):
         location = lecture_file.save(lf, folder=BASE_PATH+'lectures/', name=filename+'.')
         lecture_id = create_lecture(form.name.data, segment_id, filename+'.'+lf.filename.split('.')[-1])
         create_lecture_stats(lecture_id)
+        add_prerequisites(lecture_id, form.prereq.data)
         return redirect(url_for('repo.show_modules', course_id=course_id, segment_id=segment_id))
     del form.id
     segment = get_module(segment_id)
@@ -313,18 +342,21 @@ def add_lecture(course_id, segment_id):
 def edit_lecture(course_id, segment_id, lecture_id):
     if not isAdmin():
         return('', 401)
+    LectureForm = _get_lecture_form(segment_id, lecture_id)
     form = LectureForm()
+    lecture = get_module(lecture_id)
     if form.validate_on_submit():
         lf = form.lecture.data
         if not lf:
-            location = None
+            filename = lecture.location
         else:
             filename = str(uuid.uuid4())
             location = lecture_file.save(lf, folder=BASE_PATH+'lectures/', name=filename+'.')
-            location = location.split('/')[-1]
-        update_lecture(lecture_id, form.name.data, location)
+            filename = filename+'.'+location.split('.')[-1]
+            delete_resource.apply_async(args=[BASE_PATH+'lectures/'+lecture.location])
+        update_lecture(lecture_id, form.name.data, filename)
+        add_prerequisites(lecture_id, form.prereq.data)
         return redirect(url_for('repo.show_modules', course_id=course_id, segment_id=segment_id))
-    lecture = get_module(lecture_id)
     segment = get_module(segment_id)
     form.id.data = lecture_id
     form.id.render_kw = {'disabled':'disabled'}
@@ -336,6 +368,9 @@ def edit_lecture(course_id, segment_id, lecture_id):
 def del_lecture(course_id, segment_id, lecture_id):
     if not isAdmin():
         return('', 401)
+    lecture = get_module(lecture_id)
+    delete_resource.apply_async(args=[BASE_PATH+'lectures/'+lecture.location])
+    delete_prereq_requirements(lecture_id)
     delete_lecture(lecture_id)
     return redirect(url_for('repo.show_modules', course_id=course_id, segment_id=segment_id))
 
@@ -363,8 +398,9 @@ def add_downloadable():
             form.asset.errors.append('You must upload an archive.')
             return render_template('dwdform.html', form=form)
         filename = form.location.data
-        filename = filename.split('.')[0]
-        location = quiz_archive.save(data, folder=BASE_PATH+'data/', name=filename+'.')
+        if len(filename.split('.'))==1:
+            filename = filename+'.'
+        location = quiz_archive.save(data, folder=BASE_PATH+'data/', name=filename)
         location = location.split('/')[-1]
         create_downloadable(form.name.data, location)
         return redirect(url_for('repo.show_downloadables'))
@@ -378,18 +414,20 @@ def edit_downloadable(dwd_id):
     if not isAdmin():
         return('', 401)
     form = DownloadableForm()
+    downloadable = get_downloadable(dwd_id)
     if form.validate_on_submit():
         data = form.asset.data
         if not data:
-            location = None
+            location = downloadable.location
         else:
+            delete_resource.apply_async(args=[BASE_PATH+'data/'+downloadable.location])
             filename = form.location.data
-            filename = filename.split('.')[0]
-            location = quiz_archive.save(data, folder=BASE_PATH+'data/', name=filename+'.')
+            if len(filename.split('.'))==1:
+                filename=filename+'.'
+            location = quiz_archive.save(data, folder=BASE_PATH+'data/', name=filename)
             location = location.split('/')[-1]
         update_downloadable(dwd_id, form.name.data, location)
         return redirect(url_for('repo.show_downloadables'))
-    downloadable = get_downloadable(dwd_id)
     form.id.data = dwd_id
     form.id.render_kw = {'disabled':'disabled'}
     form.name.data = downloadable.name
@@ -401,6 +439,8 @@ def edit_downloadable(dwd_id):
 def del_downloadable(dwd_id):
     if not isAdmin():
         return('', 401)
+    dw = get_downloadable(dwd_id)
+    delete_resource.apply_async(args=[BASE_PATH+'data/'+dw.location])
     delete_downloadable(dwd_id)
     return redirect(url_for('repo.show_downloadables'))
 

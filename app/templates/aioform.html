@@ -21,6 +21,7 @@
             <li class="active"><a href="#">Course Repository</a></li>
             <li><a href="/admin">Database Viewer</a></li>
             <li><a href="/report">Reporting Service</a></li>
+            <span class="navbar-text"><a href="/auth/logout" class="text-danger">Log out</a></span>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -29,7 +30,7 @@
     <div class="container">
       <div class="row">
         <div class="col-md-12 starter-template">
-                <div class="row bottomspace"><div class="col-md-12">
+                <div class="row"><div class="col-md-12">
                   <h1>{{title}}</h1>
                 </div></div>
                 <div class="row">
@@ -48,10 +49,10 @@
    </div>
 </div>
 </div>
-{% endif %}
-                <div class="navbar navbar-default navbar-fixed-bottom">
+{% endif %} 
+            <footer class="footer">
                         <div class="container centerish bottomspace">
-                    <div class="col-md-4">
+                    <div class="col-md-4 leftish">
                         {% if course_id %}
                         <a href="/repo/course/{{course_id}}/segments" class="btn btn-lg btn-warning" >Go back to course</a>
                         {% endif %}
@@ -61,15 +62,17 @@
                         <a href="/repo/course/{{course_id}}/segment/{{segment_id}}/modules" class="btn btn-lg btn-info">Go back to segment</a>
                         {% endif %}                        
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-4 rightish">
                         <a href="/repo/courses" class="btn btn-lg btn-success">Course Repository</a>
                     </div>
                 </div>
-              </div>
-        </div>
+            </footer>
+ 
+ 
+       </div>
       </div>
+   </div><!-- /.container --> 
 
-    </div><!-- /.container -->
 {% if upload_type=='video' %}
 <script>
    // Function that will allow us to know if Ajax uploads are supported
@@ -107,6 +110,7 @@ function initFullFormAjaxUpload() {
   form.onsubmit = function() {
     // FormData receives the whole form
     var formData = new FormData(form);
+    formData.append('ajaxy', 1);
     // We send the data where the form wanted
     var action = form.getAttribute('action');
     // Code common to both variants
@@ -161,7 +165,7 @@ function onreadystatechangeHandler(evt) {
   if (readyState == 4 && status == '200' && evt.target.responseText) {
     var status = document.getElementById('upload-status');
     $('#progtext').text("Success: Download Complete!");
-    window.location.href="../modules";
+    window.location.href="/repo/course/{{course_id}}/segment/{{segment_id}}/modules";
   } else if (readyState==4) {
       $('#progtext').text("Error Downloading. "+text);
       $('#progbar').removeClass("progress-bar-success progress-bar-info").addClass("progress-bar-danger");

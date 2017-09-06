@@ -21,6 +21,7 @@
             <li class="active"><a href="#">Course Repository</a></li>
             <li><a href="/admin">Database Viewer</a></li>
             <li><a href="/report">Reporting Service</a></li>
+            <span class="navbar-text"><a href="/auth/logout" class="text-danger">Log out</a></span>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -57,9 +58,9 @@
                 {% endif %}
                 </div>
                 </div> 
-                <div class="navbar navbar-default navbar-fixed-bottom">
+                <footer class="footer">
                   <div class="container centerish bottomspace">
-                        <div class="col-md-3">
+                        <div class="col-md-3 leftish">
                             <a class="btn btn-lg btn-success" href="/repo/course/{{course_id}}/segment/{{segment_id}}/quiz/new">ADD A QUIZ</a>
                         </div>
                         <div class="col-md-3">
@@ -68,11 +69,11 @@
                         <div class="col-md-3">
                             <a class="btn btn-lg btn-success" href="/repo/course/{{course_id}}/segment/{{segment_id}}/lecture/new">ADD A LECTURE</a>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-3 rightish">
                             <a class="btn btn-lg btn-warning" href="/repo/course/{{course_id}}/segments">GO BACK</a>
                         </div>
                 </div>
-              </div>
+              </footer>
         </div>
       </div>
 
