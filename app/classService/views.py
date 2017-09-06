@@ -113,7 +113,7 @@ def show_segments(course_id):
     if not isAdmin():
         return('', 401)
     segments = get_children(course_id)
-    return render_template('segment_repo.html', segments=segments, course_id=course_id)
+    return render_template('segment_repo.html', segments=segments, course_id=course_id, title='Segments')
     
 @repo.route('/course/<course_id>/segments/new', methods=['GET', 'POST'])
 @login_required
@@ -166,7 +166,7 @@ def show_modules(course_id, segment_id):
         return('', 401)
     modules = get_children(segment_id)
     segment = get_module(segment_id)
-    return render_template('module_repo.html', modules=modules, course_id=course_id, segment_id=segment_id, segment=segment)
+    return render_template('module_repo.html', modules=modules, course_id=course_id, segment_id=segment_id, segment=segment, title='Modules')
 
 @repo.route('/course/<course_id>/segment/<segment_id>/quiz/new', methods=['GET', 'POST'])
 @login_required
