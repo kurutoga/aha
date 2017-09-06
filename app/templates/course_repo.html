@@ -20,7 +20,10 @@
           <ul class="nav navbar-nav">
             <li class="active"><a href="#">Course Repository</a></li>
             <li><a href="/admin">Database Viewer</a></li>
-            <li><a href="/report">Reporting Service</a></li>
+            <li><a href="/report">Reporting Service</a></li> 
+            <span class="navbar-text">
+              <a href="/auth/logout" class="text-danger">Log Out</a>
+            </span>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -38,7 +41,7 @@
 {%- endwith %}
       <div class="row">
         <div class="col-md-12 starter-template">
-                <div class="row bottomspace"><div class="col-md-12">
+              <div class="row bottomspace"><div class="col-md-12">
                 <h1>Course Repository</h1>
                 </div></div>
                 <div class="row bottomspace">
@@ -56,24 +59,25 @@
                 <h2>No Course Available</h2>
                 {% endif %}
                 </div>
-                </div> 
-                <div class="navbar navbar-default navbar-fixed-bottom">
-                  <div class="container centerish bottomspace">
-                        <div class="col-md-4">
+              </div>   
+
+       </div>
+      </div>
+              </div><!-- /.container --> 
+<footer class="footer">
+             <div class="container centerish ">
+                        <div class="col-md-4 leftish">
                                 <a class="btn btn-lg btn-success" href="/repo/courses/new">ADD A NEW COURSE</a>
                         </div>
                         <div class="col-md-4">
                                 <a class="btn btn-lg btn-warning" href="/repo/downloadables">DOWNLOADABLE MATERIALS</a>
                         </div>
-                        <div class="col-md-4"><a class="btn btn-lg btn-danger" href="/">GO BACK</a>
-                 </div>
-                </div>
-              </div>
-        </div>
-      </div>
+                        <div class="col-md-4 rightish"><a class="btn btn-lg btn-danger" href="/">GO BACK</a></div>
+            </div>
+</footer>
+ 
+{% endblock %} 
 
-    </div><!-- /.container -->
-{% endblock %}
 {% block styles %}
 {{super()}}
 <link rel="stylesheet"

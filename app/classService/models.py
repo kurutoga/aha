@@ -1,8 +1,9 @@
 from app import db
+import uuid
 from sqlalchemy.dialects.postgresql.json import JSONB
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.schema import UniqueConstraint
-import uuid
+from sqlalchemy import PrimaryKeyConstraint
 
 class Module(db.Model):
     id = db.Column(UUID(as_uuid=True), default=uuid.uuid4, primary_key=True)
@@ -28,3 +29,11 @@ class  Downloadable(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(255))
     location = db.Column(db.String(255))
+
+class Prerequisites(db.Model):
+    module_id = db.Column(UUID(as_uuid=True), db.ForeignKey('module.id'), primary_key=True)
+    prereq_id = db.Column(UUID(as_uuid=True), db.ForeignKey('module.id'), primary_key=True) 
+    __table_args__     = (
+            PrimaryKeyConstraint('module_id', 'prereq_id', name='module_prereq_pk'),
+            {}
+    )
