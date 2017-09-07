@@ -106,3 +106,7 @@ ENV/
 
 # config
 config.py
+
+migrations/
+
+uwsgi.ini

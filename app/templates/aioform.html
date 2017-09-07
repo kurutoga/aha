@@ -149,7 +149,11 @@ function onloadHandler(evt) {
 function onprogressHandler(evt) {
   var percent = evt.loaded/evt.total*100;
   $('#progbar').css('width', percent+'%').attr('aria-valuenow', percent);
-  $('#progtext').text(percent + "%");
+  if (percent===100) {
+    $('#progtext').text(percent + "%. Please Wait!");
+  } else {
+    $('#progtext').text(percent + "%");
+  }
 }
 // Handle the response from the server
 function onreadystatechangeHandler(evt) {
