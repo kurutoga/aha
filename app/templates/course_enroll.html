@@ -97,7 +97,7 @@ Online Course Suite in Tools for Analysis of Sensor-Based Behavioral Health Data
         <div class="enrollbutton" id="enroll-button" style="text-align:center;" disabled=true>Enroll</div>
     </div>
     <div class="column three">
-        <div class="cancelbutton" id="cancel-enroll" style="text-align:center;">Cancel</div>
+        <div class="cancelbutton" id="cancel-enroll" style="text-align:center;">Cancel</div>a
     </div>
     <div class="column four"> </div>
 </section>
@@ -229,6 +229,9 @@ Online Course Suite in Tools for Analysis of Sensor-Based Behavioral Health Data
                     alert("You must agree to the Plagiarism Policy and the Code of Conduct before enrolling");
                 }
             });
+            $('#cancel-enroll').click(function(e) {
+                window.location.href = "/";
+            }
     });
 </script>
 </body>
