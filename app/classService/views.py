@@ -67,11 +67,12 @@ def add_course():
         desc = form.description.data
         duration = form.expires.data
         passpercent = form.ppercent.data
+        link = form.videolink.data
         is_ready = form.ready.data
         courseId = create_course(name, author, duration, None, is_ready)
         if not courseId:
             raise ValidationError("Could not create Course " + name)
-        create_course_data(courseId, desc, duration, passpercent)
+        create_course_data(courseId, desc, duration, passpercent, link)
         create_course_stats(courseId)
         add_prerequisites(courseId, form.prereq.data)
         return render_template('segment_repo.html', title=name, course_id=courseId)
@@ -88,7 +89,7 @@ def edit_course(course_id):
     form = CourseForm()
     if form.validate_on_submit():
         update_course(course_id, form.name.data, form.author.data, form.expires.data, form.ready.data)
-        update_course_data(course_id, form.description.data, form.expires.data, form.ppercent.data)
+        update_course_data(course_id, form.description.data, form.expires.data, form.ppercent.data, form.videolink.data)
         add_prerequisites(course_id, form.prereq.data)
         return redirect(url_for('repo.show_courses'))
     course      = get_module(course_id)
@@ -100,8 +101,9 @@ def edit_course(course_id):
     form.expires.data = course_data.duration_weeks
     form.description.data = course_data.description
     form.ready.data = course.is_ready
+    form.videolink.data = course_data.video_link
     form.ppercent.data = course_data.pass_percent
-    return render_template('aioform.html', form=form, title='Course Repository')
+    return render_template('aioform.html', form=form, title='Edit '+course.name)
 
 @repo.route('/course/<course_id>/delete')
 @login_required

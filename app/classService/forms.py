@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField, TextAreaField, FloatField, SubmitField, BooleanField
 from flask_wtf.file import FileRequired, FileAllowed, FileField
-from wtforms.validators import DataRequired, optional
+from wtforms.validators import DataRequired, optional, URL
 from wtforms.ext.sqlalchemy.fields import QuerySelectMultipleField
 from . import quiz_archive, video_file, lecture_file
 from app.classService.controllers import get_elders, get_prerequisites, get_children
@@ -17,6 +17,7 @@ def _get_course_form(course_id=None):
         description = TextAreaField(u'Course Description', default='Write a few words to describe this course.')
         ready       = BooleanField(u'Course Available?')
         prereq      = QuerySelectMultipleField(u'Select Prerequisites for this course', allow_blank=True, query_factory=lambda: get_elders(course_id) if course_id else get_children(None), default=lambda: get_prerequisites(course_id) if course_id else [], get_pk=lambda item: item.id, get_label=lambda item: item.name, description="Leave blank for no prereq. Use 'Shift' and 'Ctrl/Cmd' for multiple selection/deselection")
+        videolink   = StringField(u'External Video Link', validators=[URL(), optional()], description='Youtube/Other External Video Playlist Link')
         submit      = SubmitField(u'Create/Update Course')
     return CourseForm
 

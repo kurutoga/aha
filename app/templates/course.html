@@ -73,6 +73,13 @@
     </table>
     </div>
 </section>
+{% if vidlink %}
+<section class="row single gutter">
+    <div class="column one">
+        <h6><a href={{vidlink}} target="_blank" style="color:olive;"><b>(Link To) Class Video Playlist w/ Closed Captions</b></a></h6>
+    </div>
+</section>
+{% endif %}
 {% for segment in segments %}
 <section class="row single gutter course-completed">
     <div class="column">
@@ -90,7 +97,7 @@
                     {% set type = mod.type %}
                     {% if type=='quiz' %}
                         <td><img src="/static/quiz.png" height="20" width="20" style="vertical-align:middle; margin-left:8px;"></td>
-                        <td>{% if progress %}{{ mod.name }}{% else %}<a href='/quiz/{{mod.id}}'>{{mod.name}}</a>{% endif %}</td>
+                        <td>{% if progress %}{{ mod.name }}{% else %}<a href="/quiz/{{mod.id}}">{{mod.name}}</a>{% endif %}</td>
                         <td style="font-size:0.9em; font-family:'Open Sans', sans-serif; text-transform: uppercase; text-align:center;">{% if progress %}<img src="/static/tick.png" height="20" width="20" style="vertical-align:middle;">{% else %}
 			<img src="/static/scored.png" height="20" width="20" style="vertical-align:middle;">
 			{% endif %}</td>
@@ -167,7 +174,8 @@
                                     <li><a href="/course/{{course.id}}">{{course.name}}</a></li>
                                     {% endfor %}
                                 </ul>
-                        </li>
+                        </li> 
+                        <li class="external"><a href="https://www.youtube.com/channel/UCnBkXlJJgngQPSMWx5uSaWQ" target="_blank">AHA Video Playlist</a></li>
                         <li><a href="/dw">Downloadable Materials</a></li>
                 </ul>
 
@@ -175,8 +183,8 @@
 
         <nav class="spine-offsitenav">
         <ul>
-                <li><a href="http://casas.wsu.edu" class="external">CASAS</a></li>
-                <li><a href="https://www.nih.gov/" class="external">NIH</a></li>
+                <li><a href="http://casas.wsu.edu" class="external" target="_blank">CASAS</a></li>
+                <li><a href="https://www.nih.gov/" class="external" target="_blank">NIH</a></li>
         </ul>
 </nav>
 

@@ -244,18 +244,19 @@ def update_course_order(newOrderListById):
     commit()
     return
 
-def update_course_data(id, desc, duration, ppercent):
+def update_course_data(id, desc, duration, ppercent, link):
     cd = get_course_data(id)
     if cd:
         cd.description=desc
         cd.duration_weeks=duration
         cd.pass_percent=ppercent
+        cd.video_link=link
         commit()
         return True
     return False
 
-def create_course_data(id, desc, duration, pass_percent):
-    cd = CourseData(id=id, description=desc, duration_weeks=duration, pass_percent=pass_percent)
+def create_course_data(id, desc, duration, pass_percent, link):
+    cd = CourseData(id=id, description=desc, duration_weeks=duration, pass_percent=pass_percent, video_link=link)
     db.session.add(cd)
     commit()
 

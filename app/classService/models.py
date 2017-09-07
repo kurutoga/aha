@@ -21,9 +21,10 @@ class Module(db.Model):
 
 class CourseData(db.Model):
     id = db.Column(UUID(as_uuid=True), db.ForeignKey('module.id'), primary_key=True)
-    description = db.Column(db.Text)
-    duration_weeks = db.Column(db.Integer)
-    pass_percent = db.Column(db.Float, default=70.0)
+    description     = db.Column(db.Text)
+    duration_weeks  = db.Column(db.Integer)
+    pass_percent    = db.Column(db.Float, default=70.0)
+    video_link       = db.Column(db.String(200))
 
 class  Downloadable(db.Model):
     id = db.Column(db.Integer(), primary_key=True)

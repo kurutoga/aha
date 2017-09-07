@@ -74,7 +74,8 @@ def course(id):
         session['courseId']=id
         return render_template("course_enroll.html", course=course, courseData=courseData)
     segments = _get_segment_and_module_status(course.id, userId)
-    return render_template("course.html", segments=segments, course=course, courseStatus=status)
+    cdata     = _get_course_data(course.id)
+    return render_template("course.html", segments=segments, course=course, courseStatus=status, vidlink=cdata.video_link)
 
 @core.route('video/<id>')
 @login_required
