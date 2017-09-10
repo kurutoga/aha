@@ -3,8 +3,10 @@ from app.authService.forms import *
 from app.authService.models import *
 from sqlalchemy import event
 from sqlalchemy import DDL
+from flask import session
 from flask_admin.contrib import sqla
 from flask_admin import helpers as admin_helpers
+from flask_login import user_logged_out
 from flask.ext.security.signals import user_registered
 from ..classService.models import *
 from ..studentService.models import *
@@ -56,3 +58,6 @@ def make_admin(admin, app, db):
         user_datastore.add_role_to_user(user, default_role)
         db.session.commit()
 
+    @user_logged_out.connect_via(app)
+    def user_logout_sighandler(app, user):
+        session.pop('_flashes', None)

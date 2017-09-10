@@ -37,10 +37,18 @@
 <div id="jacket">
 <div id="binder" class="fluid">
 <main>
+<header class="main-header">
+        <div class="header-group hgroup guttered padded-bottom short">
+                <sup class="sup-header"><span class="sup-header-default"><a href="https://aha.wsu.edu/" rel="home">
+Online Course Suite in Tools for Analysis of Sensor-Based Behavioral Health Data (AHA!)</a></span></sup>
+        </div>
+</header>
+
+
 <section class="row single gutter pad-top">
     <div class="column"><h2 class="aha">Registration</h2></div>
 </section>
-<section class="row gutter pad-bottom pad-top pad-right">
+<section class="row single gutter pad-bottom pad-top pad-right">
     <div class="column one">
            <article class="signin">
  <form action="{{ url_for_security('register') }}" method="POST" name="register_user_form" onsubmit="return checkForm(this);">
@@ -69,7 +77,7 @@
   {{ render_field(register_user_form.occupation, class_="form-control pst") }}
   <br>
   <input type="checkbox" name="terms">I have reviewed the <a href="#">Privacy Policy</a> and I agree with all the <a href="#">Terms & Conditions</a></input>
-  
+  <br> 
    {% for field in register_user_form.errors %}
    {% for error in register_user_form.errors[field] %}
       <div class="alert alert-error">
@@ -77,7 +85,7 @@
       </div>
    {% endfor %}
    {% endfor %}
-
+ <br>
  <br>
   <input type="submit" name="btn" value="Sign Up" id="btn" title="Click to Sign Up" class="changebutton pad-top">
 </form>

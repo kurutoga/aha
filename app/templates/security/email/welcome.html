@@ -1,9 +1,1 @@
-<p>Welcome to AHA, {{ user.name }}!</p>
-
-{% if security.confirmable %}
-<p>You can confirm your email through the link below:</p>
-
-<p><a href="{{ confirmation_link }}">Confirm my account</a></p>
-{% endif %}
-
-<p>Please do not reply to this email. Email address is unmonitored</p>
+<p>Welcome to AHA, {{ user.name }}!</p><br>{% if security.confirmable %}<p>You can confirm your email through the link below:</p><br><p><a href="{{ confirmation_link }}">Confirm my account</a></p>{% endif %}<br><p>Please do not reply to this email. Email address is unmonitored</p>
