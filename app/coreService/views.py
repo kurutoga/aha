@@ -155,12 +155,16 @@ def quizLoad():
     if 'userId' not in session or current_user.id!=session['userId'] or 'quizLocation' not in session:
         flash("You session may have expired")
         return redirect(redirect_url())
-    return send_from_directory(BASE_PATH+'quizzes/'+session['quizLocation'], 'index.html')
+    resp  = make_response(send_from_directory(BASE_PATH+'quizzes/'+session['quizLocation'], 'index.html'))
+    resp.set_cookie("_ga", "", expires=0)
+    return resp
 
 @core.route('quizzes/data/<file>')
 @login_required
 @nocache
 def quizAssest(file):
+    for i in request.cookies:
+        print(i)
     return send_from_directory(BASE_PATH+'quizzes/'+session['quizLocation']+'/data/', file)
 
 @core.route('dw')

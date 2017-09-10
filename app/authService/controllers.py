@@ -55,3 +55,4 @@ def make_admin(admin, app, db):
         default_role = user_datastore.find_or_create_role('end-user', description='End user')
         user_datastore.add_role_to_user(user, default_role)
         db.session.commit()
+
