@@ -7,8 +7,7 @@ from flask_admin import Admin
 from config import config, Config
 from celery import Celery
 
-cel = Celery(__name__, backend=Config.CELERY_RESULT_BACKEND,
-                    broker=Config.CELERY_BROKER_URL)
+cel = Celery(__name__, broker=Config.CELERY_BROKER_URL)
 db = SQLAlchemy()
 bootstrap = Bootstrap()
 admin = Admin(template_mode='bootstrap3')

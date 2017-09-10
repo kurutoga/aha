@@ -1,4 +1,4 @@
-from flask import render_template, jsonify, url_for, request, redirect, flash, send_from_directory, session
+from flask import render_template, jsonify, url_for, request, redirect, flash, send_from_directory, session, make_response
 from flask_security import login_required, current_user
 from .forms import UserEditForm
 
@@ -60,7 +60,6 @@ def segment(id):
 
 @core.route('course/<id>')
 @login_required
-@nocache
 def course(id):
     course = _get_module(id)
     userId = current_user.id
@@ -127,7 +126,6 @@ def lecture(id):
 
 @core.route('quiz/<id>')
 @login_required
-@nocache
 def quiz(id):
     quiz = _get_module(id)
     userId = current_user.id
@@ -147,6 +145,7 @@ def quiz(id):
     session['courseId']=segment.parent
     session['userId']=userId
     session['quizLocation']=quiz.location
+    session.modified = True
     return render_template('quiz.html', quiz=quiz, segment=segment)
 
 @core.route('quizzes/')
