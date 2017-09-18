@@ -21,7 +21,9 @@ Jinja2==2.9.6
 kombu==4.1.0
 Mako==1.0.7
 MarkupSafe==1.0
+olefile==0.44
 passlib==1.7.1
+Pillow==4.2.1
 psycopg2==2.7.1
 pycountry==17.5.14
 python-dateutil==2.6.1
