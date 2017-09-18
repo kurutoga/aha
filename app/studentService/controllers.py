@@ -104,7 +104,7 @@ def _update_course_progress(courseId, userId, userName, segmentDelta, totalDelta
         awardedPercent = (courseProgress.scored_points / courseProgress.total_points) * 100.00
         courseProgress.completed_at = _get_now()
         courseProgress.is_complete  = True
-        if isclose(awardedPercent, courseData.pass_percent, abs_tol=0.1):
+        if awardedPercent >= courseData.pass_percent-0.1:
             course = get_module(courseId)
             rt = create_certificate_pending(courseId, userId, course.name, userName, courseProgress.completed_at, courseProgress.scored_points, courseProgress.total_points)
             print(rt)
