@@ -51,13 +51,15 @@ def update_lecture_progress(id):
 @progress.route('/quiz/new', methods=['POST'])
 def update_quiz_progress():
     if 'quizId' not in session or 'segmentId' not in session or \
-            'courseId' not in session or 'userId' not in session:
+            'courseId' not in session or 'userId' not in session or \
+            'userName' not in session:
         return('', 400)
 
     userId = session['userId']
     segmentId = session['segmentId']
     courseId = session['courseId']
     quizId = session['quizId']
+    userName = session['userName']
 
     ap = float(request.form['sp'])
     pp = float(request.form['ps'])
@@ -65,11 +67,12 @@ def update_quiz_progress():
     tp = float(request.form['tp'])
     awp = (ap/tp)*100
     ut = float(request.form['ut'])
-    quiz_scoring_task.apply_async(args=[quizId, segmentId, courseId, userId, pp, ap, psp, awp, tp, ut])
+    quiz_scoring_task.apply_async(args=[quizId, segmentId, courseId, userId, userName, pp, ap, psp, awp, tp, ut])
 
     del session['courseId']
     del session['quizId']
     del session['segmentId']
     del session['userId']
+    del session['userName']
     return ('', 200)
 

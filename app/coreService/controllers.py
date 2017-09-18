@@ -1,13 +1,16 @@
 from app.classService.controllers import (
         get_module, get_parent_id, get_children,
         get_courses, get_child_by_serial,
-        get_course_data, get_downloadables, get_downloadable
+        get_course_data, get_downloadables, get_downloadable,
+        get_prerequisites, is_prereq, get_prereq_ids
 )
 from app.studentService.controllers import (
         get_course_progress, get_quiz_progress, get_video_progress, 
         get_lecture_progress, get_or_create_segment_progress,
         create_course_progress, get_children_progress, get_segment_progress
 )
+
+from app.certService.controllers import get_certificate
 
 def update_user_profile(id, name, nickname, sex, city, state, country, nationality, occupation):
     from app import db
@@ -103,31 +106,58 @@ def _get_progress(userId):
 def _get_courses_and_status(userId):
     courses = get_courses()
     progress = get_children_progress(courses, userId)
-    available, inprogress, completed = [],[],[]
+    available, inprogress, completed, cid = [],[],[],set()
     for i,course in enumerate(courses):
         if course.is_ready:
             if progress[i]:
                 course.__dict__['progress']=progress[i]
                 if progress[i].is_complete:
                     completed.append(course)
+                    cid.add(course.id)
                 else:
                     inprogress.append(course)
             else:
                 available.append(course)
+    for course in completed:
+        cert = get_certificate(course.id, userId)
+        course.__dict__['cert']=False
+        if cert:
+            course.__dict__['cert']=True
+    for course in available:
+        course.__dict__['locked']=False
+        prereqs = get_prereq_ids(course.id)
+        if len(prereqs - cid):
+            course.__dict__['locked']=True
     return available, inprogress, completed
 
 def _get_segment_and_module_status(courseId, userId):
     segments = get_children(courseId)
     result   = []
+    compseg  = set()
     for segment in segments:
         d = segment.__dict__
+        d['locked']=False
+        segprog  = get_segment_progress(segment.id, userId)
+        if segprog and segprog.is_complete:
+            compseg.add(segment.id)
+        segpreqIds = get_prereq_ids(segment.id)
+        if len(segpreqIds-compseg):
+            d['locked']=True
         modules  = get_children(segment.id)
         progress = get_children_progress(modules, userId)
         d['modules'] = []
+        completeIds=set()
         for i, mod in enumerate(modules):
             dm = mod.__dict__
+            dm['locked']=False
             if progress[i]:
+                print('prog', mod.name, mod.id)
                 dm['progress']=progress[i]
+                completeIds.add(mod.id)
+            prereqIds = get_prereq_ids(mod.id)
+            if len(prereqIds - completeIds):
+                print(mod.name, prereqIds, completeIds)
+                dm['locked']=True
             d['modules'].append(dm)
         result.append(d)
     return result

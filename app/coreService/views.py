@@ -60,6 +60,7 @@ def segment(id):
 
 @core.route('course/<id>')
 @login_required
+@nocache
 def course(id):
     course = _get_module(id)
     userId = current_user.id
@@ -121,7 +122,7 @@ def lecture(id):
     segment = _get_module(lecture.parent)
     session['lectureId']=lecture.id
     session['userId']=userId
-    return send_from_directory(BASE_PATH+'lectures', lecture.location, as_attachment=True)
+    return send_from_directory(BASE_PATH+'lectures', lecture.location, as_attachment=True, attachment_filename=lecture.name+'.'+lecture.location.split('.')[-1])
 
 
 @core.route('quiz/<id>')
@@ -129,6 +130,7 @@ def lecture(id):
 def quiz(id):
     quiz = _get_module(id)
     userId = current_user.id
+    userName = current_user.name
     if not quiz or quiz.type!='quiz':
         flash("Invalid Quiz URL")
         return redirect(redirect_url())
@@ -139,29 +141,26 @@ def quiz(id):
     segment = _get_module(quiz.parent)
     qstatus = _get_status(quiz.id, userId)
     if qstatus:
-        return redirect(url_for('core.course', segment.parent))
+        return redirect(url_for('core.course', id=segment.parent))
     session['quizId']=quiz.id
     session['segmentId']=segment.id
     session['courseId']=segment.parent
     session['userId']=userId
     session['quizLocation']=quiz.location
+    session['userName']=userName
     session.modified = True
     return render_template('quiz.html', quiz=quiz, segment=segment)
 
 @core.route('quizzes/')
 @login_required
-@nocache
 def quizLoad():
     if 'userId' not in session or current_user.id!=session['userId'] or 'quizLocation' not in session:
         flash("You session may have expired")
         return redirect(redirect_url())
-    resp  = make_response(send_from_directory(BASE_PATH+'quizzes/'+session['quizLocation'], 'index.html'))
-    resp.set_cookie("_ga", "", expires=0)
-    return resp
+    return send_from_directory(BASE_PATH+'quizzes/'+session['quizLocation'], 'index.html')
 
 @core.route('quizzes/data/<file>')
 @login_required
-@nocache
 def quizAssest(file):
     for i in request.cookies:
         print(i)

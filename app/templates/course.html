@@ -83,6 +83,9 @@
 {% for segment in segments %}
 <section class="row single gutter course-completed">
     <div class="column">
+        {% if segment['locked'] %}
+        <h4 style="display:inline;"><b>Segment {{loop.index}}: {{segment.name}}</b></h4><p style="display:inline-block;">&nbsp;&nbsp;<img src="/static/lock.png" width="19" height="19" style="display:inline; vertical-align:middle;"></p>
+        {% else %}
         <h4><b>Segment {{loop.index}}: {{segment.name}}</b></h4>
         <table style="width:100%" class="table-course-available">
             <tr>
@@ -95,10 +98,13 @@
                 <tr>
                     {% set progress = mod['progress'] %}
                     {% set type = mod.type %}
+                    {% set locked = mod['locked'] %}
                     {% if type=='quiz' %}
                         <td><img src="/static/quiz.png" height="20" width="20" style="vertical-align:middle; margin-left:8px;"></td>
-                        <td>{% if progress %}{{ mod.name }}{% else %}<a href="/quiz/{{mod.id}}">{{mod.name}}</a>{% endif %}</td>
-                        <td style="font-size:0.9em; font-family:'Open Sans', sans-serif; text-transform: uppercase; text-align:center;">{% if progress %}<img src="/static/tick.png" height="20" width="20" style="vertical-align:middle;">{% else %}
+                        <td>{% if progress or locked %}{{ mod.name }}{% else %}<a href="/quiz/{{mod.id}}">{{mod.name}}</a>{% endif %}</td>
+                        <td style="font-size:0.9em; font-family:'Open Sans', sans-serif; text-transform: uppercase; text-align:center;">{% if progress %}<img src="/static/tick.png" height="20" width="20" style="vertical-align:middle;">{% elif locked %}
+                        <img src="/static/lock.png" height="20" width="20" style="vertical-align:middle;">
+                            {% else %}
 			<img src="/static/scored.png" height="20" width="20" style="vertical-align:middle;">
 			{% endif %}</td>
                         <td style="font-size:0.9em; font-family:'Open Sans', sans-serif; text-transform: uppercase;">{% if progress %}<div class="progress_back"><div class="progress" style="height:100%;width:{{progress.awarded_percent|string}}%; text-align:left;">&nbsp;&nbsp;{{progress.awarded_percent}}&#37;</div></div>{% endif %}</td>
@@ -107,15 +113,23 @@
 			    {% elif mod.type=='video' %}<img src="/static/video.png" height="20" width="20" style="margin-left:8px; vertical-align:middle;">
 			    {% endif %}                            
 			</td>
+                        {% if locked %}
+                        <td>{{mod.name}}</td>
+                        <td style="font-size:0.8em; font-family:'Open Sans', sans-serif; text-transform:uppercase; text-align:center;">
+                            <img src="/static/lock.png" width="22" height="20" style="vertical-align:middle;">
+                        </td>
+                        {% else %}
                         <td><a href="/{{type}}/{{mod.id}}" {% if type=='lecture' %}onclick='lecture_download("{{mod.id}}");'{% endif %}>{{mod.name}}</a></td>
                         <td style="font-size:0.8em; font-family:'Open Sans', sans-serif; text-transform:uppercase; text-align:center;">{% if progress %}
-			<img src="/static/eyes.png" width="22" height="20" style="vertical-align:middle;">
+                            <img src="/static/eyes.png" width="22" height="20" style="vertical-align:middle;">
 			{% endif %}</td>
+                        {% endif %}
                         <td></td>
                     {% endif %}
                 </tr>
             {% endfor %}
         </table>
+     {% endif %}
     </div>
 </section>
 <hr class="divider" />

@@ -42,6 +42,9 @@ def _get_all_dependents(prereqId):
 def _get_prerequisite(modId, prereqId):
     return Prerequisites.query.get([modId, prereqId])
 
+def _get_prerequisites(modId):
+    return Prerequisites.query.filter_by(module_id=modId).all()
+
 def _get_module_count_by_parent(parentId):
     count = Module.query.filter_by(parent=parentId).count()
     return count
@@ -141,12 +144,22 @@ def get_children(parentId):
     return mods.all()
 
 def get_prerequisites(moduleId):
-    prereqs = Prerequisites.query.filter_by(module_id=moduleId).all()
+    prereqs =  _get_prerequisites(moduleId)
     result = []
     for pr in prereqs:
         m = _get_module(pr.prereq_id)
         result.append(m)
     return result
+
+def get_prereq_ids(moduleId):
+    prereqs = _get_prerequisites(moduleId)
+    result = set()
+    for p in prereqs:
+        result.add(p.prereq_id)
+    return result
+
+def is_prereq(moduleId, prereqId):
+    return _is_prereq(moduleId, prereqId)
 
 def get_elders(moduleId):
     mod = _get_module(moduleId)

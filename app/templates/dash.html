@@ -38,7 +38,7 @@
 Online Course Suite in Tools for Analysis of Sensor-Based Behavioral Health Data (AHA!)</a></span></sup>
         </div>
 </header>
-<section class="row single side-right gutter pad-top pad-bottom user-head">
+<section class="row single side-right gutter pad-top pad-bottom user-head noselect">
         <div class="column one">
             {% if current_user.nickname %}
              {% set name=current_user.nickname %}
@@ -61,20 +61,20 @@ Online Course Suite in Tools for Analysis of Sensor-Based Behavioral Health Data
         </div>
 </section>
 {% if completed %}
-<section class="row single gutter course-completed">
+<section class="row single gutter course-completed noselect">
     <div class="column">
         <h4 style="color:#227722;"><b>Completed Courses</b></h4>
-        <table style="width:100%; font-family:'Open Sans', sans-serif; font-size:0.9em;" class="table-course-available">
+        <table style="width:100%; font-family:'Open Sans', sans-serif; font-size:0.9em;" class="table-course-available noselect">
             <tr>
                 <th style="width:61%;"></th>
                 <th>COMPLETED ON</th>
-                <th>CERTIFICATE</th>
+                <th style="text-align:right;">CERTIFICATE</th>
             </tr>
             {% for course in completed %}
                 <tr>
                     <td class="course"><a href="/course/{{course.id}}">{{ course.name }}</a></td>
-                    <td>{% if course.completed_at %}Completed At: {{course.progress['completed_at']}}{% endif %}</td>
-                    <td><a href="/cert/user/{{current_user.id}}/course/{{course.id}}">VIEW CERTIFICATE</a></td>
+                    <td>{{course.progress['completed_at'].strftime('%m-%d-%Y')}}</td>
+                    <td style="text-align:right;">{% if course.__dict__['cert'] %}<a href="/cert/user/{{current_user.id}}/course/{{course.id}}">VIEW CERTIFICATE</a>{% endif %}</td>
                 </tr>
             {% endfor %}
         </table>
@@ -83,10 +83,10 @@ Online Course Suite in Tools for Analysis of Sensor-Based Behavioral Health Data
 <hr class="divider" />
 {% endif %}
 {% if inprogress %}
-<section class="row single gutter course-ongoing">
+<section class="row single gutter course-ongoing noselect">
     <div class="column">
         <h4><b>Courses In-Progress</b></h4>
-        <table style="width:100%">
+        <table style="width:100%" class="noselect">
             <tr>
                 <th style="width:70%;"></th>
                 <th class="progress_header" style="width=30%">Progress</th>
@@ -104,18 +104,18 @@ Online Course Suite in Tools for Analysis of Sensor-Based Behavioral Health Data
 <hr class="divider" />
 {% endif %}
 {% if available %}
-<section class="row single gutter course-available">
+<section class="row single gutter course-available noselect">
     <div class="column">
         <h4 style="color:#222222;"><b>Available Courses</b></h4>
-        <table style="width:100%" class="table-course-available">
+        <table style="width:100%" class="table-course-available noselect">
             <tr>
                 <th></th>
                 <th style="padding-left:2em;">Author</th>
             </tr>
             {% for course in available %}
                 <tr>
-                    <td><a href="/course/{{course.id}}">{{ course.name }}</a></td>
-                    <td style="padding-left:2em;">{{ course.author }}</td>
+                    <td>{% if course.locked %}<img src="/static/lock.png" width="22" height="22" style="vertical-align:middle;">&nbsp;&nbsp;{{ course.name }}{% else %}<a href="/course/{{course.id}}">{{ course.name }}</a>{% endif %}</td>
+                    <td style="padding-left:2em;" class="author">{{ course.author }}</td>
                 </tr>
             {% endfor %}
         </table>

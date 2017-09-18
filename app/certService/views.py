@@ -1,7 +1,8 @@
-from flask import jsonify, session, request
+from flask import jsonify, session, request, send_file
 from flask_security import login_required, current_user
 
 from app.classService.controllers import get_module
+from config import Config
 
 from . import cert
 
@@ -15,14 +16,4 @@ from ..utils import convert_to_uuid, redirect_url, nocache
 @login_required
 def get_cert(user_id, course_id):
     cert = get_certificate(course_id, user_id)
-    course = get_module(course_id)
-    d = {}
-    d['Course Name']=course.name
-    d['Name']=current_user.name
-    d['User Email']= current_user.email
-    d['Scored Points']=cert.scored_points
-    d['Total Points']=cert.total_points
-    d['Complated on']=cert.generated_at
-    return jsonify([d])
-
-
+    return send_file(Config.BASE_PATH+'certs/'+cert.location, attachment_filename='certificate.jpg', as_attachment=True)

@@ -6,6 +6,7 @@
 
 import uuid
 import sys
+import math
 
 from .models import (
         CourseProgress, 
@@ -14,7 +15,11 @@ from .models import (
         VideoProgress, 
         LectureProgress
 )
-from app.classService.controllers import get_module, get_total_children, get_expiry_by_id, get_courses
+from app.classService.controllers import (
+        get_module, get_total_children,
+        get_expiry_by_id, get_courses,
+        get_course_data
+)
 from app.reportingService.controllers import (
         _update_segment_enroll, _update_course_enroll,
         _update_segment_student_finish, _update_course_student_finish,
@@ -22,7 +27,7 @@ from app.reportingService.controllers import (
         _update_quiz_max_score
 )
 from app.certService.controllers import create_certificate_pending
-from app.utils import add_years, _get_now, add_days
+from app.utils import add_years, _get_now, add_days, isclose
 from app       import db
 
 
@@ -87,7 +92,7 @@ def get_children_progress(siblings, userId):
 # update class by changing completed_segments by segmentDelta parameter.
 
 # data field has no use currently. to store comments location information
-def _update_course_progress(courseId, userId, segmentDelta, totalDelta, scoreDelta):
+def _update_course_progress(courseId, userId, userName, segmentDelta, totalDelta, scoreDelta):
     courseProgress                       = get_course_progress(courseId, userId)
     courseProgress.completed_segments   += segmentDelta
     courseProgress.total_points         += totalDelta
@@ -95,14 +100,17 @@ def _update_course_progress(courseId, userId, segmentDelta, totalDelta, scoreDel
     
     totalSegments = get_total_children(courseId)
     if totalSegments <= courseProgress.completed_segments:
-        print("###################### WOOOT! GENERATED CERT ################################")
-        rt = create_certificate_pending(courseId, userId, courseProgress.scored_points, courseProgress.total_points)
-        print(rt)
+        courseData = get_course_data(courseId)
+        awardedPercent = (courseProgress.scored_points / courseProgress.total_points) * 100.00
         courseProgress.completed_at = _get_now()
         courseProgress.is_complete  = True
+        if isclose(awardedPercent, courseData.pass_percent, abs_tol=0.1):
+            course = get_module(courseId)
+            rt = create_certificate_pending(courseId, userId, course.name, userName, courseProgress.completed_at, courseProgress.scored_points, courseProgress.total_points)
+            print(rt)
         _update_course_student_finish(courseId)
 
-def _update_segment_progress(segmentId, courseId, userId, moduleDelta, totalDelta, scoreDelta):
+def _update_segment_progress(segmentId, courseId, userId, userName, moduleDelta, totalDelta, scoreDelta):
     segmentProgress = get_segment_progress(segmentId, userId)
     segmentProgress.completed_modules   += moduleDelta
     segmentProgress.total_points        += totalDelta
@@ -115,7 +123,7 @@ def _update_segment_progress(segmentId, courseId, userId, moduleDelta, totalDelt
         segmentProgress.is_complete  = True
         segmentDelta = 1
         _update_segment_student_finish(segmentId)
-    _update_course_progress(courseId, userId, segmentDelta, totalDelta, scoreDelta)
+    _update_course_progress(courseId, userId, userName, segmentDelta, totalDelta, scoreDelta)
 
 def _create_segment_progress(segmentId, userId, expires_at):
     sp = SegmentProgress(module_id=segmentId, user_id=userId, expires_at=expires_at, completed_modules=0)
@@ -145,7 +153,7 @@ def create_course_progress(courseId, userId):
     db.session.add(cp)
     commit()
 
-def create_quiz_progress(quizId, segmentId, courseId, userId, ppoints, apoints, ppercent, apercent, tpoints, duration):
+def create_quiz_progress(quizId, segmentId, courseId, userId, userName, ppoints, apoints, ppercent, apercent, tpoints, duration):
     sp = get_segment_progress(segmentId, userId)
     if not sp:
         return False
@@ -166,7 +174,7 @@ def create_quiz_progress(quizId, segmentId, courseId, userId, ppoints, apoints, 
     db.session.add(quiz_progress)
     awarded = (max_score*apercent)/100.00
     _update_quiz_stats_add_attempt(quizId, awarded, duration)
-    _update_segment_progress(segmentId, courseId, userId, 1, max_score, awarded)
+    _update_segment_progress(segmentId, courseId, userId, userName, 1, max_score, awarded)
     commit()
 
 def create_update_video_progress(videoId, userId, time, newView=False):

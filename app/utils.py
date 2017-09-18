@@ -39,3 +39,6 @@ def nocache(view):
 
 def convert_to_uuid(s):
     return uuid.UUID(s)
+
+def isclose(a, b, rel_tol=1e-09, abs_tol=0.0):
+    return abs(a-b) <= max(rel_tol * max(abs(a), abs(b)), abs_tol)

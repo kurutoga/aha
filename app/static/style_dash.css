@@ -448,6 +448,14 @@ table.table-course-available tr:hover td{
     opacity: 0.8;
 }
 
+table {
+    font-family: 'Open Sans', sans-serif;
+}
+
+table.table-course-availabe a:focus {
+    text-decoration: none;
+}
+
 .course-enroll-head {
     font-family: 'Open Sans', sans-serif;
     font-size: 0.9em;
@@ -468,4 +476,13 @@ table.course-status td {
     text-transform: uppercase;
 }
 
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
+}
 
