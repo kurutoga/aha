@@ -3,6 +3,8 @@ import uuid
 from sqlalchemy.dialects.postgresql.json import JSONB
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.schema import UniqueConstraint
+from flask_admin.contrib import sqla
+from flask_security import current_user
 from sqlalchemy import PrimaryKeyConstraint
 
 class Module(db.Model):
@@ -17,6 +19,9 @@ class Module(db.Model):
     expires_in = db.Column(db.Integer)
     is_ready = db.Column(db.Boolean)
     __table_args__ = (UniqueConstraint('parent', 'serial', name='_parent_serial_uc'),)
+
+    def __str__(self):
+        return self.name
 
 
 class CourseData(db.Model):
@@ -38,3 +43,36 @@ class Prerequisites(db.Model):
             PrimaryKeyConstraint('module_id', 'prereq_id', name='module_prereq_pk'),
             {}
     )
+
+class CourseDataAdmin(sqla.ModelView):
+    def is_accessible(self):
+        return current_user.has_role('admin')
+
+    can_delete = False
+    can_create = False
+    page_size = 50
+    column_display_pk = True
+
+class ModuleAdmin(sqla.ModelView):
+    def is_accessible(self):
+        return current_user.has_role('admin')
+
+    def _get_parent(view, context, model, name):
+        return Module.query.get(model.module.parent)
+
+    can_create = False
+    can_delete = False
+    column_auto_select_related = True
+
+    page_size = 50
+
+    # Display primary keys in view
+    column_display_pk = True
+
+    column_formatters = {
+        'segment': _get_parent
+    }
+
+    column_searchable_list = ('id', 'name', 'type', 'serial')
+    column_sortable_list = ('name', 'type', 'serial')
+    

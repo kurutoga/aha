@@ -1,6 +1,7 @@
 from flask_security import RoleMixin, UserMixin, current_user
 from flask_security import utils, current_user, login_required, UserMixin, RoleMixin
 from app.authService.forms import *
+from flask.ext.admin.contrib.sqla.ajax import QueryAjaxModelLoader
 from flask_admin.contrib import sqla
 from wtforms.fields import PasswordField
 
@@ -15,9 +16,15 @@ class Nationality(db.Model):
     id      = db.Column(db.Integer(), primary_key=True)
     label   = db.Column(db.String(40))
 
+    def __str__(self):
+         return self.label
+
 class Occupation(db.Model):
     id      = db.Column(db.Integer(), primary_key=True)
     label   = db.Column(db.String(100))
+
+    def __str__(self):
+        return self.label
 
 class Role(db.Model, RoleMixin):
     id = db.Column(db.Integer(), primary_key=True)
@@ -44,7 +51,9 @@ class User(db.Model, UserMixin):
     state               = db.Column(db.String(40))
     country             = db.Column(db.String(40))
     nationality         = db.Column(db.Integer(), db.ForeignKey('nationality.id'))
+    nationality_        = db.relationship(Nationality, backref='users', lazy=True)
     occupation          = db.Column(db.Integer(), db.ForeignKey('occupation.id'))
+    occupation_         = db.relationship(Occupation, backref='users', lazy=True)
     active              = db.Column(db.Boolean())
     confirmed_at        = db.Column(db.DateTime())
     last_login_at       = db.Column(db.DateTime())
@@ -54,6 +63,9 @@ class User(db.Model, UserMixin):
     login_count         = db.Column(db.Integer)
     roles               = db.relationship('Role', secondary=roles_users,
                             backref=db.backref('users', lazy='dynamic'))
+
+    #def __str__(self):
+    #    return self.email
 
 # Customized User model for SQL-Admin
 class UserAdmin(sqla.ModelView):
@@ -65,6 +77,19 @@ class UserAdmin(sqla.ModelView):
 
     # Automatically display human-readable names for the current and available Roles when creating or editing a User
     column_auto_select_related = True
+
+    # Display primary keys in view
+    column_display_pk = True
+
+    column_list = ('id', 'name', 'email', 'sex', 'city', 'state', 'country', 'nationality_', 'occupation_', 'last_login_at', 'current_login_at', 'last_login_ip', 'current_login_ip', 'login_count', 'active')
+
+    column_searchable_list = ('name', 'email')
+
+    column_sortable_list = ('name', 'city', 'email', 'sex', 'state', 'id')
+
+    #form_ajax_refs = {
+    #  'nationality': QueryAjaxModelLoader('nationality', db.session, Nationality, fields=['label'], page_size=50)
+    #}
 
     # Prevent administration of Users unless the currently logged-in user has the "admin" role
     def is_accessible(self):

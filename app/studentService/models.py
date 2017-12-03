@@ -1,8 +1,12 @@
 from app import db
 from flask_sqlalchemy import declared_attr
+from sqlalchemy.ext.hybrid import hybrid_property
+from flask_admin.contrib import sqla
+from flask_security import current_user
 from sqlalchemy.dialects.postgresql.json import JSONB
 from sqlalchemy import PrimaryKeyConstraint
 from app.utils import _get_now
+from ..classService.models import Module
 
 class ModuleProgressMixin(db.Model):
     __abstract__ = True
@@ -13,6 +17,15 @@ class ModuleProgressMixin(db.Model):
     @declared_attr
     def user_id(cls):
         return db.Column('user_id', db.ForeignKey('user.id'), primary_key=True)
+
+    @declared_attr
+    def user(cls):
+        return db.relationship('User', lazy=True)
+
+    @declared_attr
+    def module(cls):
+        return db.relationship('Module', lazy=True)
+
     created_at      = db.Column(db.DateTime(), default=_get_now)
     modified_at     = db.Column(db.DateTime(), onupdate=_get_now)
     is_complete     = db.Column(db.Boolean, default=False)
@@ -64,4 +77,122 @@ class LectureProgress(ModuleProgressMixin):
             {}
     )
 
+class ProgressAdmin(sqla.ModelView):
+    def is_accessible(self):
+        return current_user.has_role('admin')
 
+    def _get_email(view, context, model, name):
+        return model.user.email
+
+    def _get_parent(view, context, model, name):
+        return Module.query.get(model.module.parent)
+
+    def _get_username(view, context, model, name):
+        return model.user.name
+
+    def _get_mod_id(view, context, model, name):
+        return model.module.id
+
+    can_create = False
+    can_edit = False
+    can_delete = False
+    column_auto_select_related = True
+
+    page_size = 50
+
+    # Display primary keys in view
+    column_display_pk = True
+
+    column_formatters = {
+        'id': _get_mod_id,
+        'email': _get_email,
+        'username': _get_username,
+        'segment': _get_parent
+    }
+
+    column_searchable_list = ('user.name', 'user.email', 'module.name', 'module.id')
+    column_sortable_list = (('username', 'user.name'), ('email', 'user.email'), 'module')
+
+class QuizProgressAdmin(ProgressAdmin):
+    column_list = ('id', 'module', 'segment', 'username', 'email', 'passing_points', 'awarded_points', 'total_points', 'duration', 'is_complete')
+
+class VideoProgressAdmin(ProgressAdmin):
+    column_list = ('id', 'module', 'segment', 'username', 'email', 'views', 'duration')
+
+class LectureProgressAdmin(ProgressAdmin):
+    column_list = ('id', 'module', 'segment', 'username', 'email', 'downloads')
+
+class SegmentProgressAdmin(sqla.ModelView): 
+    def is_accessible(self):
+        return current_user.has_role('admin')
+
+    def _get_email(view, context, model, name):
+        return model.user.email
+
+    def _get_parent(view, context, model, name):
+        return Module.query.get(model.module.parent)
+
+    def _get_username(view, context, model, name):
+        return model.user.name
+
+    def _get_mod_id(view, context, model, name):
+        return model.module.id
+ 
+    column_searchable_list = ('user.name', 'user.email', 'module.name', 'module.id')
+    column_sortable_list = (('username', 'user.name'), ('email', 'user.email'), 'module')
+
+    can_create = False
+    can_edit = False
+    can_delete = False
+
+    column_auto_select_related = True
+
+    page_size = 50
+
+    # Display primary keys in view
+    column_display_pk = True
+
+    column_formatters = {
+        'email': _get_email,
+        'username': _get_username,
+        'class': _get_parent,
+        'id': _get_mod_id
+    }
+
+
+    column_list = ('id', 'module', 'class', 'username', 'email', 'completed_modules', 'scored_points', 'total_points')
+
+class CourseProgressAdmin(sqla.ModelView): 
+    def is_accessible(self):
+        return current_user.has_role('admin')
+
+    def _get_email(view, context, model, name):
+        return model.user.email
+
+    def _get_username(view, context, model, name):
+        return model.user.name
+
+    def _get_mod_id(view, context, model, name):
+        return model.module.id
+ 
+    column_searchable_list = ('user.name', 'user.email', 'module.name', 'module.id')
+    column_sortable_list = (('username', 'user.name'), ('email', 'user.email'), 'module')
+
+    can_create = False
+    can_edit = False
+    can_delete = False
+
+    column_auto_select_related = True
+
+    page_size = 50
+
+    # Display primary keys in view
+    column_display_pk = True
+
+    column_formatters = {
+        'id': _get_mod_id,
+        'email': _get_email,
+        'username': _get_username
+    }
+
+    column_list = ('id', 'module', 'username', 'email', 'completed_segments', 'scored_points', 'total_points')
