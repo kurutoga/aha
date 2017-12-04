@@ -1,24 +1,17 @@
+{% from "security/_macros.html" import render_field_with_errors, render_field %}
+{% include "security/_messages.html" %}
 <!DOCTYPE html>
 <!--[if lt IE 7]> <html class="no-svg lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
 <!--[if IE 7]><html class="no-svg lt-ie9 lt-ie8" lang="en"> <![endif]-->
 <!--[if IE 8]><html class="no-svg lt-ie9" lang="en"> <![endif]-->
 <!--[if gt IE 8]><!--><html lang="en"><!--<![endif]-->
-
 <head>
         <meta charset="utf-8">
         <title>AHA | Washington State University</title>
         <link rel="shortcut icon" href="https://repo.wsu.edu/spine/1/favicon.ico" />
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,300italic" rel="stylesheet" type="text/css" >
         <link href="https://repo.wsu.edu/spine/1/spine.min.css" rel="stylesheet" type="text/css" />
-     <link href="static/style_dash.css" rel="stylesheet" type="text/css" />
-       <style>
-            .ilog {
-                color: #EE1122 !important;
-            }
-            .alog {
-                color: #fff !important;
-            }
-        </style>
+    <link href="/static/custom.min.css" rel="stylesheet" type="text/css" />
         <meta http-equiv="X-UA-Compatible" content="IE=EDGE">
         <meta name="viewport" content="width=device-width, user-scalable=yes">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
@@ -32,47 +25,46 @@
 <div id="jacket">
 <div id="binder" class="fluid">
 <main>
-<header class="main-header">
-        <div class="header-group hgroup guttered padded-bottom short">
-                <sup class="sup-header"><span class="sup-header-default"><a href="https://aha.wsu.edu/" rel="home">
-Online Course Suite in Tools for Analysis of Sensor-Based Behavioral Health Data (AHA!)</a></span></sup>
-        </div>
-</header>
-{% with messages = get_flashed_messages() %}
-   {% if messages %}
-     <ul class="flashes">
-        {% for message in messages %}
-         <div class="message_flash" style="color:orange;">{{ message }}</div>
-        {% endfor %}
-    </ul>
-  {% endif %}
- {% endwith %}
-
-<section class="row gutter pad-top pad-left">
-
-    <div class="column one">
-        <h5><a href="/repo/courses">Course Repository</a></h5>
-        <h5><a href="/admin">Database Viewer</a></h5>
-        <h5><a href="/stats">Course Statistics & Reporting</a></h5>
-        <h5><a href="/student/verify">Verify a student</a></h5>
-        <h5>Generate a course certificate</h5>
-        <h5>View Admin Documentation</h5>
-        <h5>View Developer Documentation</h5>
-        <h5><a href="https://github.com/kurutoga/aha">Go to Codebase</a></h5>
-    </div>
-
-</section>
-<hr class="divider">
 <section class="row single gutter pad-top">
-        <div class="column">
-                <article class="home-contact">
-               <p><a href="http://casas.wsu.edu/">CASAS</a>, PO Box 642752, Washington State University, Pullman WA 99164-2752 <br /> (509) 335-4985, <a href="mailto:cook@eecs.wsu.edu">cook@eecs.wsu.edu</a> </p>
-               <p>&copy; 2017 Washington State University | <a href="http://access.wsu.edu">Accessibility</a> | <a href="http://policies.wsu.edu/">Policies</a> | <a href="http://copyright.wsu.edu/">Copyright</a> </p>
-        </article>
-    </div>
+    <div class="column"><h2 class="aha">Student Information</h2></div>
 </section>
+<section class="row gutter pad-bottom pad-top pad-right">
+    <div class="column one">
+           <article class="signin">
+ <form action="#" method="POST" name="edit_user_profile_form">
+     {{ form.hidden_tag() }}
+   <label>Full Name:</label>
+  {{ render_field(form.name, class_="form-control pst") }}
+   <label>What should we call you?</label>
+  {{ render_field(form.nickname, class_="form-control pst") }}
+  <label>Sex:</label>
+  {{ render_field(form.sex, class_="form-control pst") }}
+  <label>City:</label>
+  {{ render_field(form.city, class_="form-control pst") }}
+  <label>State:</label>
+  {{ render_field(form.state, class_="form-control pst") }}
+  <label>Country:</label>
+  {{ render_field(form.country, class_="form-control pst") }}
+  <label>Nationality:</label>
+  {{ render_field(form.nationality, class_="form-control pst") }}
+  <label>Occupation:</label>
+  {{ render_field(form.occupation, class_="form-control pst") }}
+  <br>
+   {% for field in form.errors %}
+   {% for error in form.errors[field] %}
+      <div class="alert alert-error">
+          <strong>Error!</strong> {{error}}
+      </div>
+   {% endfor %}
+   {% endfor %}
 
-
+ <br>
+  <input type="submit" name="btn" value="Update Profile" id="btn" title="Update Student Profile" class="changebutton pad-top">
+</form>
+           
+         </article>
+        </div>
+</section>
 </main>
 
 <div id="spine" class="spine-column shelved darker bleed">
@@ -99,7 +91,6 @@ Online Course Suite in Tools for Analysis of Sensor-Based Behavioral Health Data
 <section id="spine-navigation" class="spine-navigation">
 
         <nav class="spine-sitenav">
-
                 <ul>
                         <!--
                         NAVIGATION: Your navigation list here
@@ -108,15 +99,13 @@ Online Course Suite in Tools for Analysis of Sensor-Based Behavioral Health Data
                         • Replace example navigation list below -->
                         <li><a href="/">Site Home</a></li>
                         {% if current_user.has_role('admin') %}
-                        <li class="alog"><b><a href="/admin">User Admin</a></b></li>
+                        <li class="alog"><b><a href="/stats">Reporting Service</a></b></li>
                         {% endif %}
                         <li><a href="/repo/courses">Course Repository</a></li>
                         <li><a href="/dw">Downloadable Materials</a></li>
-                        <li><a href="/stats/">Course Statistics &amp; Reporting</a></li> 
+                        <li><a href="/admin">User Admin</a></li> 
                         <li class="ilog"><b><a href="/auth/logout" class="ilog">Logout</a></b></li>
-
                 </ul>
-
         </nav>
 
         <nav class="spine-offsitenav">
@@ -125,6 +114,7 @@ Online Course Suite in Tools for Analysis of Sensor-Based Behavioral Health Data
                 <li><a href="https://www.nih.gov/" class="external">NIH</a></li>
         </ul>
 </nav>
+
 </section><!-- #navigation -->
 
 <!-- Social and Global Links -->
@@ -156,32 +146,7 @@ Online Course Suite in Tools for Analysis of Sensor-Based Behavioral Health Data
 </div>
 </div>
 </div>
-<div id="contact-details" itemscope itemtype="http://schema.org/Organization">
-        <span itemprop="department"  content="Voiland College of Engineering and Architecture"></span>
-        <span itemprop="name" content="Washington State University"></span>
-        <div itemprop="address" itemscope itemtype="http://schema.org/PostalAddress">
-                <span itemprop="location" content="Washington State University"></span>
-                <span itemprop="streetAddress" content="PO Box 642714"></span>
-                <span itemprop="addressLocality" content="Pullman"></span>
-                <span itemprop="addressRegion" content="WA"></span>
-                <span itemprop="postalCode" content="99164-2714"></span>
-        </div>
-        <span itemprop="telephone" content="(509) 335-6613"></span>
-        <span itemprop="email" content="aha@wsu.edu"></span>
-        <span itemprop="contactPoint" content="https://vcea.wsu.edu/directory/"></span>
-        <span itemprop="url" content="http://vcea.wsu.edu"></span>
-</div>
 </body>
-<script>
-$(function() {
-// setTimeout() function will be fired after page is loaded
-// it will wait for 5 sec. and then will fire
-// $(".message_flash").hide() function
-  setTimeout(function() {
-      $(".message_flash").hide('blind', {}, 500)
-  }, 5000);
-})   
-</script>
 </html>
 
 

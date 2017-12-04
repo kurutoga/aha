@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import TextField, SelectField
-from wtforms.validators import Required
+from wtforms import TextField, SelectField, StringField
+from wtforms.validators import Required, DataRequired, Email
 import pycountry
 
 nationalities = [ "Caucasian", "Hispanic", "African American", "Native American", "Asian", \
@@ -24,4 +24,5 @@ class UserEditForm(FlaskForm):
     nationality = SelectField(u'Nationality', choices=[(i+1, n) for i,n in enumerate(nationalities)], coerce=int)
     occupation = SelectField(u'Occupation', choices=[(i+1, n) for i,n in enumerate(occupations)], coerce=int)
 
-
+class UserVerifyForm(FlaskForm):
+    email = StringField('Student Email Address', [DataRequired(), Email()])

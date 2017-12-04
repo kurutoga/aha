@@ -1,6 +1,6 @@
 from flask import render_template, jsonify, url_for, request, redirect, flash, send_from_directory, session, make_response
 from flask_security import login_required, current_user
-from .forms import UserEditForm
+from .forms import UserEditForm, UserVerifyForm
 
 from . import core
 from .controllers import (
@@ -8,7 +8,7 @@ from .controllers import (
         _get_courses_and_status, _get_courses,
         _get_next_mod, _get_prev_mod, _get_type, _get_course_data,
         update_user_profile, _get_progress, _get_downloadable,
-        _get_downloadables
+        _get_downloadables, confirm_user_email, get_user_by_email, _get_all_progress
 )
 from ..utils import convert_to_uuid, redirect_url, nocache, _get_now
 from config import Config
@@ -197,9 +197,63 @@ def edit_profile():
     form.occupation.data = current_user.occupation
     return render_template('edit_user.html', form=form)
 
+@core.route('user/info/<email>', methods=['POST', 'GET'])
+@login_required
+def edit_profile_admin(email):
+    if not current_user.has_role('admin'):
+        flash("Error. You do not have the permission to view this resource")
+        return redirect(url_for('core.home'))
+    user = get_user_by_email(email)
+    if not user:
+        flash("Error. Invalid email provided.")
+        return redirect(url_for('core.home'))
+    userId = user.id
+    form = UserEditForm()
+    if form.validate_on_submit():
+        update_user_profile(userId, form.name.data, form.nickname.data, form.sex.data, form.city.data, \
+                             form.state.data, form.country.data, form.nationality.data, form.occupation.data)
+        return redirect(url_for('stats.reporting'))
+    form.name.data = user.name
+    form.nickname.data = user.nickname
+    form.sex.data = user.sex
+    form.city.data = user.city
+    form.state.data = user.state
+    form.country.data = user.country
+    form.nationality.data = user.nationality
+    form.occupation.data = user.occupation
+    return render_template('edit_user_admin.html', form=form)
+
 @core.route('user/scores')
 @login_required
 def show_user_progress():
     userId = current_user.id
     progress = _get_progress(userId)
     return render_template('show_progress.html', progress=progress)
+
+@core.route('user/allscores/<email>')
+@login_required
+def show_all_user_progress(email):
+    if not current_user.has_role('admin'):
+        flash("You do not permission to view this resource")
+        return redirect(url_for('core.home'))
+    user = get_user_by_email(email)
+    if not user:
+        flash("(ERROR) Invalid Email Address.")
+        return redirect(url_for('core.home'))
+    progress = _get_all_progress(user.id)
+    return render_template('progress.html', progress=progress, name=user.name)
+
+@core.route('student/verify', methods=['POST', 'GET'])
+@login_required
+def verify_student():
+    if not current_user.has_role('admin'):
+        return redirect(url_for('core.home'))
+    form = UserVerifyForm()
+    if form.validate_on_submit():
+        success = confirm_user_email(form.email.data)
+        if not success:
+            flash("Error Verifying Email Address. Invalid Email")
+            return redirect(url_for('core.home'))
+        flash("success")
+        return redirect(url_for('core.home'))
+    return render_template('verify.html', verify_user_form=form)

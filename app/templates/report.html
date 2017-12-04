@@ -10,7 +10,7 @@
         <link rel="shortcut icon" href="https://repo.wsu.edu/spine/1/favicon.ico" />
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,300italic" rel="stylesheet" type="text/css" >
         <link href="https://repo.wsu.edu/spine/1/spine.min.css" rel="stylesheet" type="text/css" />
-     <link href="static/style_dash.css" rel="stylesheet" type="text/css" />
+     <link href="/static/style_dash.css" rel="stylesheet" type="text/css" />
        <style>
             .ilog {
                 color: #EE1122 !important;
@@ -34,44 +34,29 @@
 <main>
 <header class="main-header">
         <div class="header-group hgroup guttered padded-bottom short">
-                <sup class="sup-header"><span class="sup-header-default"><a href="https://aha.wsu.edu/" rel="home">
-Online Course Suite in Tools for Analysis of Sensor-Based Behavioral Health Data (AHA!)</a></span></sup>
+                <sup class="sup-header">
+                    <span class="sup-header-default">
+                        <a href="https://aha.wsu.edu/" rel="home">
+                           Course Statistics & Reporting
+                        </a>
+                    </span>
+                </sup>
         </div>
 </header>
-{% with messages = get_flashed_messages() %}
-   {% if messages %}
-     <ul class="flashes">
-        {% for message in messages %}
-         <div class="message_flash" style="color:orange;">{{ message }}</div>
-        {% endfor %}
-    </ul>
-  {% endif %}
- {% endwith %}
 
 <section class="row gutter pad-top pad-left">
 
-    <div class="column one">
-        <h5><a href="/repo/courses">Course Repository</a></h5>
-        <h5><a href="/admin">Database Viewer</a></h5>
-        <h5><a href="/stats">Course Statistics & Reporting</a></h5>
-        <h5><a href="/student/verify">Verify a student</a></h5>
-        <h5>Generate a course certificate</h5>
-        <h5>View Admin Documentation</h5>
-        <h5>View Developer Documentation</h5>
-        <h5><a href="https://github.com/kurutoga/aha">Go to Codebase</a></h5>
+    <div class="column one padded-left">
+        <h6><a href="/stats/student/progress">View Student Progress</a></h6>
+        <h6><a href="/stats/student/info">View Student Information</a></h6>
+        <h6><a href="/stats/courses">View Overall Course Statistics</a></h6>
+        <h6>Check Demographic Statistics</h6>
+        <h6>View (AHA) as a student</h6>
+        <h6>Get Raw Quiz XML for a student</h6>
+        <h6>Check machine information</h6>
     </div>
 
 </section>
-<hr class="divider">
-<section class="row single gutter pad-top">
-        <div class="column">
-                <article class="home-contact">
-               <p><a href="http://casas.wsu.edu/">CASAS</a>, PO Box 642752, Washington State University, Pullman WA 99164-2752 <br /> (509) 335-4985, <a href="mailto:cook@eecs.wsu.edu">cook@eecs.wsu.edu</a> </p>
-               <p>&copy; 2017 Washington State University | <a href="http://access.wsu.edu">Accessibility</a> | <a href="http://policies.wsu.edu/">Policies</a> | <a href="http://copyright.wsu.edu/">Copyright</a> </p>
-        </article>
-    </div>
-</section>
-
 
 </main>
 
@@ -108,13 +93,12 @@ Online Course Suite in Tools for Analysis of Sensor-Based Behavioral Health Data
                         • Replace example navigation list below -->
                         <li><a href="/">Site Home</a></li>
                         {% if current_user.has_role('admin') %}
-                        <li class="alog"><b><a href="/admin">User Admin</a></b></li>
+                        <li class="alog"><b><a href="#">Reporting Service</a></b></li>
                         {% endif %}
                         <li><a href="/repo/courses">Course Repository</a></li>
                         <li><a href="/dw">Downloadable Materials</a></li>
-                        <li><a href="/stats/">Course Statistics &amp; Reporting</a></li> 
+                        <li><a href="/admin">User Admin</a></li> 
                         <li class="ilog"><b><a href="/auth/logout" class="ilog">Logout</a></b></li>
-
                 </ul>
 
         </nav>
@@ -125,6 +109,7 @@ Online Course Suite in Tools for Analysis of Sensor-Based Behavioral Health Data
                 <li><a href="https://www.nih.gov/" class="external">NIH</a></li>
         </ul>
 </nav>
+
 </section><!-- #navigation -->
 
 <!-- Social and Global Links -->
@@ -172,16 +157,6 @@ Online Course Suite in Tools for Analysis of Sensor-Based Behavioral Health Data
         <span itemprop="url" content="http://vcea.wsu.edu"></span>
 </div>
 </body>
-<script>
-$(function() {
-// setTimeout() function will be fired after page is loaded
-// it will wait for 5 sec. and then will fire
-// $(".message_flash").hide() function
-  setTimeout(function() {
-      $(".message_flash").hide('blind', {}, 500)
-  }, 5000);
-})   
-</script>
 </html>
 
 

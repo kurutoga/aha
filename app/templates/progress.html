@@ -10,7 +10,7 @@
         <link rel="shortcut icon" href="https://repo.wsu.edu/spine/1/favicon.ico" />
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,300italic" rel="stylesheet" type="text/css" >
         <link href="https://repo.wsu.edu/spine/1/spine.min.css" rel="stylesheet" type="text/css" />
-     <link href="static/style_dash.css" rel="stylesheet" type="text/css" />
+     <link href="/static/style_dash.css" rel="stylesheet" type="text/css" />
        <style>
             .ilog {
                 color: #EE1122 !important;
@@ -34,35 +34,100 @@
 <main>
 <header class="main-header">
         <div class="header-group hgroup guttered padded-bottom short">
-                <sup class="sup-header"><span class="sup-header-default"><a href="https://aha.wsu.edu/" rel="home">
-Online Course Suite in Tools for Analysis of Sensor-Based Behavioral Health Data (AHA!)</a></span></sup>
+            <sup class="sup-header"><span class="sup-header-default"><a href="/stats" rel="home">Student Progress for {{name}}</a></span></sup>
         </div>
 </header>
-{% with messages = get_flashed_messages() %}
-   {% if messages %}
-     <ul class="flashes">
-        {% for message in messages %}
-         <div class="message_flash" style="color:orange;">{{ message }}</div>
-        {% endfor %}
-    </ul>
-  {% endif %}
- {% endwith %}
-
-<section class="row gutter pad-top pad-left">
-
+{% if progress %}
+{% for course in progress %}
+<br>
+<section class="row single course-status-section pad-left">
     <div class="column one">
-        <h5><a href="/repo/courses">Course Repository</a></h5>
-        <h5><a href="/admin">Database Viewer</a></h5>
-        <h5><a href="/stats">Course Statistics & Reporting</a></h5>
-        <h5><a href="/student/verify">Verify a student</a></h5>
-        <h5>Generate a course certificate</h5>
-        <h5>View Admin Documentation</h5>
-        <h5>View Developer Documentation</h5>
-        <h5><a href="https://github.com/kurutoga/aha">Go to Codebase</a></h5>
+        <h4 style="padding:0;"><b>Course: {{course.name}}</b></h4>
+        {% if 'progress' in course %}
+        <h5 style="margin:0; padding:0; margin-bottom: 1em;">Points: {{course['progress']['scored_points']}}/{{course['progress']['total_points']}} Completed Segments: {{course['progress']['completed_segments']}}</h5>
+        {% endif %}
     </div>
-
 </section>
-<hr class="divider">
+{% for segment in course['segments'] %}
+<section class="row single course-completed" style="padding-left: 2.5rem;">
+    <div class="column">
+        <h4 style="padding:0;"><b>Segment {{loop.index}}: {{segment.name}}</b></h4>
+        {% if 'progress' in segment %}
+        <h5 style="margin:0; padding:0; margin-bottom:1em;">Points: {{segment['progress']['scored_points']}}/{{segment['progress']['total_points']}} Completed Modules: {{segment['progress']['completed_modules']}}</h5>
+        {% endif %}
+        <hr class="divider"/>
+        <h4 style="padding:0;">Quiz Progress</h4>
+        <table style="width:100%" class="table-course-available">
+            <tr>
+                <th style="width:36%;"></th>
+                <th style="width:16%; font-size:0.9em; font-family:'Open Sans', sans-serif; text-transform: uppercase; text-align:center;">pass points</th>
+                <th style="width:16%; font-size:0.9em; font-family:'Open Sans', sans-serif; text-transform: uppercase; text-align:center;">scored points</th>
+                <th style="width:16%; font-size:0.9em; font-family:'Open Sans', sans-serif; text-transform: uppercase; text-align:center;">total points</th>
+                <th style="font-size:0.9em; font-family:'Open Sans', sans-serif; text-transform: uppercase; text-align:left;">duration</th>
+            </tr>
+            {% for quiz in segment['quizzes'] %}
+                <tr>
+                    {% set progress = quiz['progress'] %}
+                    <td>{{ quiz.name }}</td>
+                    {% if progress %}
+                     <td style="font-size:0.9em; font-family:'Open Sans', sans-serif; text-transform: uppercase; text-align:center; vertical-align:middle;">{{progress['passing_points']}}</td>
+                     <td style="font-size:0.9em; font-family:'Open Sans', sans-serif; text-transform: uppercase; text-align:center; vertical-align:middle;">{{progress['awarded_points']}}</td>
+                     <td style="font-size:0.9em; font-family:'Open Sans', sans-serif; text-transform: uppercase; text-align:center; vertical-align:middle;">{{progress['total_points']}}</td>
+                     <td style="font-size:0.9em; font-family:'Open Sans', sans-serif; text-transform: uppercase; text-align:center; vertical-align:middle;">{{progress['duration']}}</td>
+                     {% else %}
+                     <td></td><td></td><td></td><td></td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </table> 
+        <hr class="divider"/>
+        <h4 style="padding:0;">Video Progress</h4>
+        <table style="width:100%" class="table-course-available">
+            <tr>
+                <th style="width:44%;"></th>
+                <th style="width:28%; font-size:0.9em; font-family:'Open Sans', sans-serif; text-transform: uppercase; text-align:center;">duration viewed (in sec)</th>
+                <th style="font-size:0.9em; font-family:'Open Sans', sans-serif; text-transform: uppercase; text-align:center;">number of views</th>
+            </tr>
+            {% for video in segment['videos'] %}
+                <tr>
+                    {% set progress = video['progress'] %}
+                    <td>{{ video.name }}</td>
+                    {% if progress %}
+                     <td style="font-size:0.9em; font-family:'Open Sans', sans-serif; text-transform: uppercase; text-align:center; vertical-align:middle;">{{progress['duration']}}</td>
+                     <td style="font-size:0.9em; font-family:'Open Sans', sans-serif; text-transform: uppercase; text-align:center; vertical-align:middle;">{{progress['views']}}</td>
+                     {% else %}
+                     <td></td><td></td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </table>
+        <hr class="divider"/>
+        <h4 style="padding:0;">Lecture Progress</h4>
+        <table style="width:100%" class="table-course-available">
+            <tr>
+                <th style="width:64%;"></th>
+                <th style="font-size:0.9em; font-family:'Open Sans', sans-serif; text-transform: uppercase; text-align:center;">number of downloads</th>
+            </tr>
+            {% for lecture in segment['lectures'] %}
+                <tr>
+                    {% set progress = lecture['progress'] %}
+                    <td>{{ lecture.name }}</td>
+                    {% if progress %}
+                     <td style="font-size:0.9em; font-family:'Open Sans', sans-serif; text-transform: uppercase; text-align:center; vertical-align:middle;">{{progress['downloads']}}</td>
+                     {% else %}
+                     <td></td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </table>
+
+
+    </div>
+</section>
+<hr class="divider" />
+{% endfor %}
+{% endfor %}
+{% endif %}
 <section class="row single gutter pad-top">
         <div class="column">
                 <article class="home-contact">
@@ -71,8 +136,6 @@ Online Course Suite in Tools for Analysis of Sensor-Based Behavioral Health Data
         </article>
     </div>
 </section>
-
-
 </main>
 
 <div id="spine" class="spine-column shelved darker bleed">
@@ -95,7 +158,6 @@ Online Course Suite in Tools for Analysis of Sensor-Based Behavioral Health Data
 
         <!-- Actions generated by spine.js end up here -->
 </section><!--/#wsu-actions-->
-
 <section id="spine-navigation" class="spine-navigation">
 
         <nav class="spine-sitenav">
@@ -108,13 +170,12 @@ Online Course Suite in Tools for Analysis of Sensor-Based Behavioral Health Data
                         • Replace example navigation list below -->
                         <li><a href="/">Site Home</a></li>
                         {% if current_user.has_role('admin') %}
-                        <li class="alog"><b><a href="/admin">User Admin</a></b></li>
+                        <li class="alog"><b><a href="/stats">Reporting Service</a></b></li>
                         {% endif %}
                         <li><a href="/repo/courses">Course Repository</a></li>
                         <li><a href="/dw">Downloadable Materials</a></li>
-                        <li><a href="/stats/">Course Statistics &amp; Reporting</a></li> 
+                        <li><a href="/admin">User Admin</a></li> 
                         <li class="ilog"><b><a href="/auth/logout" class="ilog">Logout</a></b></li>
-
                 </ul>
 
         </nav>
@@ -125,6 +186,7 @@ Online Course Suite in Tools for Analysis of Sensor-Based Behavioral Health Data
                 <li><a href="https://www.nih.gov/" class="external">NIH</a></li>
         </ul>
 </nav>
+
 </section><!-- #navigation -->
 
 <!-- Social and Global Links -->
@@ -172,16 +234,6 @@ Online Course Suite in Tools for Analysis of Sensor-Based Behavioral Health Data
         <span itemprop="url" content="http://vcea.wsu.edu"></span>
 </div>
 </body>
-<script>
-$(function() {
-// setTimeout() function will be fired after page is loaded
-// it will wait for 5 sec. and then will fire
-// $(".message_flash").hide() function
-  setTimeout(function() {
-      $(".message_flash").hide('blind', {}, 500)
-  }, 5000);
-})   
-</script>
 </html>
 
 

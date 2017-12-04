@@ -3,6 +3,7 @@ from flask_sqlalchemy import declared_attr
 from flask_admin.contrib import sqla
 from flask_security import current_user
 from flask_admin.contrib import sqla
+
 from ..classService.models import Module
 
 from app.utils import _get_now

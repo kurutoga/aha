@@ -1,24 +1,17 @@
+{% from "security/_macros.html" import render_field_with_errors, render_field %}
+{% include "security/_messages.html" %}
 <!DOCTYPE html>
 <!--[if lt IE 7]> <html class="no-svg lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
 <!--[if IE 7]><html class="no-svg lt-ie9 lt-ie8" lang="en"> <![endif]-->
 <!--[if IE 8]><html class="no-svg lt-ie9" lang="en"> <![endif]-->
 <!--[if gt IE 8]><!--><html lang="en"><!--<![endif]-->
-
 <head>
         <meta charset="utf-8">
         <title>AHA | Washington State University</title>
         <link rel="shortcut icon" href="https://repo.wsu.edu/spine/1/favicon.ico" />
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,300italic" rel="stylesheet" type="text/css" >
         <link href="https://repo.wsu.edu/spine/1/spine.min.css" rel="stylesheet" type="text/css" />
-     <link href="static/style_dash.css" rel="stylesheet" type="text/css" />
-       <style>
-            .ilog {
-                color: #EE1122 !important;
-            }
-            .alog {
-                color: #fff !important;
-            }
-        </style>
+    <link href="/static/custom.min.css" rel="stylesheet" type="text/css" />
         <meta http-equiv="X-UA-Compatible" content="IE=EDGE">
         <meta name="viewport" content="width=device-width, user-scalable=yes">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
@@ -26,7 +19,16 @@
         <script src="https://repo.wsu.edu/spine/1/spine.min.js"></script>
         <!-- COMPATIBILITY -->
         <!--[if lt IE 9]><script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-        <noscript><style>#spine .spine-sitenav ul ul li { display: block !important; }</style></noscript>
+        <noscript><style>#spine .spine-sitenav ul ul li { display: block !important; }</style></noscript> 
+        <style>
+            .ilog {
+                color: #EE1122 !important;
+            }
+            .alog {
+                color: #fff !important;
+            }
+        </style>
+
 </head>
 <body>
 <div id="jacket">
@@ -34,34 +36,37 @@
 <main>
 <header class="main-header">
         <div class="header-group hgroup guttered padded-bottom short">
-                <sup class="sup-header"><span class="sup-header-default"><a href="https://aha.wsu.edu/" rel="home">
-Online Course Suite in Tools for Analysis of Sensor-Based Behavioral Health Data (AHA!)</a></span></sup>
+                <sup class="sup-header"><span class="sup-header-default">Course Statistics &amp; Reporting</span></sup>
         </div>
 </header>
-{% with messages = get_flashed_messages() %}
-   {% if messages %}
-     <ul class="flashes">
-        {% for message in messages %}
-         <div class="message_flash" style="color:orange;">{{ message }}</div>
-        {% endfor %}
-    </ul>
-  {% endif %}
- {% endwith %}
 
-<section class="row gutter pad-top pad-left">
 
-    <div class="column one">
-        <h5><a href="/repo/courses">Course Repository</a></h5>
-        <h5><a href="/admin">Database Viewer</a></h5>
-        <h5><a href="/stats">Course Statistics & Reporting</a></h5>
-        <h5><a href="/student/verify">Verify a student</a></h5>
-        <h5>Generate a course certificate</h5>
-        <h5>View Admin Documentation</h5>
-        <h5>View Developer Documentation</h5>
-        <h5><a href="https://github.com/kurutoga/aha">Go to Codebase</a></h5>
-    </div>
-
+<section class="row single gutter pad-top">
+    <div class="column"><h2 class="aha">{{head}}</h2></div>
 </section>
+<section class="row single gutter pad-bottom pad-top pad-right">
+    <div class="column one">
+           <article class="signin"> 
+               <form action="{{action}}" method="POST" name="form">
+                  {{ form.hidden_tag() }}
+                  <label>Enter Student Email:</label>
+                  {{ render_field(form.email, class_="form-control pst") }}
+                  <br> 
+                  {% for field in form.errors %}
+                  {% for error in form.errors[field] %}
+                  <div class="alert alert-error">
+                 <strong>Error!</strong> {{error}}
+                  </div>
+                  {% endfor %}
+                  {% endfor %}
+                 <br>
+                 <br>
+                 <input type="submit" name="btn" value="Submit" id="btn" title="Submit" class="changebutton pad-top">
+              </form>
+         </article>
+    </div>
+</section>
+</main>
 <hr class="divider">
 <section class="row single gutter pad-top">
         <div class="column">
@@ -108,7 +113,7 @@ Online Course Suite in Tools for Analysis of Sensor-Based Behavioral Health Data
                         • Replace example navigation list below -->
                         <li><a href="/">Site Home</a></li>
                         {% if current_user.has_role('admin') %}
-                        <li class="alog"><b><a href="/admin">User Admin</a></b></li>
+                        <li><a href="/admin">User Admin</a></li>
                         {% endif %}
                         <li><a href="/repo/courses">Course Repository</a></li>
                         <li><a href="/dw">Downloadable Materials</a></li>
@@ -126,7 +131,6 @@ Online Course Suite in Tools for Analysis of Sensor-Based Behavioral Health Data
         </ul>
 </nav>
 </section><!-- #navigation -->
-
 <!-- Social and Global Links -->
 <footer class="spine-footer">
         <nav id="wsu-social-channels" class="spine-social-channels">
@@ -156,32 +160,7 @@ Online Course Suite in Tools for Analysis of Sensor-Based Behavioral Health Data
 </div>
 </div>
 </div>
-<div id="contact-details" itemscope itemtype="http://schema.org/Organization">
-        <span itemprop="department"  content="Voiland College of Engineering and Architecture"></span>
-        <span itemprop="name" content="Washington State University"></span>
-        <div itemprop="address" itemscope itemtype="http://schema.org/PostalAddress">
-                <span itemprop="location" content="Washington State University"></span>
-                <span itemprop="streetAddress" content="PO Box 642714"></span>
-                <span itemprop="addressLocality" content="Pullman"></span>
-                <span itemprop="addressRegion" content="WA"></span>
-                <span itemprop="postalCode" content="99164-2714"></span>
-        </div>
-        <span itemprop="telephone" content="(509) 335-6613"></span>
-        <span itemprop="email" content="aha@wsu.edu"></span>
-        <span itemprop="contactPoint" content="https://vcea.wsu.edu/directory/"></span>
-        <span itemprop="url" content="http://vcea.wsu.edu"></span>
-</div>
 </body>
-<script>
-$(function() {
-// setTimeout() function will be fired after page is loaded
-// it will wait for 5 sec. and then will fire
-// $(".message_flash").hide() function
-  setTimeout(function() {
-      $(".message_flash").hide('blind', {}, 500)
-  }, 5000);
-})   
-</script>
 </html>
 
 

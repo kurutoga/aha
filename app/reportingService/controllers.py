@@ -1,6 +1,9 @@
 import uuid
 import sys
 
+from app.utils import _get_now
+from app.classService.controllers import get_courses, get_children
+
 from .models import (
         CourseStats,
         SegmentStats,
@@ -112,4 +115,43 @@ def _update_course_student_finish(courseId):
 def _update_course_enroll(courseId):
     cs = get_course_stats(courseId)
     cs.current_students += 1
+
+def _get_all_stats():
+    courses = get_courses()
+    res = []
+    for course in courses:
+        cp = get_course_stats(course.id)
+        if cp:
+            segments=get_children(course.id)
+            course.__dict__['stats']=cp
+            course.__dict__['segments']=[]
+            for segment in segments:
+                sp = get_segment_stats(segment.id)
+                if sp:
+                    segment.__dict__['stats']=sp
+                    segment.__dict__['quizzes']=[]
+                    segment.__dict__['videos']=[]
+                    segment.__dict__['lectures']=[]
+                    modules = get_children(segment.id)
+                    for mod in modules:
+                        if mod.type=='quiz':
+                            mp = get_quiz_stats(mod.id)
+                            if mp:
+                                mod.__dict__['stats']=mp
+                                segment.__dict__['quizzes'].append(mod.__dict__)
+                        elif mod.type=='video':
+                            mp = get_video_stats(mod.id)
+                            if mp:
+                                mod.__dict__['stats']=mp
+                                segment.__dict__['videos'].append(mod.__dict__)
+                        elif mod.type=='lecture':
+                            mp = get_lecture_stats(mod.id)
+                            if mp:
+                                mod.__dict__['stats']=mp
+                                segment.__dict__['lectures'].append(mod.__dict__)
+                    course.__dict__['segments'].append(segment.__dict__)
+            res.append(course.__dict__)
+    return res
+
+
 

@@ -92,13 +92,14 @@
                         • Active link should be denoted with an "active" or "current" link on the link's parent li element.
                         • First link should be a home link (otherwise, in exceptional cases, add "homeless" class to #site nav)
                         • Replace example navigation list below -->
-                        <li><a href="/">Site Home</a></li>
-                        {% if current_user.has_role('admin') %}
-                        <li class="alog"><b><a href="/admin">User Admin</a></b></li>
-                        {% endif %}
-                        <li class="ilog"><b><a href="/auth/logout" class="ilog">Logout</a></b></li>
+                        <li><a href="/">Site Home</a></li> 
                         <li class="current"><a href="/dw">Downloadable Materials</a></li>
-                        <li class="external"><a href="https://www.youtube.com/channel/UCnBkXlJJgngQPSMWx5uSaWQ" target="_blank">AHA Video Playlist</a></li>
+                        {% if current_user.has_role('admin') %}
+                        <li><a href="/admin">User Admin</a></li>
+                        <li><a href="/stats">Course Statistics &amp; Reporting</a></li>
+                        {% endif %}
+                        <li class="external"><a href="https://www.youtube.com/channel/UCnBkXlJJgngQPSMWx5uSaWQ" target="_blank">AHA Video Playlist</a></li> 
+                        <li class="ilog"><b><a href="/auth/logout" class="ilog">Logout</a></b></li>
                 </ul>
 
         </nav>

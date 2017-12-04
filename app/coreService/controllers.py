@@ -10,6 +10,13 @@ from app.studentService.controllers import (
         create_course_progress, get_children_progress, get_segment_progress
 )
 
+from app.reportingService.controllers import (
+        get_course_stats, get_segment_stats, get_quiz_stats,
+        get_video_stats, get_lecture_stats
+)
+
+from app.utils import _get_now
+
 from app.certService.controllers import get_certificate
 
 def update_user_profile(id, name, nickname, sex, city, state, country, nationality, occupation):
@@ -26,6 +33,98 @@ def update_user_profile(id, name, nickname, sex, city, state, country, nationali
     user.occupation = occupation
     db.session.commit()
 
+def _get_all_progress(userId):
+    courses = get_courses()
+    res = []
+    for course in courses:
+        cp = get_course_progress(course.id, userId)
+        if cp:
+            segments=get_children(course.id)
+            course.__dict__['progress']=cp
+            course.__dict__['segments']=[]
+            for segment in segments:
+                sp = get_segment_progress(segment.id, userId)
+                if sp:
+                    segment.__dict__['progress']=sp
+                    segment.__dict__['quizzes']=[]
+                    segment.__dict__['videos']=[]
+                    segment.__dict__['lectures']=[]
+                    modules = get_children(segment.id)
+                    for mod in modules:
+                        if mod.type=='quiz':
+                            mp = get_quiz_progress(mod.id, userId)
+                            if mp:
+                                mod.__dict__['progress']=mp
+                                segment.__dict__['quizzes'].append(mod.__dict__)
+                        elif mod.type=='video':
+                            mp = get_video_progress(mod.id, userId)
+                            if mp:
+                                mod.__dict__['progress']=mp
+                                segment.__dict__['videos'].append(mod.__dict__)
+                        elif mod.type=='lecture':
+                            mp = get_lecture_progress(mod.id, userId)
+                            if mp:
+                                mod.__dict__['progress']=mp
+                                segment.__dict__['lectures'].append(mod.__dict__)
+                    course.__dict__['segments'].append(segment.__dict__)
+            res.append(course.__dict__)
+    return res
+
+def _get_all_stats():
+    courses = get_courses()
+    res = []
+    for course in courses:
+        cp = get_course_stats(course.id)
+        if cp:
+            segments=get_children(course.id)
+            course.__dict__['stats']=cp
+            course.__dict__['segments']=[]
+            for segment in segments:
+                sp = get_segment_stats(segment.id)
+                if sp:
+                    segment.__dict__['stats']=sp
+                    segment.__dict__['quizzes']=[]
+                    segment.__dict__['videos']=[]
+                    segment.__dict__['lectures']=[]
+                    modules = get_children(segment.id)
+                    for mod in modules:
+                        if mod.type=='quiz':
+                            mp = get_quiz_stats(mod.id)
+                            if mp:
+                                mod.__dict__['stats']=mp
+                                segment.__dict__['quizzes'].append(mod.__dict__)
+                        elif mod.type=='video':
+                            mp = get_video_stats(mod.id)
+                            if mp:
+                                mod.__dict__['stats']=mp
+                                segment.__dict__['videos'].append(mod.__dict__)
+                        elif mod.type=='lecture':
+                            mp = get_lecture_stats(mod.id)
+                            if mp:
+                                mod.__dict__['stats']=mp
+                                segment.__dict__['lectures'].append(mod.__dict__)
+                    course.__dict__['segments'].append(segment.__dict__)
+            res.append(course.__dict__)
+    return res
+
+
+
+def get_user_by_email(email):
+    from app.authService.models import User
+    user = User.query.filter(User.email==email).scalar()
+    return user
+
+
+def confirm_user_email(email):
+    from app import db
+    from app.authService.models import User
+    user = User.query.filter(User.email == email).scalar()
+    if not user:
+        return False
+    user.confirmed_at = _get_now()
+    user.active = True
+    db.session.commit()
+    return True
 def _get_downloadable(id):
     return get_downloadable(id)
 
