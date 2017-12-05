@@ -151,19 +151,18 @@ def quiz(id):
     session.modified = True
     return render_template('quiz.html', quiz=quiz, segment=segment)
 
-@core.route('quizzes/')
+@core.route('quizzes/{{location}}')
 @login_required
-def quizLoad():
-    if 'userId' not in session or current_user.id!=session['userId'] or 'quizLocation' not in session:
+def quizLoad(location):
+    if 'userId' not in session or current_user.id!=session['userId'] or 'quizLocation' not in session or location!=session['quizLocation']:
         flash("You session may have expired")
         return redirect(redirect_url())
+    print(session['quizLocation'])
     return send_from_directory(BASE_PATH+'quizzes/'+session['quizLocation'], 'index.html')
 
-@core.route('quizzes/data/<file>')
+@core.route('quizzes/{{location}}/data/<file>')
 @login_required
 def quizAssest(file):
-    for i in request.cookies:
-        print(i)
     return send_from_directory(BASE_PATH+'quizzes/'+session['quizLocation']+'/data/', file)
 
 @core.route('dw')
