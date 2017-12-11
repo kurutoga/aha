@@ -11,7 +11,7 @@
 <body>
   <div align="center">
     <video id="vid"  class="video-js vjs-default-skin vjs-16-9" controls preload="auto" width="480" height="720"
-  data-setup='{"fluid": true}'>
+  data-setup='{"fluid": true, "playbackRates": [0.5, 1, 1.5, 2]}'>
                 <source src="/video/get/{{location}}" type='video/mp4'>
                 <p class="vjs-no-js">
                         To view this video please enable JavaScript, and consider upgrading to a web browser that
@@ -37,7 +37,6 @@
                 data: { duration: dt }
             });
         }
-        console.log(dt-played);
         $.ajax({
                 url:"/stats/video/update",
                 type: 'post',
@@ -47,13 +46,11 @@
         played = dt;
     }
     function update_progress() {
-        console.log('UPDATE');
         if(!player.paused()) {
             _update_progress(player.currentTime());
         }
     }
     function new_progress() {
-        console.log('NEW');
         update_progress();
         $.ajax({
                 url:"/progress/video/update",
@@ -71,14 +68,12 @@
     }
     player.on('play', function() {
         if (firstPlay) {
-            console.log('FIRST PLAY');
             firstPlay=false;
             new_progress();
         }
         timerId = setInterval(update_progress, 5000);
     });
     player.on(['pause', 'ended', 'waiting'], function() {
-        console.log('PAUSED');
         _update_progress(player.currentTime());
         clearInterval(timerId);
     });
