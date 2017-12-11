@@ -13,7 +13,9 @@ from .models import (
         SegmentProgress, 
         QuizProgress,
         VideoProgress, 
-        LectureProgress
+        LectureProgress,
+        QuizMetadata,
+        QuizDetailedResult
 )
 from app.classService.controllers import (
         get_module, get_total_children,
@@ -67,6 +69,10 @@ def get_quiz_progress(quizId, userId):
     qp = QuizProgress.query.get([quizId, userId])
     return qp
 
+def get_quiz_detailed_result(id):
+    qdr = QuizDetailedResult.query.get(id)
+    return qdr
+
 def get_children_progress(siblings, userId):
     d = []
     for child in siblings:
@@ -88,6 +94,9 @@ def get_children_progress(siblings, userId):
             d.append(None)
     return d
 
+def get_quizmetadata(quizId, userId):
+    qmeta = QuizMetadata.query.get([quizId, userId])
+    return qmeta
 
 # update class by changing completed_segments by segmentDelta parameter.
 
@@ -154,19 +163,15 @@ def create_course_progress(courseId, userId):
     commit()
 
 def create_quiz_progress(quizId, segmentId, courseId, userId, userName, ppoints, apoints, ppercent, apercent, tpoints, duration):
-    sp = get_segment_progress(segmentId, userId)
+    sp = get_or_create_segment_progress(segmentId, courseId, userId)
     if not sp:
-        return False
-    currentDT = _get_now()
-    if sp.expires_at < currentDT:
         return
     max_score = get_quiz_max_score(quizId)
     if not max_score:
-        print('we good')
         _update_quiz_max_score(quizId, tpoints)
         max_score = tpoints
     quiz_progress = QuizProgress(
-            module_id=quizId, user_id=userId, completed_at=currentDT,
+            module_id=quizId, user_id=userId, completed_at=_get_now(),
             passing_points = ppoints, awarded_points = apoints,
             passing_percent = ppercent, awarded_percent = apercent,
             total_points=tpoints, duration = duration, is_complete=True
@@ -196,6 +201,30 @@ def create_update_lecture_progress(lectureId, userId):
     lectureProgress.downloads    += 1
     commit()
 
+def save_quiz_detailed_result(rawdata):
+    qdr = QuizDetailedResult(quizxml=rawdata)
+    db.session.add(qdr)
+    commit()
+    return qdr.id
+
+def start_quiz(quizId, userId):
+    qmeta = get_quizmetadata(quizId, userId)
+    if qmeta:
+        return False
+    qmeta = QuizMetadata(quiz_id=quizId, user_id=userId, started=True)
+    db.session.add(qmeta)
+    commit()
+    return True
+
+def end_quiz(quizId, userId, raw_data):
+    qmeta = get_quizmetadata(quizId, userId)
+    if not qmeta:
+        qmeta = QuizMetadata(quiz_id=quizId, user_id=userId, started=True)
+    qmeta.finished = True
+    qdr_id = save_quiz_detailed_result(raw_data)
+    qmeta.quizxmlid = qdr_id
+    commit()
+    return
 
 '''
 TODO: ADD DELETE ENDPOINTS TO SUPPORT UN-ENROLL

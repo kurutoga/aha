@@ -8,7 +8,8 @@ from .controllers import (
         create_course_progress,
         create_quiz_progress,
         create_update_video_progress,
-        create_update_lecture_progress
+        create_update_lecture_progress,
+        start_quiz
 )
 from ..utils import convert_to_uuid, redirect_url, nocache
 
@@ -65,14 +66,25 @@ def update_quiz_progress():
     pp = float(request.form['ps'])
     psp = float(request.form['psp'])
     tp = float(request.form['tp'])
+    dr = request.form['dr']
     awp = (ap/tp)*100
     ut = float(request.form['ut'])
-    quiz_scoring_task.apply_async(args=[quizId, segmentId, courseId, userId, userName, pp, ap, psp, awp, tp, ut])
+    quiz_scoring_task.apply_async(args=[quizId, segmentId, courseId, userId, userName, pp, ap, psp, awp, tp, ut, dr])
 
     del session['courseId']
     del session['quizId']
     del session['segmentId']
     del session['userId']
     del session['userName']
+    del session['quizLocation']
     return ('', 200)
 
+@progress.route('/quiz/start', methods=['POST'])
+def begin_quiz():
+    if 'quizId' not in session or 'userId' not in session:
+        return('', 400)
+
+    userId = session['userId']
+    quizId = session['quizId']
+    start_quiz(quizId, userId)
+    return ('', 200)

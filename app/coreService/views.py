@@ -8,7 +8,8 @@ from .controllers import (
         _get_courses_and_status, _get_courses,
         _get_next_mod, _get_prev_mod, _get_type, _get_course_data,
         update_user_profile, _get_progress, _get_downloadable,
-        _get_downloadables, confirm_user_email, get_user_by_email, _get_all_progress
+        _get_downloadables, confirm_user_email, get_user_by_email, _get_all_progress,
+        _get_metadata
 )
 from ..utils import convert_to_uuid, redirect_url, nocache, _get_now
 from config import Config
@@ -142,6 +143,7 @@ def quiz(id):
     qstatus = _get_status(quiz.id, userId)
     if qstatus:
         return redirect(url_for('core.course', id=segment.parent))
+    quizmeta = _get_metadata(quiz.id, userId)
     session['quizId']=quiz.id
     session['segmentId']=segment.id
     session['courseId']=segment.parent
@@ -149,21 +151,20 @@ def quiz(id):
     session['quizLocation']=quiz.location
     session['userName']=userName
     session.modified = True
-    return render_template('quiz.html', quiz=quiz, segment=segment)
+    return render_template('quiz.html', quiz=quiz, segment=segment, quizmeta=quizmeta)
 
-@core.route('quizzes/{{location}}')
+@core.route('quizzes/<location>/')
 @login_required
 def quizLoad(location):
     if 'userId' not in session or current_user.id!=session['userId'] or 'quizLocation' not in session or location!=session['quizLocation']:
         flash("You session may have expired")
         return redirect(redirect_url())
-    print(session['quizLocation'])
-    return send_from_directory(BASE_PATH+'quizzes/'+session['quizLocation'], 'index.html')
+    return send_from_directory(BASE_PATH+'quizzes/'+location, 'index.html')
 
-@core.route('quizzes/{{location}}/data/<file>')
+@core.route('quizzes/<location>/data/<file>')
 @login_required
-def quizAssest(file):
-    return send_from_directory(BASE_PATH+'quizzes/'+session['quizLocation']+'/data/', file)
+def quizAssest(location, file):
+    return send_from_directory(BASE_PATH+'quizzes/'+location+'/data', file)
 
 @core.route('dw')
 @login_required

@@ -23,9 +23,8 @@
     var $=parent.$
     var firstPlay = true;
     var timerId = 0;
-    var statsId = 0;
     var dut = {{duration}};
-    var diff = 0;
+    var played = 0;
     var player = videojs("vid");
 
     function _update_progress(dt) {
@@ -38,13 +37,14 @@
                 data: { duration: dt }
             });
         }
+        console.log(dt-played);
         $.ajax({
                 url:"/stats/video/update",
                 type: 'post',
                 dataType: 'json',
-                data: { duration: dt }
+                data: { duration: dt-played }
         });
-
+        played = dt;
     }
     function update_progress() {
         console.log('UPDATE');
@@ -67,7 +67,7 @@
             dataType: 'json',
             data: {duration: player.currentTime(), new: true}
         });
-
+        played = player.currentTime();
     }
     player.on('play', function() {
         if (firstPlay) {
@@ -77,7 +77,7 @@
         }
         timerId = setInterval(update_progress, 5000);
     });
-    player.on(['paused', 'ended', 'waiting'], function() {
+    player.on(['pause', 'ended', 'waiting'], function() {
         console.log('PAUSED');
         _update_progress(player.currentTime());
         clearInterval(timerId);

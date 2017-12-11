@@ -1,9 +1,11 @@
+import uuid
 from app import db
 from flask_sqlalchemy import declared_attr
 from sqlalchemy.ext.hybrid import hybrid_property
 from flask_admin.contrib import sqla
 from flask_security import current_user
 from sqlalchemy.dialects.postgresql.json import JSONB
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy import PrimaryKeyConstraint
 from app.utils import _get_now
 from ..classService.models import Module
@@ -72,11 +74,25 @@ class VideoProgress(ModuleProgressMixin):
 
 class LectureProgress(ModuleProgressMixin):
     downloads       = db.Column(db.Integer)
-    __table_args__ = (
+    __table_args__  = (
             PrimaryKeyConstraint('module_id', 'user_id', name='module_user_lecture_pk'),
             {}
     )
 
+class QuizMetadata(db.Model):
+    quiz_id         = db.Column(UUID(as_uuid=True), db.ForeignKey('module.id'), primary_key=True)
+    user_id         = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    started         = db.Column(db.Boolean, default=False)
+    finished        = db.Column(db.Boolean, default=False)
+    quizxmlid       = db.Column(UUID(as_uuid=True), db.ForeignKey('quiz_detailed_result.id'))
+    created_at      = db.Column(db.DateTime(), default=_get_now)
+    modified_at     = db.Column(db.DateTime(), onupdate=_get_now)
+    __table_args__  = (PrimaryKeyConstraint('quiz_id', 'user_id', name='module_user_quizmetadata_pk'),{})
+
+class QuizDetailedResult(db.Model):
+    id              = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    quizxml         = db.Column(db.Text)
+ 
 class ProgressAdmin(sqla.ModelView):
     def is_accessible(self):
         return current_user.has_role('admin')

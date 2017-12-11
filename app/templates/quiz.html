@@ -8,7 +8,7 @@
         <meta charset="utf-8">
         <title>AHA | Washington State University</title>
         <link rel="shortcut icon" href="https://repo.wsu.edu/spine/1/favicon.ico" />
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,300italic" rel="stylesheet" type="text/css" >
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,300italic" rel="stylesheet" type="text/css" />
         <link href="https://repo.wsu.edu/spine/1/spine.min.css" rel="stylesheet" type="text/css" />
      <link href="/static/style_dash.css" rel="stylesheet" type="text/css" />
        <style>
@@ -24,6 +24,7 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
         <script src="https://repo.wsu.edu/spine/1/spine.min.js"></script>
+        {% if not quizmeta %}
         <script>
              for(key in localStorage) {
                  if(key.indexOf('ispring') != -1) {
@@ -31,6 +32,7 @@
                  }
              }
         </script>
+        {% endif %}
         <!-- COMPATIBILITY -->
         <!--[if lt IE 9]><script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
         <noscript><style>#spine .spine-sitenav ul ul li { display: block !important; }</style></noscript>
@@ -51,7 +53,7 @@
 </section>
 <section class="row single pad-top pad-left">
     <div class="column one">
-        <iframe src="/quizzes/{{location}}" allowfullscreen="true" width="720px;" height="540px;"></iframe>
+        <iframe id="quizframe" src="/quizzes/{{quiz.location}}/" allowfullscreen="true" width="720px;" height="540px;"></iframe>
     </div>
 </section>
 <hr class="divider" />
@@ -180,5 +182,22 @@
         <span itemprop="url" content="http://vcea.wsu.edu"></span>
 </div>
 </body>
+{% if not quizmeta %}
+<script>
+var chkReadyState = setInterval(function() {
+    var start_button = $('#quizframe').contents().find('button.component_base.start');
+    if (start_button.length>0) {
+        start_button.click(function(){
+            $.ajax({
+                url:"/progress/quiz/start",
+                type: 'post'
+            });
+            return true;
+        });
+        clearInterval(chkReadyState);
+    }
+}, 200);
+</script>
+{% endif %}
 </html>
 

@@ -7,7 +7,8 @@ from app.classService.controllers import (
 from app.studentService.controllers import (
         get_course_progress, get_quiz_progress, get_video_progress, 
         get_lecture_progress, get_or_create_segment_progress,
-        create_course_progress, get_children_progress, get_segment_progress
+        create_course_progress, get_children_progress, get_segment_progress,
+        get_quizmetadata
 )
 
 from app.reportingService.controllers import (
@@ -32,6 +33,9 @@ def update_user_profile(id, name, nickname, sex, city, state, country, nationali
     user.nationality = nationality
     user.occupation = occupation
     db.session.commit()
+
+def _get_metadata(quizId, userId):
+    return get_quizmetadata(quizId, userId)
 
 def _get_all_progress(userId):
     courses = get_courses()
@@ -125,6 +129,7 @@ def confirm_user_email(email):
     user.active = True
     db.session.commit()
     return True
+
 def _get_downloadable(id):
     return get_downloadable(id)
 
@@ -210,7 +215,7 @@ def _get_courses_and_status(userId):
         if course.is_ready:
             if progress[i]:
                 course.__dict__['progress']=progress[i]
-                if progress[i].is_complete:
+                if progress[i].is_complete or progress[i].expires_at < _get_now():
                     completed.append(course)
                     cid.add(course.id)
                 else:

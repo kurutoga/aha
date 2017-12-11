@@ -23,7 +23,6 @@ class Module(db.Model):
     def __str__(self):
         return self.name
 
-
 class CourseData(db.Model):
     id = db.Column(UUID(as_uuid=True), db.ForeignKey('module.id'), primary_key=True)
     description     = db.Column(db.Text)
