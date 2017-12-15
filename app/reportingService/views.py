@@ -2,7 +2,7 @@ from flask import jsonify, session, request, redirect, url_for, render_template,
 from flask_security import current_user, login_required
 
 from . import stats
-from .forms import UserEmailForm
+from .forms import UserEmailForm, _get_user_name_form
 from .controllers import (
         update_video_stats,
         update_lecture_stats,
@@ -36,6 +36,18 @@ def get_info_by_email():
     if form.validate_on_submit():
         return redirect(url_for('core.edit_profile_admin', email=form.email.data))
     return render_template('get_email.html', form=form, head='Get Student Information')
+
+
+@login_required
+@stats.route('/cert/generate', methods=['GET', 'POST'])
+def try_cert_gen():
+    if not current_user.has_role('admin'):
+        return redirect(url_for('core.home'))
+    UserForm = _get_user_name_form()
+    form = UserForm()
+    if form.validate_on_submit():
+        return redirect(url_for('cert.send_cert', course=form.courses.data, name=form.name.data))
+    return render_template('get_name.html', form=form, head='Generate Course Certificate')
 
 @stats.route('/courses')
 @login_required
