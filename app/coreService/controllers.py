@@ -201,6 +201,7 @@ def _get_progress(userId):
                         if mod.type=='quiz':
                             mp = get_quiz_progress(mod.id, userId)
                             if mp:
+                                mp.__dict__['metadata']=mp.metadata
                                 mod.__dict__['progress']=mp
                                 segment.__dict__['quizzes'].append(mod.__dict__)
                     course.__dict__['segments'].append(segment.__dict__)

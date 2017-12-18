@@ -11,6 +11,7 @@ from flask.ext.security.signals import user_registered
 from ..classService.models import *
 from ..studentService.models import *
 from ..reportingService.models import *
+from ..certService.models import *
 import uuid
 
 class MyModelView(sqla.ModelView):
@@ -49,6 +50,8 @@ def make_admin(admin, app, db):
     admin.add_view(LectureProgressAdmin(LectureProgress, db.session))
     admin.add_view(VideoProgressAdmin(VideoProgress, db.session))
     admin.add_view(QuizProgressAdmin(QuizProgress, db.session))
+    admin.add_view(QuizMetadataAdmin(QuizMetadata, db.session))
+    admin.add_view(CertificateAdmin(Certificate, db.session))
 
     from flask_security.signals import user_registered
 

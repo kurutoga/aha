@@ -3,6 +3,8 @@ from wtforms import TextField, SelectField
 from wtforms.validators import Required
 import pycountry
 
+#TODO: Refactor me and remove static list. Use DB
+
 nationalities = [ "Caucasian", "Hispanic", "African American", "Native American", "Asian", \
                   "Multiple nationalities", "Other", "Do not want to report" ]
 occupations = [ "Homemaker", "Retired", "Student", "Unemployed", "Agriculture, Forestry, Fishing, or Hunting",\

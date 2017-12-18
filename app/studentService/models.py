@@ -6,6 +6,7 @@ from flask_admin.contrib import sqla
 from flask_security import current_user
 from sqlalchemy.dialects.postgresql.json import JSONB
 from sqlalchemy.dialects.postgresql import UUID
+from jinja2 import Markup
 from sqlalchemy import PrimaryKeyConstraint
 from app.utils import _get_now
 from ..classService.models import Module
@@ -87,12 +88,64 @@ class QuizMetadata(db.Model):
     quizxmlid       = db.Column(UUID(as_uuid=True), db.ForeignKey('quiz_detailed_result.id'))
     created_at      = db.Column(db.DateTime(), default=_get_now)
     modified_at     = db.Column(db.DateTime(), onupdate=_get_now)
+    user            = db.relationship('User', lazy=True)
+    module          = db.relationship('Module', lazy=True)
+    quizprogress    = db.relationship('QuizProgress', primaryjoin="and_(QuizProgress.module_id==QuizMetadata.quiz_id, QuizProgress.user_id==QuizMetadata.user_id)", backref="metadata", foreign_keys=[quiz_id, user_id], lazy=True, uselist=False)
     __table_args__  = (PrimaryKeyConstraint('quiz_id', 'user_id', name='module_user_quizmetadata_pk'),{})
 
 class QuizDetailedResult(db.Model):
     id              = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     quizxml         = db.Column(db.Text)
- 
+  
+class QuizMetadataAdmin(sqla.ModelView):
+    def is_accessible(self):
+        return current_user.has_role('admin')
+
+    def _get_xml_link(view, context, model, name):
+        return Markup(u"<a href='%s/%s'>%s</a>" % ('/progress/quizxml', str(model.quizxmlid), 'Download'))
+
+    def _get_json_link(view, context, model, name):
+        return Markup(u"<a href='%s/%s'>%s</a>" % ('/progress/quizxml', str(model.quizxmlid)+'?json=1', 'Download'))
+
+    def _get_username(view, context, model, name):
+        return model.user.name
+
+    def _get_email(view, context, model, name):
+        return model.user.email
+
+    def _get_module_name(view, context, model, name):
+        return model.module.name
+
+    def _get_segment_name(view, context, model, name):
+        return model.module.parent_
+
+    def _get_course_name(view, context, model, name):
+        return model.module.parent_.parent_
+
+    can_create = False
+    can_edit = False
+    can_delete = False
+    column_auto_select_related = True
+
+    page_size = 10
+
+    # Display primary keys in view
+    column_display_pk = True
+
+    column_formatters = {
+        'email': _get_email,
+        'username': _get_username,
+        'name': _get_module_name,
+        'segment': _get_segment_name,
+        'class': _get_course_name,
+        'xml': _get_xml_link,
+        'json': _get_json_link
+    }
+
+    column_searchable_list = ('user.name', 'user.email', 'module.name', 'quiz_id', 'user_id', 'module.parent_.name')
+    column_sortable_list = (('username', 'user.name'), ('email', 'user.email'), 'module', 'user_id', 'quiz_id', ('name', 'module.name'), ('segment', 'module.parent_.name'), ('class', 'module.parent_.parent_.name'))
+    column_list = ('quiz_id', 'name', 'segment', 'class', 'user_id', 'username', 'email', 'xml', 'json')
+
 class ProgressAdmin(sqla.ModelView):
     def is_accessible(self):
         return current_user.has_role('admin')
@@ -101,7 +154,7 @@ class ProgressAdmin(sqla.ModelView):
         return model.user.email
 
     def _get_parent(view, context, model, name):
-        return Module.query.get(model.module.parent)
+        return model.module.parent_
 
     def _get_username(view, context, model, name):
         return model.user.name
@@ -126,8 +179,8 @@ class ProgressAdmin(sqla.ModelView):
         'segment': _get_parent
     }
 
-    column_searchable_list = ('user.name', 'user.email', 'module.name', 'module.id')
-    column_sortable_list = (('username', 'user.name'), ('email', 'user.email'), 'module')
+    column_searchable_list = ('user.name', 'user.email', 'module.name', 'module.id', 'module.parent_.name')
+    column_sortable_list = (('username', 'user.name'), ('email', 'user.email'), 'module', ('segment', 'module.parent_.name'))
 
 class QuizProgressAdmin(ProgressAdmin):
     column_list = ('id', 'module', 'segment', 'username', 'email', 'passing_points', 'awarded_points', 'total_points', 'duration', 'is_complete')
@@ -146,7 +199,7 @@ class SegmentProgressAdmin(sqla.ModelView):
         return model.user.email
 
     def _get_parent(view, context, model, name):
-        return Module.query.get(model.module.parent)
+        return model.module.parent_
 
     def _get_username(view, context, model, name):
         return model.user.name
@@ -154,8 +207,8 @@ class SegmentProgressAdmin(sqla.ModelView):
     def _get_mod_id(view, context, model, name):
         return model.module.id
  
-    column_searchable_list = ('user.name', 'user.email', 'module.name', 'module.id')
-    column_sortable_list = (('username', 'user.name'), ('email', 'user.email'), 'module')
+    column_searchable_list = ('user.name', 'user.email', 'module.name', 'module.id', 'module.parent_.name', 'user.id')
+    column_sortable_list = (('username', 'user.name'), ('email', 'user.email'), 'module', ('class', 'module.parent_.name'))
 
     can_create = False
     can_edit = False

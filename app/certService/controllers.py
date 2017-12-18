@@ -3,6 +3,7 @@ import uuid
 from .models import Certificate
 from app import db
 from config import Config
+from PIL import ImageFont, ImageDraw, Image
 
 BASE_PATH = Config.BASE_PATH
 
@@ -44,7 +45,6 @@ def is_certificate_eligible(course, courseProgress):
         return False
 
 def generate_cert(name, courseName, date):
-    from PIL import ImageFont, ImageDraw, Image
     image = Image.open(BASE_PATH+'certs/template/certificate.jpg')
     draw = ImageDraw.Draw(image)
     widths = [610, 530, 140]

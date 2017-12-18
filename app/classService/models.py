@@ -18,6 +18,8 @@ class Module(db.Model):
     location = db.Column(db.String(200))
     expires_in = db.Column(db.Integer)
     is_ready = db.Column(db.Boolean)
+
+    parent_ = db.relationship('Module', foreign_keys=[parent], backref="children_", remote_side=[id], lazy=True)
     __table_args__ = (UniqueConstraint('parent', 'serial', name='_parent_serial_uc'),)
 
     def __str__(self):
@@ -57,7 +59,7 @@ class ModuleAdmin(sqla.ModelView):
         return current_user.has_role('admin')
 
     def _get_parent(view, context, model, name):
-        return Module.query.get(model.module.parent)
+        return model.parent_
 
     can_create = False
     can_delete = False
@@ -69,9 +71,10 @@ class ModuleAdmin(sqla.ModelView):
     column_display_pk = True
 
     column_formatters = {
-        'segment': _get_parent
+        'parent': _get_parent
     }
 
-    column_searchable_list = ('id', 'name', 'type', 'serial')
-    column_sortable_list = ('name', 'type', 'serial')
+    column_searchable_list = ('id', 'name', 'type', 'serial', 'parent_.name')
+    column_sortable_list = ('id','name', 'type', 'serial', 'parent', 'location')
+    column_list = ('id', 'type', 'serial', 'name', 'parent', 'author', 'children', 'location', 'expires_in', 'is_ready')
     

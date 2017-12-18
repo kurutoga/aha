@@ -50,7 +50,10 @@ class StatsAdmin(sqla.ModelView):
         return current_user.has_role('admin')
 
     def _get_parent(view, context, model, name):
-        return Module.query.get(model.module.parent)
+        return model.module.parent_
+
+    def _get_class(view, context, model, name):
+        return model.module.parent_.parent_
 
     can_create = False
     can_edit = False
@@ -63,34 +66,35 @@ class StatsAdmin(sqla.ModelView):
     column_display_pk = True
 
     column_formatters = {
-        'segment': _get_parent
+        'segment': _get_parent,
+        'class': _get_class
     }
 
-    column_searchable_list = ('module.name',)
-    column_sortable_list = ('module',)
+    column_searchable_list = ('module.name', 'module.parent_.name')
+    column_sortable_list = ('module', ('segment', 'module.parent_.name'), ('class', 'module.parent_.parent_.name'))
 
 class QuizStatsAdmin(StatsAdmin):
-    column_list = ('module', 'segment', 'attempts', 'avg_score', 'max_score', 'duration')
+    column_list = ('module', 'segment', 'class', 'attempts', 'avg_score', 'max_score', 'duration')
 
 class VideoStatsAdmin(StatsAdmin):
-    column_list = ('module', 'segment', 'views', 'duration')
+    column_list = ('module', 'segment', 'class', 'views', 'duration')
 
 class LectureStatsAdmin(StatsAdmin):
-    column_list = ('module', 'segment', 'downloads')
+    column_list = ('module', 'segment', 'class', 'downloads')
 
 class SegmentStatsAdmin(sqla.ModelView): 
     def is_accessible(self):
         return current_user.has_role('admin')
 
     def _get_parent(view, context, model, name):
-        return Module.query.get(model.module.parent)
+        return model.module.parent_
  
     can_create = False
     can_edit = False
     can_delete = False
 
-    column_searchable_list = ('module.name',)
-    column_sortable_list = (('module', 'module.name'),)
+    column_searchable_list = ('module.name', 'module.parent_.name')
+    column_sortable_list = (('module', 'module.name'), ('class', 'module.parent_.name'))
 
     column_auto_select_related = True
 

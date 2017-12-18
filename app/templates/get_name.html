@@ -12,7 +12,7 @@
         <link rel="shortcut icon" href="https://repo.wsu.edu/spine/1/favicon.ico" />
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,300italic" rel="stylesheet" type="text/css" >
         <link href="https://repo.wsu.edu/spine/1/spine.min.css" rel="stylesheet" type="text/css" />
-    <link href="/static/custom.min.css" rel="stylesheet" type="text/css" />
+    <link href="/static/custom.min.css" rel="stylesheet" type="text/css" /> 
         <meta http-equiv="X-UA-Compatible" content="IE=EDGE">
         <meta name="viewport" content="width=device-width, user-scalable=yes">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
@@ -47,8 +47,26 @@
 </section>
 <section class="row single gutter pad-bottom pad-top pad-right">
     <div class="column one">
-           <article class="signin">  
-               {{ wtf.quick_form(form, form_type='horizontal', button_map={'submit': 'primary'}, id="modform") }}
+           <article class="signin">   
+               <form action="#" method="POST" name="form">
+                  {{ form.hidden_tag() }}
+                  <label>Full Name:</label>
+                  {{ render_field(form.name, class_="form-control pst") }}
+  <label>Select Course:</label>
+  {{ render_field(form.courses, class_="form-control pst") }}
+  <br>
+   {% for field in form.errors %}
+   {% for error in form.errors[field] %}
+      <div class="alert alert-error">
+          <strong>Error!</strong> {{error}}
+      </div>
+   {% endfor %}
+   {% endfor %}
+
+ <br> 
+ {{ render_field(form.submit, class_="changebutton pad-top") }}
+</form>
+ 
            </article>
     </div>
 </section>
@@ -99,7 +117,7 @@
                         • Replace example navigation list below -->
                         <li><a href="/">Site Home</a></li>
                         {% if current_user.has_role('admin') %}
-                        <li><a href="/admin">User Admin</a></li>
+                        <li><a href="/admin">Database Viewer</a></li>
                         {% endif %}
                         <li><a href="/repo/courses">Course Repository</a></li>
                         <li><a href="/dw">Downloadable Materials</a></li>
