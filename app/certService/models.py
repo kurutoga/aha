@@ -6,6 +6,7 @@ from sqlalchemy import PrimaryKeyConstraint
 from app.utils import _get_now
 from flask_security import current_user
 from flask_admin.contrib import sqla
+from jinja2 import Markup
 
 class Certificate(db.Model):
     course_id        = db.Column(UUID(as_uuid=True), db.ForeignKey('module.id'), primary_key=True)
@@ -38,6 +39,9 @@ class CertificateAdmin(sqla.ModelView):
 
     def _get_class_id(view, context, model, name):
         return model.module.id
+ 
+    def _get_link(view, context, model, name):
+        return Markup(u"<a href='%s/%s'>%s</a>" % ('/cert/download', str(model.location), 'Download'))
 
     can_create = False
     can_edit = False
@@ -53,9 +57,10 @@ class CertificateAdmin(sqla.ModelView):
         'class_id': _get_class_id,
         'email': _get_email,
         'username': _get_username,
-        'class': _get_class
+        'class': _get_class,
+        'download': _get_link
     }
 
     column_searchable_list = ('user.name', 'user.email', 'module.name', 'module.id')
-    column_sortable_list = (('username', 'user.name'), ('email', 'user.email'), ('class', 'module.name'), ('class_id', 'module.id'))
-    column_list = ('class_id', 'class', 'user_id', 'username', 'email', 'scored_points', 'total_points', 'status', 'generate_at', 'location')
+    column_sortable_list = (('username', 'user.name'), ('email', 'user.email'), 'user_id', ('class', 'module.name'), ('class_id', 'module.id'), 'generated_at')
+    column_list = ('class_id', 'class', 'user_id', 'username', 'email', 'scored_points', 'total_points', 'generated_at', 'download')

@@ -74,7 +74,7 @@ Online Course Suite in Tools for Analysis of Sensor-Based Behavioral Health Data
                 <tr>
                     <td class="course"><a href="/course/{{course.id}}">{{ course.name }}</a></td>
                     <td>{% if course.progress['completed_at'] %}{{course.progress['completed_at'].strftime('%m-%d-%Y')}}{% endif %}</td>
-                    <td style="text-align:right;">{% if course.__dict__['cert'] %}<a href="/cert/user/{{current_user.id}}/course/{{course.id}}">VIEW CERTIFICATE</a>{% endif %}</td>
+                    <td style="text-align:right;">{% if course.__dict__['cert'] %}<a href="/cert/{{course.id}}">VIEW CERTIFICATE</a>{% endif %}</td>
                 </tr>
             {% endfor %}
         </table>

@@ -14,11 +14,21 @@ from config import Config
 
 BASE_PATH = Config.BASE_PATH
 
-@cert.route('/user/<user_id>/course/<course_id>')
+@cert.route('/<course_id>')
 @login_required
-def get_cert(user_id, course_id):
+def get_cert(course_id):
+    user_id = current_user.id
     cert = get_certificate(course_id, user_id)
+    if not cert:
+        return ('Not Found', 404)
     return send_file(Config.BASE_PATH+'certs/'+cert.location, attachment_filename='certificate.jpg', as_attachment=True)
+
+@cert.route('/download/<location>')
+@login_required
+def download_cert(location):
+    if not current_user.has_role('admin'):
+        return('Unauthorized', 401) 
+    return send_file(Config.BASE_PATH+'certs/'+location, attachment_filename='certificate.jpg', as_attachment=True)
 
 @cert.route('/generate/<course>/<name>')
 @login_required
